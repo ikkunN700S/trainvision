@@ -1,0 +1,11 @@
+{
+  "stations": [
+    { "name": "豊橋", "code": "CA", "number": "42" },
+    { "name": "二川", "code": "CA", "number": "41" },
+    { "name": "新所原", "code": "CA", "number": "40" },
+    { "name": "鷲津", "code": "CA", "number": "39" },
+    { "name": "新居町", "code": "CA", "number": "38" },
+    { "name": "弁天島", "code": "CA", "number": "37" }
+  ],
+  "currentIndex": 1
+}

@@ -1,0 +1,67 @@
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: #fff;
+  color: #000;
+  text-align: center;
+  padding: 2rem;
+}
+
+.next-heading {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+.station-list {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.station {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 60px;
+}
+
+.station-name {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 0.4rem;
+}
+
+.station-code-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 3px solid orange;
+  padding: 0.3rem 0.6rem;
+  border-radius: 8px;
+  background-color: white;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.station-code-top {
+  border-bottom: 1px solid orange;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 2px;
+}
+
+.station-code-bottom {
+  text-align: center;
+}
+
+/* 現在の駅の強調表示 */
+.station.current .station-name {
+  font-size: 2rem;
+  color: #d60000;
+}
+
+.station.current .station-code-box {
+  border-color: #d60000;
+}
