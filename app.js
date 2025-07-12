@@ -1,10 +1,10 @@
 fetch('stations.json')
   .then(response => response.json())
   .then(data => {
-    const { stations, currentIndex } = data;
-    const list = document.getElementById('station-list');
-    const nextName = document.getElementById('next-station-name');
+    const { stations, currentIndex, trainType, carNumber } = data;
 
+    // 駅表示
+    const list = document.getElementById('station-list');
     stations.forEach((station, index) => {
       const stationEl = document.createElement('div');
       stationEl.classList.add('station');
@@ -35,10 +35,15 @@ fetch('stations.json')
       list.appendChild(stationEl);
     });
 
-    // 次の駅を表示（currentIndex + 1）
-    if (stations[currentIndex + 1]) {
-      nextName.textContent = stations[currentIndex + 1].name;
-    } else {
-      nextName.textContent = '終点';
-    }
+    // 種別表示
+    const typeEl = document.getElementById('train-type');
+    typeEl.textContent = trainType.label;
+    typeEl.style.backgroundColor = trainType.color;
+
+    // 次の駅
+    const nextEl = document.getElementById('next-station-name');
+    nextEl.textContent = stations[currentIndex + 1]?.name || '終点';
+
+    // 号車番号
+    document.getElementById('car-number').textContent = `${carNumber}号車`;
   });
