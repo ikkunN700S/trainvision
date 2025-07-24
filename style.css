@@ -11,17 +11,29 @@ body {
   justify-content: space-between;
   align-items: center;
   background: #eee;
-  padding: 1rem;
-  font-size: 1.2rem;
+  padding: 1rem 2rem;
+  font-size: 1.4rem;
+}
+
+.train-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .train-type {
   color: white;
+  background: #0078D7;
   padding: 0.3rem 1rem;
   border-radius: 6px;
   font-weight: bold;
   min-width: 5rem;
   text-align: center;
+}
+
+.destination {
+  font-weight: bold;
+  font-size: 1.4rem;
 }
 
 .car-number {
@@ -32,23 +44,55 @@ body {
   font-weight: bold;
 }
 
-.next-station-label {
-  font-size: 1.5rem;
+/* 中段：次駅表示 */
+.next-bar {
+  background: #222;
+  color: white;
+  padding: 1rem;
   text-align: center;
-  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+}
+
+.next-label {
+  font-size: 1.6rem;
+}
+
+.next-station {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .next-station-name {
-  display: block;
-  font-size: 2.5rem;
+  font-size: 2.4rem;
   font-weight: bold;
 }
 
+.station-code {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0.2rem;
+  font-size: 1.2rem;
+}
+
+.railway {
+  font-weight: bold;
+}
+
+.station-number {
+  font-size: 1.1rem;
+}
+
+/* 停車駅一覧 */
 .station-list {
   display: flex;
   justify-content: center;
   gap: 2rem;
-  padding: 2rem;
+  padding: 1.5rem;
   flex-wrap: wrap;
 }
 
@@ -98,4 +142,11 @@ body {
 
 .station.current .station-code-box {
   border-color: #d60000;
+}
+
+/* 乗換路線 */
+.change-train {
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
+  color: #0078D7;
 }

@@ -6,34 +6,55 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- 上段：種別・行先・号車 -->
   <div class="header-bar">
-    <div id="train-type" class="train-type">普通</div>
-    <div id="station" class="station">
-      <span id="last-station-name" class="last-station-name">浜松</span>
-      <span id="railway" class="railway">CA</span>
-      <span id="last-station-number" class="last-station-number">34</span>
-      行
+    <div class="train-info">
+      <div id="train-type" class="train-type">普通</div>
+      <div id="destination" class="destination">
+        <span id="last-station-name">浜松</span>行
+      </div>
     </div>
-
-    <div class="next-station-label">
-      <span>つぎは</span>
-      <span id="next-station-name" class="next-station-name">浜松</span>
-    </div>
-
-    <div id="car-number" class="car-number">1号車</div>
+    <div id="car-number" class="car-number">2号車</div>
   </div>
 
-  <div class="station-information">
+  <!-- 中段：つぎは・駅名・駅番号 -->
+  <div class="next-bar">
+    <div class="next-label">つぎは</div>
+    <div class="next-station">
+      <div id="next-station-name" class="next-station-name">舞阪</div>
+      <div class="station-code">
+        <div id="railway" class="railway">CA</div>
+        <div id="next-station-number" class="station-number">36</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 下段：停車駅一覧 -->
+  <div class="station-list" id="station-list">
+    <div class="station current">
+      <div class="station-name">浜松</div>
+      <div class="station-code-box">
+        <div class="station-code-top">CA</div>
+        <div class="station-code-bottom">34</div>
+      </div>
+      <div class="change-train">東海道新幹線</div>
+    </div>
     <div class="station">
-      <span class="station-name">浜松</span>
-      <span class="railway">CA</span>
-      <span class="station-number">34</span>
-      <span class="change-train"></span>
+      <div class="station-name">高塚</div>
+      <div class="station-code-box">
+        <div class="station-code-top">CA</div>
+        <div class="station-code-bottom">35</div>
+      </div>
     </div>
-    <!-- やじるし -->
+    <div class="station">
+      <div class="station-name">舞阪</div>
+      <div class="station-code-box">
+        <div class="station-code-top">CA</div>
+        <div class="station-code-bottom">36</div>
+      </div>
+    </div>
+    <!-- 以下追加可能 -->
   </div>
-
-  <div class="station-list" id="station-list"></div>
 
   <script src="app.js"></script>
 </body>
