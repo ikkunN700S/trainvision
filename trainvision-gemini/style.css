@@ -1,0 +1,265 @@
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f2f5;
+    overflow: hidden; /* Prevent scrollbars */
+}
+
+.train-vision-container {
+    width: 95vw; /* Fluid width */
+    max-width: 1200px; /* Max width for larger screens */
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box; /* Include padding in width */
+}
+
+/* Header Styling */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to right, #ff7e5f, #feb47b);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+    animation: pulse 5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.5; transform: scale(0); }
+    50% { opacity: 0.8; transform: scale(1); }
+    100% { opacity: 0.5; transform: scale(0); }
+}
+
+.train-type {
+    background-color: #5cb85c;
+    padding: 8px 15px;
+    border-radius: 10px;
+    margin-right: 15px;
+    font-size: 1.1em;
+}
+
+.current-station {
+    font-size: 2.5em;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.station-code {
+    background-color: #f0ad4e;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 1.8em;
+    margin-left: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.station-code .code-number {
+    font-size: 0.7em;
+    margin-left: 5px;
+}
+
+.direction {
+    font-size: 1.8em;
+    margin-left: 15px;
+}
+
+.car-number {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 1em;
+    margin-left: 15px;
+}
+
+/* Main Content Styling */
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.station-list {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    margin-bottom: 30px;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.station-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 5px; /* Adjust spacing */
+    flex: 1 1 auto; /* Allow flexible sizing */
+    min-width: 80px; /* Minimum width for each station item */
+    text-align: center;
+}
+
+.station-name {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.station-name-small {
+    font-size: 0.8em;
+    color: #666;
+    margin-bottom: 3px;
+    display: none; /* Hidden by default, shown on smaller screens */
+}
+
+.station-item .station-code {
+    background-color: #5bc0de;
+    color: white;
+    padding: 5px 8px;
+    border-radius: 8px;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+/* Station Track Styling */
+.station-track {
+    position: relative;
+    width: 90%; /* Responsive width */
+    margin: 0 auto 30px;
+    height: 10px;
+    background-color: #ddd;
+    border-radius: 5px;
+}
+
+.track-line {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #5cb85c; /* Green track */
+    border-radius: 5px;
+    transform: scaleX(0); /* Initially no progress */
+    transform-origin: left;
+    transition: transform 1s ease-out; /* Smooth transition */
+}
+
+.station-marker {
+    position: absolute;
+    top: -8px;
+    width: 25px;
+    height: 25px;
+    background-color: #fff;
+    border: 3px solid #666;
+    border-radius: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.station-marker.current {
+    background-color: #f0ad4e;
+    border-color: #d9534f;
+    animation: bounce 1s infinite alternate;
+}
+
+@keyframes bounce {
+    0% { transform: translateY(0) translateX(-50%); }
+    100% { transform: translateY(-5px) translateX(-50%); }
+}
+
+/* Line Info Styling */
+.line-info {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.line-segment {
+    display: flex;
+    align-items: center;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.line-segment input[type="checkbox"] {
+    margin-right: 8px;
+    transform: scale(1.2);
+    accent-color: #007bff; /* Custom checkbox color */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .header {
+        flex-wrap: wrap;
+        font-size: 1rem;
+        padding: 10px 15px;
+    }
+
+    .train-type, .station-code, .direction, .car-number {
+        margin: 5px;
+        font-size: 1em;
+    }
+
+    .current-station {
+        font-size: 2em;
+        width: 100%;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .station-list {
+        justify-content: flex-start;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 10px;
+        scroll-snap-type: x mandatory;
+    }
+
+    .station-item {
+        flex: 0 0 auto; /* Prevent shrinking */
+        scroll-snap-align: start;
+        margin: 0 10px;
+    }
+
+    .station-name {
+        font-size: 1em;
+        white-space: normal; /* Allow name to wrap */
+    }
+
+    .station-name-small {
+        display: block; /* Show small names on mobile */
+    }
+
+    .line-info {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-left: 10px;
+    }
+}
