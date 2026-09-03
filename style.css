@@ -41,9 +41,35 @@ body {
     padding: 0 15px;
 }
 
-.train-type { background-color: #009b65; color: #ffffff; font-size: 22px; font-weight: bold; padding: 4px 12px; border-radius: 4px; letter-spacing: 2px; }
-.destination { font-size: 24px; font-weight: bold; color: #222; margin-left: 15px; letter-spacing: 2px; flex-grow: 1; }
-.car-number { background-color: #555555; color: #ffffff; padding: 2px 15px; border-radius: 6px; display: flex; align-items: baseline; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
+.train-type {
+    background-color: #009b65;
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: bold;
+    padding: 4px 12px;
+    border-radius: 4px;
+    letter-spacing: 2px;
+}
+
+.destination {
+    font-size: 24px;
+    font-weight: bold;
+    color: #222;
+    margin-left: 15px;
+    letter-spacing: 2px;
+    flex-grow: 1;
+}
+
+.car-number {
+    background-color: #555555;
+    color: #ffffff;
+    padding: 2px 15px;
+    border-radius: 6px;
+    display: flex;
+    align-items: baseline;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+}
+
 .car-number .number { font-size: 28px; font-weight: bold; }
 .car-number .unit { font-size: 14px; margin-left: 4px; font-weight: bold; }
 
@@ -79,51 +105,79 @@ body {
 .station-number-box .line-code { font-size: 16px; font-weight: bold; line-height: 1.1; color: #000; }
 .station-number-box .st-num { font-size: 32px; font-weight: bold; line-height: 1; color: #000; }
 
-/* === 駅名アニメーション設定 === */
+/* === 駅名アニメーションエリア（行の高さ内に収める設定） === */
 .station-name-wrapper {
     position: relative;
-    height: 80px;
+    height: 85px; /* 行の高さに固定 */
     display: flex;
     align-items: center;
     margin-left: 50px;
     flex-grow: 1;
+    overflow: hidden; /* 行の高さを超えるアニメーション要素をカット */
 }
 
 .station-name {
     position: absolute;
+    left: 0;
     font-weight: bold;
     color: #000;
-    /* 動きの滑らかさを指定（ease-in-out） */
-    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out; 
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
 }
 
-/* 日本語の基本状態（下を起点にしておく） */
 .station-name.ja {
     font-size: 80px;
     letter-spacing: 8px;
-    transform-origin: bottom;
-    transform: translateY(0) scaleY(1);
-    opacity: 1;
 }
 
-/* 英語の基本状態（最初は上に隠し、上を起点にする） */
 .station-name.en {
-    font-size: 60px;
+    font-size: 55px;
     letter-spacing: 4px;
-    transform-origin: top;
-    transform: translateY(-50px) scaleY(0);
-    opacity: 0;
 }
 
-/* --- JSで .is-en クラスが付与された時の状態（押しつぶし＆下りてくる） --- */
-.is-en .station-name.ja {
-    transform: translateY(40px) scaleY(0); /* 下に押しつぶされる */
-    opacity: 0;
-}
-
-.is-en .station-name.en {
-    transform: translateY(0) scaleY(1); /* 上から下りてきて実体化 */
+/* 通常静止状態 */
+.station-name.active {
     opacity: 1;
+    transform: translateY(0) scaleY(1);
+}
+
+/* --- 上から下への一方通行キーフレームアニメーション --- */
+
+/* 退場：下に向かって潰れて消える */
+.station-name.exit-down {
+    animation: animExitDown 0.7s ease-in forwards;
+}
+
+/* 登場：上から下へ広がりながら現れる */
+.station-name.enter-down {
+    animation: animEnterDown 0.7s ease-out forwards;
+}
+
+@keyframes animExitDown {
+    0% {
+        transform: translateY(0) scaleY(1);
+        transform-origin: bottom;
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(5px) scaleY(0);
+        transform-origin: bottom;
+        opacity: 0;
+    }
+}
+
+@keyframes animEnterDown {
+    0% {
+        transform: translateY(-15px) scaleY(0);
+        transform-origin: top;
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0) scaleY(1);
+        transform-origin: top;
+        opacity: 1;
+    }
 }
 
 /* セパレーター */
@@ -133,7 +187,7 @@ body {
     width: 100%;
 }
 
-/* --- 下部エリア（レイアウト崩れ修正版） --- */
+/* --- 下部エリア --- */
 .main-content {
     flex-grow: 1;
     background-color: #ffffff;
@@ -150,10 +204,9 @@ body {
     justify-items: center;
     width: 100%;
     padding-top: 15px;
-    position: relative; /* 背景帯を絶対配置するための基準 */
+    position: relative;
 }
 
-/* .grid-item は常に手前(z-index:2)にする */
 .grid-item { position: relative; z-index: 2; }
 
 .row-1 { grid-row: 1; }
@@ -164,16 +217,15 @@ body {
 .st-id { font-size: 14px; font-weight: bold; color: #000; }
 .grey-text { color: #999; }
 
-/* 緑色の所要時間バー背景（絶対配置にしてGridの邪魔をしないように修正） */
 .time-bar-bg {
     position: absolute;
-    bottom: 0; /* Gridの一番下（3行目）に合わせる */
+    bottom: 0;
     left: 0;
     width: 100%;
     height: 40px;
     background: linear-gradient(to right, #009b65 0%, #009b65 89%, #888888 89%, #888888 100%);
     clip-path: polygon(0 50%, 15px 0, 100% 0, 100% 100%, 15px 100%);
-    z-index: 1; /* 数字や矢印より後ろに置く */
+    z-index: 1;
 }
 
 .time-label { color: #fff; font-size: 18px; font-weight: bold; }

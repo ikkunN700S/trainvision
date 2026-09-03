@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Train Vision Simulator - Step 4</title>
+    <title>Train Vision Simulator</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="lcd-monitor">
-        <!-- 上部：共通ヘッダー -->
         <div class="top-color-bar"></div>
         <header class="header-info">
             <div class="train-type">各駅停車</div>
@@ -18,7 +17,6 @@
             </div>
         </header>
 
-        <!-- 上部：次駅案内 -->
         <div class="next-station-area">
             <div class="next-label">つぎは</div>
             <div class="station-number-box">
@@ -26,20 +24,17 @@
                 <div class="st-num">01</div>
             </div>
             
-            <!-- アニメーション用の駅名ラッパーを追加 -->
             <div class="station-name-wrapper" id="station-name-wrapper">
-                <div class="station-name ja">えきめい</div>
-                <div class="station-name en">E K I M E I</div>
+                <div class="station-name ja active" id="st-ja">えきめい</div>
+                <div class="station-name en" id="st-en">E K I M E I</div>
             </div>
         </div>
         
         <div class="separator-bar"></div>
         
-        <!-- 下部：停車駅と所要時間表示 -->
         <main class="main-content">
             <div class="route-map-grid">
                 
-                <!-- 1行目：縦書きの駅名 -->
                 <div class="grid-item row-1"></div>
                 <div class="grid-item st-name-vert row-1">八駅目</div>
                 <div class="grid-item st-name-vert row-1">七駅目</div>
@@ -50,7 +45,6 @@
                 <div class="grid-item st-name-vert grey-text row-1">二駅目</div>
                 <div class="grid-item st-name-vert row-1">一駅目</div>
 
-                <!-- 2行目：駅ナンバリング -->
                 <div class="grid-item row-2"></div>
                 <div class="grid-item st-id row-2">JA-08</div>
                 <div class="grid-item st-id row-2">JA-07</div>
@@ -61,8 +55,6 @@
                 <div class="grid-item st-id grey-text row-2">JA-02</div>
                 <div class="grid-item st-id row-2">JA-01</div>
 
-                <!-- 3行目：所要時間の緑バーと数字ボックス -->
-                <!-- 背景となる帯（グリッドの配置から外して絶対配置に変更） -->
                 <div class="time-bar-bg"></div>
                 
                 <div class="grid-item time-label row-3">分</div>
