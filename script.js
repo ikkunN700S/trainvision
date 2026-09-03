@@ -14,25 +14,33 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentState = 0;   
     let isRouteEn = false;  
     let presetsCache = {};
-    let isRouteMapInitialized = false; // DOM初回生成フラグ
+    let isRouteMapInitialized = false;
 
-    // プリセット読み込み
+    // プリセット読み込み (CORS対策やファイル未配置時の安全策付き)
     fetch('presets.json')
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) throw new Error('Network response was not ok');
+            return res.json();
+        })
         .then(data => {
             presetsCache = data;
             const presetSelect = document.getElementById('preset-select');
-            presetSelect.innerHTML = '<option value="">プリセットを選択</option>';
-            for (const key in data) {
-                const opt = document.createElement('option');
-                opt.value = key;
-                opt.textContent = data[key].name;
-                presetSelect.appendChild(opt);
+            if (presetSelect) {
+                presetSelect.innerHTML = '<option value="">プリセットを選択</option>';
+                for (const key in data) {
+                    const opt = document.createElement('option');
+                    opt.value = key;
+                    opt.textContent = data[key].name;
+                    presetSelect.appendChild(opt);
+                }
             }
         })
         .catch(err => {
-            console.error('Presets loading failed', err);
-            document.getElementById('preset-select').innerHTML = '<option value="">プリセットなし</option>';
+            console.warn('Presets loading failed (If running locally via file://, CORS policy may block fetch):', err);
+            const presetSelect = document.getElementById('preset-select');
+            if (presetSelect) {
+                presetSelect.innerHTML = '<option value="">プリセット読み込み失敗(CORS等)</option>';
+            }
         });
 
     renderRouteMap();
@@ -62,7 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return 'en';
     }
 
-    // === テキスト変更とアニメーション処理 ===
     function updatePart(prefix, current, next, isSlide) {
         const currentElem = document.getElementById(`${prefix}-${getStateName(current)}`);
         const nextElem = document.getElementById(`${prefix}-${getStateName(next)}`);
@@ -71,7 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentText = currentElem.textContent.replace(/\s+/g, '');
         const nextText = nextElem.textContent.replace(/\s+/g, '');
 
-        // 文字列が同一の場合はフェード・スライドさせず瞬時に状態切替（チラつき防止）
         if (currentText === nextText) {
             currentElem.style.transition = 'none';
             nextElem.style.transition = 'none';
@@ -121,11 +127,11 @@ document.addEventListener('DOMContentLoaded', () => {
         nextElem.classList.add('active');
     }
 
-    // === 路線図グリッドレンダリング（DOM再生成を防ぐ方式） ===
+    // === 路線図グリッドレンダリング（赤矢印点滅リセット防止版） ===
     function renderRouteMap() {
         const grid = document.getElementById('route-map-grid');
+        if (!grid) return;
 
-        // 初回のみHTML要素を生成
         if (!isRouteMapInitialized) {
             grid.innerHTML = '';
 
@@ -166,7 +172,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.id = `route-time-box-${i}`;
 
                 if (i === 0) {
-                    // 赤矢印部分は最初から固定で生成して中身はもう触らない
                     item.className += ' red-chevron-container';
                     item.innerHTML = `
                         <div class="time-box-bg"></div>
@@ -178,36 +183,38 @@ document.addEventListener('DOMContentLoaded', () => {
             isRouteMapInitialized = true;
         }
 
-        // 以降は中身のテキスト・クラスのみを更新
-        document.getElementById('route-time-label').textContent = isRouteEn ? 'min' : '分';
+        const timeLabel = document.getElementById('route-time-label');
+        if (timeLabel) timeLabel.textContent = isRouteEn ? 'min' : '分';
 
         for (let i = 7; i >= 0; i--) {
             const st = stationData[i];
             
-            // 駅名の更新
             const nameItem = document.getElementById(`route-st-name-${i}`);
-            nameItem.className = `grid-item st-name-vert row-1 ${st.isPass ? 'grey-text' : ''}`;
-            const nameText = isRouteEn ? st.nameEn : st.nameJa;
-            const langClass = isRouteEn ? 'en-st-name' : 'ja-st-name';
-            nameItem.innerHTML = `<div class="st-name-inner ${langClass}">${nameText}</div>`;
+            if (nameItem) {
+                nameItem.className = `grid-item st-name-vert row-1 ${st.isPass ? 'grey-text' : ''}`;
+                const nameText = isRouteEn ? st.nameEn : st.nameJa;
+                const langClass = isRouteEn ? 'en-st-name' : 'ja-st-name';
+                nameItem.innerHTML = `<div class="st-name-inner ${langClass}">${nameText}</div>`;
+            }
 
-            // 駅IDの更新
             const idItem = document.getElementById(`route-st-id-${i}`);
-            idItem.className = `grid-item st-id row-2 ${st.isPass ? 'grey-text' : ''}`;
-            idItem.textContent = st.id;
+            if (idItem) {
+                idItem.className = `grid-item st-id row-2 ${st.isPass ? 'grey-text' : ''}`;
+                idItem.textContent = st.id;
+            }
 
-            // 所要時間の更新（1駅目の赤矢印は更新スキップ）
             if (i !== 0) {
                 const timeItem = document.getElementById(`route-time-box-${i}`);
-                if (st.isPass) {
-                    timeItem.innerHTML = `<div class="white-chevron"></div>`;
-                } else {
-                    timeItem.innerHTML = `<div class="time-box">${st.time}</div>`;
+                if (timeItem) {
+                    if (st.isPass) {
+                        timeItem.innerHTML = `<div class="white-chevron"></div>`;
+                    } else {
+                        timeItem.innerHTML = `<div class="time-box">${st.time}</div>`;
+                    }
                 }
             }
         }
 
-        // グレーラインの境界合わせ（DOM生成後）
         const redChevronElem = document.getElementById('route-time-box-0');
         if (redChevronElem) {
             setTimeout(() => {
@@ -220,7 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
         adjustAllFittedTexts();
     }
 
-    // === はみ出し自動縮小処理 ===
     function adjustAllFittedTexts() {
         const horizontalFits = [
             document.querySelectorAll('.train-type .inner'),
@@ -265,77 +271,114 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // === コントロールパネル UIイベント ===
-    document.getElementById('input-company-color').addEventListener('input', (e) => {
-        document.documentElement.style.setProperty('--company-color', e.target.value);
-    });
-    document.getElementById('input-line-color').addEventListener('input', (e) => {
-        document.documentElement.style.setProperty('--line-color', e.target.value);
-    });
-    document.getElementById('input-type-color').addEventListener('input', (e) => {
-        document.documentElement.style.setProperty('--type-bg', e.target.value);
-    });
-    document.getElementById('btn-sync-color').addEventListener('click', () => {
-        const c = document.getElementById('input-company-color').value;
-        document.getElementById('input-line-color').value = c;
-        document.getElementById('input-type-color').value = c;
-        document.documentElement.style.setProperty('--line-color', c);
-        document.documentElement.style.setProperty('--type-bg', c);
-    });
+    // === コントロールパネル UIイベント (ガード節付き) ===
+    const companyColorInput = document.getElementById('input-company-color');
+    if (companyColorInput) {
+        companyColorInput.addEventListener('input', (e) => {
+            document.documentElement.style.setProperty('--company-color', e.target.value);
+        });
+    }
 
-    // プリセット連動
+    const lineColorInput = document.getElementById('input-line-color');
+    if (lineColorInput) {
+        lineColorInput.addEventListener('input', (e) => {
+            document.documentElement.style.setProperty('--line-color', e.target.value);
+        });
+    }
+
+    const typeColorInput = document.getElementById('input-type-color');
+    if (typeColorInput) {
+        typeColorInput.addEventListener('input', (e) => {
+            document.documentElement.style.setProperty('--type-bg', e.target.value);
+        });
+    }
+
+    const syncColorBtn = document.getElementById('btn-sync-color');
+    if (syncColorBtn) {
+        syncColorBtn.addEventListener('click', () => {
+            const c = document.getElementById('input-company-color').value;
+            if (document.getElementById('input-line-color')) document.getElementById('input-line-color').value = c;
+            if (document.getElementById('input-type-color')) document.getElementById('input-type-color').value = c;
+            document.documentElement.style.setProperty('--line-color', c);
+            document.documentElement.style.setProperty('--type-bg', c);
+        });
+    }
+
     const presetSelect = document.getElementById('preset-select');
     const typeSelect = document.getElementById('type-select');
     
-    presetSelect.addEventListener('change', (e) => {
-        typeSelect.innerHTML = '<option value="">-</option>';
-        const presetKey = e.target.value;
-        if (presetsCache[presetKey]) {
-            const types = presetsCache[presetKey].types;
-            types.forEach((t, i) => {
-                const opt = document.createElement('option');
-                opt.value = i;
-                opt.textContent = t.ja;
-                typeSelect.appendChild(opt);
-            });
-        }
-    });
+    if (presetSelect) {
+        presetSelect.addEventListener('change', (e) => {
+            if (typeSelect) typeSelect.innerHTML = '<option value="">-</option>';
+            const presetKey = e.target.value;
+            if (presetsCache[presetKey] && typeSelect) {
+                const types = presetsCache[presetKey].types;
+                types.forEach((t, i) => {
+                    const opt = document.createElement('option');
+                    opt.value = i;
+                    opt.textContent = t.ja;
+                    typeSelect.appendChild(opt);
+                });
+            }
+        });
+    }
 
-    typeSelect.addEventListener('change', (e) => {
-        const presetKey = presetSelect.value;
-        const typeIdx = e.target.value;
-        if (presetKey && typeIdx !== "") {
-            const t = presetsCache[presetKey].types[typeIdx];
-            applyTypeConfig(t.ja, t.ja, t.en, t.bg, t.text, t.outline);
-        }
-    });
+    if (typeSelect) {
+        typeSelect.addEventListener('change', (e) => {
+            const presetKey = presetSelect ? presetSelect.value : '';
+            const typeIdx = e.target.value;
+            if (presetKey && typeIdx !== "" && presetsCache[presetKey]) {
+                const t = presetsCache[presetKey].types[typeIdx];
+                applyTypeConfig(t.ja, t.ja, t.en, t.bg, t.text, t.outline);
+            }
+        });
+    }
 
-    // モーダル処理 (手動カスタム)
     const modal = document.getElementById('type-modal');
-    document.getElementById('btn-custom-type').addEventListener('click', () => {
-        document.getElementById('modal-type-kanji').value = document.querySelector('#type-kanji .inner').textContent;
-        document.getElementById('modal-type-en').value = document.querySelector('#type-en .inner').textContent;
-        modal.style.display = 'flex';
-    });
-    document.getElementById('modal-close').addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
-    document.getElementById('modal-save').addEventListener('click', () => {
-        const kanji = document.getElementById('modal-type-kanji').value;
-        const en = document.getElementById('modal-type-en').value;
-        const bg = document.getElementById('modal-type-bg').value;
-        const txt = document.getElementById('modal-type-text').value;
-        const outline = document.getElementById('modal-type-outline').checked;
-        applyTypeConfig(kanji, kanji, en, bg, txt, outline);
-        modal.style.display = 'none';
-        presetSelect.value = "";
-        typeSelect.innerHTML = '<option value="">-</option>';
-    });
+    const customTypeBtn = document.getElementById('btn-custom-type');
+    if (customTypeBtn && modal) {
+        customTypeBtn.addEventListener('click', () => {
+            const typeKanjiElem = document.querySelector('#type-kanji .inner');
+            const typeEnElem = document.querySelector('#type-en .inner');
+            if (typeKanjiElem && document.getElementById('modal-type-kanji')) {
+                document.getElementById('modal-type-kanji').value = typeKanjiElem.textContent;
+            }
+            if (typeEnElem && document.getElementById('modal-type-en')) {
+                document.getElementById('modal-type-en').value = typeEnElem.textContent;
+            }
+            modal.style.display = 'flex';
+        });
+    }
+
+    const modalCloseBtn = document.getElementById('modal-close');
+    if (modalCloseBtn && modal) {
+        modalCloseBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    }
+
+    const modalSaveBtn = document.getElementById('modal-save');
+    if (modalSaveBtn && modal) {
+        modalSaveBtn.addEventListener('click', () => {
+            const kanji = document.getElementById('modal-type-kanji').value;
+            const en = document.getElementById('modal-type-en').value;
+            const bg = document.getElementById('modal-type-bg').value;
+            const txt = document.getElementById('modal-type-text').value;
+            const outline = document.getElementById('modal-type-outline').checked;
+            applyTypeConfig(kanji, kanji, en, bg, txt, outline);
+            modal.style.display = 'none';
+            if (presetSelect) presetSelect.value = "";
+            if (typeSelect) typeSelect.innerHTML = '<option value="">-</option>';
+        });
+    }
 
     function applyTypeConfig(kanji, kana, en, bg, text, outline) {
-        document.querySelector('#type-kanji .inner').textContent = kanji;
-        document.querySelector('#type-kana .inner').textContent = kana;
-        document.querySelector('#type-en .inner').textContent = en;
+        const tKanji = document.querySelector('#type-kanji .inner');
+        const tKana = document.querySelector('#type-kana .inner');
+        const tEn = document.querySelector('#type-en .inner');
+        if (tKanji) tKanji.textContent = kanji;
+        if (tKana) tKana.textContent = kana;
+        if (tEn) tEn.textContent = en;
         
         document.documentElement.style.setProperty('--type-bg', bg);
         document.documentElement.style.setProperty('--type-text', text);
@@ -355,42 +398,59 @@ document.addEventListener('DOMContentLoaded', () => {
     setupInputSync('input-st-kana',    'st-kana');
     setupInputSync('input-st-en',      'st-en');
 
-    document.getElementById('input-car-num').addEventListener('input', (e) => {
-        const val = e.target.value;
-        document.getElementById('car-num-kanji').textContent = val;
-        document.getElementById('car-num-kana').textContent = val;
-        document.getElementById('car-num-en').textContent = val;
-        adjustAllFittedTexts();
-    });
+    const carNumInput = document.getElementById('input-car-num');
+    if (carNumInput) {
+        carNumInput.addEventListener('input', (e) => {
+            const val = e.target.value;
+            if (document.getElementById('car-num-kanji')) document.getElementById('car-num-kanji').textContent = val;
+            if (document.getElementById('car-num-kana')) document.getElementById('car-num-kana').textContent = val;
+            if (document.getElementById('car-num-en')) document.getElementById('car-num-en').textContent = val;
+            adjustAllFittedTexts();
+        });
+    }
 
-    document.getElementById('input-line-code').addEventListener('input', (e) => {
-        document.getElementById('st-line-code').textContent = e.target.value;
-    });
-    document.getElementById('input-st-num').addEventListener('input', (e) => {
-        document.getElementById('st-num-val').textContent = e.target.value;
-    });
+    const lineCodeInput = document.getElementById('input-line-code');
+    if (lineCodeInput) {
+        lineCodeInput.addEventListener('input', (e) => {
+            if (document.getElementById('st-line-code')) document.getElementById('st-line-code').textContent = e.target.value;
+        });
+    }
 
-    document.getElementById('select-shape').addEventListener('change', (e) => {
-        const shape = e.target.value;
-        let radius = '8px';
-        if (shape === 'square') radius = '0px';
-        if (shape === 'circle') radius = '50%';
-        document.documentElement.style.setProperty('--numbering-radius', radius);
-    });
+    const stNumInput = document.getElementById('input-st-num');
+    if (stNumInput) {
+        stNumInput.addEventListener('input', (e) => {
+            if (document.getElementById('st-num-val')) document.getElementById('st-num-val').textContent = e.target.value;
+        });
+    }
+
+    const selectShape = document.getElementById('select-shape');
+    if (selectShape) {
+        selectShape.addEventListener('change', (e) => {
+            const shape = e.target.value;
+            let radius = '8px';
+            if (shape === 'square') radius = '0px';
+            if (shape === 'circle') radius = '50%';
+            document.documentElement.style.setProperty('--numbering-radius', radius);
+        });
+    }
 
     function setupInputSync(inputId, targetId) {
-        document.getElementById(inputId).addEventListener('input', (e) => {
-            const target = document.getElementById(targetId);
-            if (target) {
-                const inner = target.querySelector('.inner');
-                if (inner) inner.textContent = e.target.value;
-                adjustAllFittedTexts();
-            }
-        });
+        const inputElem = document.getElementById(inputId);
+        if (inputElem) {
+            inputElem.addEventListener('input', (e) => {
+                const target = document.getElementById(targetId);
+                if (target) {
+                    const inner = target.querySelector('.inner');
+                    if (inner) inner.textContent = e.target.value;
+                    adjustAllFittedTexts();
+                }
+            });
+        }
     }
 
     function renderControlTable() {
         const tbody = document.getElementById('stations-table-body');
+        if (!tbody) return;
         tbody.innerHTML = '';
 
         stationData.forEach((st, idx) => {

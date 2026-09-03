@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Train Vision Simulator</title>
-    <!-- Google Fonts: Open Sans 読み込み -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -18,16 +17,16 @@
             
             <!-- 種別 -->
             <div class="train-type-wrapper">
-                <div class="train-type kanji active" id="type-kanji"><span class="inner">各駅停車</span></div>
-                <div class="train-type kana" id="type-kana"><span class="inner">各駅停車</span></div>
+                <div class="train-type kanji active" id="type-kanji"><span class="inner">普通</span></div>
+                <div class="train-type kana" id="type-kana"><span class="inner">普通</span></div>
                 <div class="train-type en" id="type-en"><span class="inner">Local</span></div>
             </div>
 
             <!-- 行き先 -->
             <div class="destination-wrapper">
-                <div class="destination kanji active" id="dest-kanji"><span class="inner">新宿 行</span></div>
-                <div class="destination kana" id="dest-kana"><span class="inner">しんじゅく ゆき</span></div>
-                <div class="destination en" id="dest-en"><span class="inner">for Shinjuku</span></div>
+                <div class="destination kanji active" id="dest-kanji"><span class="inner">豊橋 行</span></div>
+                <div class="destination kana" id="dest-kana"><span class="inner">豊橋 ゆき</span></div>
+                <div class="destination en" id="dest-en"><span class="inner">for Toyohashi</span></div>
             </div>
 
             <!-- 号車表示 -->
@@ -57,14 +56,14 @@
             </div>
 
             <div class="station-number-box" id="st-number-box">
-                <div class="line-code" id="st-line-code">JA</div>
-                <div class="st-num" id="st-num-val">01</div>
+                <div class="line-code" id="st-line-code">CA</div>
+                <div class="st-num" id="st-num-val">42</div>
             </div>
             
             <div class="station-name-wrapper" id="station-name-wrapper">
-                <div class="station-name kanji active" id="st-kanji"><span class="inner">新宿</span></div>
-                <div class="station-name kana" id="st-kana"><span class="inner">しんじゅく</span></div>
-                <div class="station-name en" id="st-en"><span class="inner">SHINJUKU</span></div>
+                <div class="station-name kanji active" id="st-kanji"><span class="inner">豊橋</span></div>
+                <div class="station-name kana" id="st-kana"><span class="inner">とよはし</span></div>
+                <div class="station-name en" id="st-en"><span class="inner">Toyohashi</span></div>
             </div>
         </div>
         
@@ -73,10 +72,10 @@
         <!-- 下部路線図 -->
         <main class="main-content">
             <div class="route-map-grid" id="route-map-grid">
-                <!-- JavaScriptで動的生成および更新 -->
+                <!-- JavaScriptで動的生成 -->
             </div>
             <div class="footer-note">
-                のりかえ、待ち合わせ時間は含まれません。電車により多少時間は異なります。
+                運転状況により、多少時間は異なります。
             </div>
         </main>
     </div>
@@ -111,15 +110,15 @@
                 </div>
                 <div>
                     <h4>行先</h4>
-                    <label>漢字: <input type="text" id="input-dest-kanji" value="新宿 行"></label>
-                    <label>ひらがな: <input type="text" id="input-dest-kana" value="しんじゅく ゆき"></label>
-                    <label>英語: <input type="text" id="input-dest-en" value="for Shinjuku"></label>
+                    <label>漢字: <input type="text" id="input-dest-kanji" value="豊橋 行"></label>
+                    <label>ひらがな: <input type="text" id="input-dest-kana" value="とよはし ゆき"></label>
+                    <label>英語: <input type="text" id="input-dest-en" value="for Toyohashi"></label>
                 </div>
                 <div>
                     <h4>次の駅名</h4>
-                    <label>漢字: <input type="text" id="input-st-kanji" value="新宿"></label>
-                    <label>ひらがな: <input type="text" id="input-st-kana" value="しんじゅく"></label>
-                    <label>英語: <input type="text" id="input-st-en" value="SHINJUKU"></label>
+                    <label>漢字: <input type="text" id="input-st-kanji" value="豊橋"></label>
+                    <label>ひらがな: <input type="text" id="input-st-kana" value="とよはし"></label>
+                    <label>英語: <input type="text" id="input-st-en" value="Toyohashi"></label>
                 </div>
             </div>
             <div class="panel-row" style="margin-top:10px;">

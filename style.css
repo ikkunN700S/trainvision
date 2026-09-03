@@ -1,3 +1,10 @@
+@font-face {
+    font-family: 'Nimbus Sans';
+    src: url('fonts/NimbusSanL-Reg-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 /* 基本設定 */
 :root {
     --company-color: #009b65;
@@ -21,15 +28,14 @@ body {
     flex-direction: column;
     align-items: center;
     padding: 40px 0;
-    /* ベースフォント（日本語メイン） */
     font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
     color: #fff;
     overflow-x: hidden;
 }
 
-/* === 英数字用の Open Sans フォント適用 === */
+/* === 英数字用の Noto Sans フォント適用 === */
 .en, .en-st-name, .time-label, .time-box, .st-id, .line-code, .st-num, .car-en-text, .car-number .number {
-    font-family: 'Open Sans', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+    font-family: sans-serif, 'Hiragino Kaku Gothic ProN', 'Meiryo';
 }
 
 #lcd-monitor {
@@ -47,7 +53,6 @@ body {
     margin-bottom: 160px;
 }
 
-/* 会社カラーの独立設定 */
 .top-color-bar {
     height: 10px;
     background: 
@@ -65,7 +70,6 @@ body {
     position: relative;
 }
 
-/* 種別 */
 .train-type-wrapper {
     position: relative;
     width: 130px;
@@ -100,7 +104,6 @@ body {
 .train-type.en .inner { font-size: 18px; }
 .train-type.active { opacity: 1; }
 
-/* 行先 */
 .destination-wrapper {
     position: relative;
     height: 36px;
@@ -129,7 +132,6 @@ body {
 .destination.en .inner { font-size: 20px; }
 .destination.active { opacity: 1; }
 
-/* 号車表示 */
 .car-number-wrapper {
     position: relative;
     width: 90px;
@@ -261,7 +263,6 @@ body {
     width: 100%;
 }
 
-/* === 下部路線図エリア === */
 .main-content {
     flex-grow: 1;
     background-color: #ffffff;
