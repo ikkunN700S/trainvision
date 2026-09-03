@@ -12,10 +12,9 @@ body {
     align-items: center;
     height: 100vh;
     font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
-    overflow: hidden; /* 拡大によるスクロールバー非表示用 */
+    overflow: hidden;
 }
 
-/* === 画面全体の設定（scaleで一括拡大） === */
 #lcd-monitor {
     width: 800px;
     height: 450px;
@@ -26,7 +25,6 @@ body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    /* ここで全体の表示倍率を変更します（1.3倍） */
     transform: scale(1.3);
     transform-origin: center;
 }
@@ -64,14 +62,13 @@ body {
     transform: translateY(-50%);
     text-align: center;
     color: #ffffff;
-    font-size: 22px;
+    font-size: 20px;
     font-weight: bold;
     letter-spacing: 2px;
     opacity: 0;
     transition: opacity 0.7s ease-in-out;
     white-space: nowrap;
 }
-
 .train-type.active { opacity: 1; }
 
 /* 行先 */
@@ -95,14 +92,13 @@ body {
     transition: opacity 0.7s ease-in-out;
     white-space: nowrap;
 }
-
 .destination.active { opacity: 1; }
 
-/* === 号車表示（アニメーション対応版） === */
+/* === 号車表示（高さを45pxに変更し、種別・行先と統一） === */
 .car-number-wrapper {
     position: relative;
     width: 90px;
-    height: 40px;
+    height: 45px; /* ここを45pxに変更 */
     background-color: #202020;
     border-radius: 0 0 6px 6px;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
@@ -120,14 +116,13 @@ body {
     opacity: 0;
     transition: opacity 0.7s ease-in-out;
 }
-
 .car-number.active { opacity: 1; }
 
-/* 日本語レイアウト */
-.car-number.ja .number { font-size: 26px; font-weight: bold; }
-.car-number.ja .unit { font-size: 13px; margin-left: 4px; font-weight: bold; transform: translateY(4px); }
+/* 日本語レイアウト（漢字・ひらがな共通） */
+.car-number.kanji .number, .car-number.kana .number { font-size: 26px; font-weight: bold; }
+.car-number.kanji .unit, .car-number.kana .unit { font-size: 13px; margin-left: 4px; font-weight: bold; transform: translateY(4px); }
 
-/* 英語レイアウト（画像準拠） */
+/* 英語レイアウト */
 .car-en-text {
     display: flex;
     flex-direction: column;
@@ -138,6 +133,7 @@ body {
     text-align: left;
 }
 .car-number.en .number { font-size: 28px; font-weight: bold; }
+
 
 /* --- 次駅案内エリア --- */
 .next-station-area {
@@ -168,22 +164,20 @@ body {
     transition: opacity 0.7s ease-in-out;
     white-space: nowrap;
 }
-
 .next-label.active { opacity: 1; }
 
-/* === 駅ナンバリング（完全な正方形に修正） === */
+/* 駅ナンバリング */
 .station-number-box {
     border: 5px solid #009b65;
-    border-radius: 8px; /* 丸機能追加に備えて角丸指定は維持 */
-    width: 75px;   /* 縦横のサイズを統一 */
-    height: 75px;  /* 縦横のサイズを統一 */
+    border-radius: 8px;
+    width: 75px;
+    height: 75px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     background-color: #ffffff;
 }
-
 .station-number-box .line-code { font-size: 16px; font-weight: bold; line-height: 1.1; color: #000; }
 .station-number-box .st-num { font-size: 32px; font-weight: bold; line-height: 1; color: #000; }
 
@@ -208,7 +202,8 @@ body {
     pointer-events: none;
 }
 
-.station-name.ja { font-size: 80px; letter-spacing: 8px; }
+/* 漢字とひらがな共通設定 */
+.station-name.kanji, .station-name.kana { font-size: 80px; letter-spacing: 8px; }
 .station-name.en { font-size: 55px; letter-spacing: 4px; }
 
 .station-name.active { opacity: 1; transform: translateY(0) scaleY(1); }
@@ -225,7 +220,6 @@ body {
     100% { transform: translateY(0) scaleY(1); transform-origin: top; opacity: 1; }
 }
 
-/* セパレーター */
 .separator-bar {
     height: 12px;
     background: linear-gradient(to right, rgba(0,155,101,0) 0%, #009b65 15%, #009b65 85%, rgba(0,155,101,0) 100%);

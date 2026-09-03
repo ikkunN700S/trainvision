@@ -1,51 +1,59 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 駅名（上下スライド）
-    const stJa = document.getElementById('st-ja');
-    const stEn = document.getElementById('st-en');
-
-    // つぎは / Next（フェード）
-    const nextJa = document.getElementById('next-ja');
-    const nextEn = document.getElementById('next-en');
-
-    // 種別（フェード）
-    const typeJa = document.getElementById('type-ja');
-    const typeEn = document.getElementById('type-en');
-
-    // 行先（フェード）
-    const destJa = document.getElementById('dest-ja');
-    const destEn = document.getElementById('dest-en');
     
-    // 号車表示（フェード）
-    const carJa = document.getElementById('car-ja');
-    const carEn = document.getElementById('car-en');
-    
-    let isEnglish = false;
+    // 現在の表示状態 (0: 漢字, 1: ひらがな, 2: 英語)
+    let currentState = 0; 
 
-    // 4秒ごとに日英切り替え
+    // 4秒ごとに切り替え
     setInterval(() => {
-        if (!isEnglish) {
-            // 日本語 → 英語
-            slideText(stJa, stEn);
-            fadeText(nextJa, nextEn);
-            fadeText(typeJa, typeEn);
-            fadeText(destJa, destEn);
-            fadeText(carJa, carEn);
-        } else {
-            // 英語 → 日本語
-            slideText(stEn, stJa);
-            fadeText(nextEn, nextJa);
-            fadeText(typeEn, typeJa);
-            fadeText(destEn, destJa);
-            fadeText(carEn, carJa);
-        }
-        isEnglish = !isEnglish;
+        let nextState = (currentState + 1) % 3;
+
+        // 各パーツの更新 (prefix, 現在の状態, 次の状態, スライドにするか)
+        updatePart('type', currentState, nextState, false); // 種別
+        updatePart('dest', currentState, nextState, false); // 行先
+        updatePart('car',  currentState, nextState, false); // 号車
+        updatePart('next', currentState, nextState, false); // つぎは
+        updatePart('st',   currentState, nextState, true);  // 駅名
+
+        currentState = nextState;
     }, 4000);
+
+    // 状態IDからクラス名を取得するヘルパー関数
+    function getStateName(state) {
+        if (state === 0) return 'kanji';
+        if (state === 1) return 'kana';
+        return 'en';
+    }
+
+    // 表示切り替えとスキップ判定を行うメイン関数
+    function updatePart(prefix, current, next, isSlide) {
+        const currentElem = document.getElementById(`${prefix}-${getStateName(current)}`);
+        const nextElem = document.getElementById(`${prefix}-${getStateName(next)}`);
+
+        // HTML内の空白や改行を取り除いた純粋なテキストを比較
+        const currentText = currentElem.textContent.replace(/\s+/g, '');
+        const nextText = nextElem.textContent.replace(/\s+/g, '');
+
+        // 現在と次のテキストが同一の場合、アニメーションを発生させずに裏で状態だけ切り替える
+        if (currentText === nextText) {
+            currentElem.classList.remove('active', 'enter-down', 'exit-down');
+            nextElem.classList.add('active');
+            return; // ここで終了
+        }
+
+        // テキストが異なる場合は指定のアニメーションを実行
+        if (isSlide) {
+            slideText(currentElem, nextElem);
+        } else {
+            fadeText(currentElem, nextElem);
+        }
+    }
 
     // 上から下へのスライド切替関数
     function slideText(currentElem, nextElem) {
         currentElem.classList.remove('active', 'enter-down', 'exit-down');
         nextElem.classList.remove('active', 'enter-down', 'exit-down');
 
+        // 強制リフロー（アニメーション再実行のため）
         void currentElem.offsetWidth;
         void nextElem.offsetWidth;
 
