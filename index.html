@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Train Vision Simulator</title>
+    <!-- Google Fonts: Open Sans 読み込み -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,7 +16,7 @@
         <div class="top-color-bar"></div>
         <header class="header-info">
             
-            <!-- 種別（ひらがなは漢字と同じテキストを初期設定） -->
+            <!-- 種別 -->
             <div class="train-type-wrapper">
                 <div class="train-type kanji active" id="type-kanji"><span class="inner">各駅停車</span></div>
                 <div class="train-type kana" id="type-kana"><span class="inner">各駅停車</span></div>
@@ -26,7 +30,7 @@
                 <div class="destination en" id="dest-en"><span class="inner">for Shinjuku</span></div>
             </div>
 
-            <!-- 号車表示（ひらがなは漢字と同じ「1号車」を初期設定） -->
+            <!-- 号車表示 -->
             <div class="car-number-wrapper">
                 <div class="car-number kanji active" id="car-kanji">
                     <span class="number-wrap"><span class="number" id="car-num-kanji">1</span></span><span class="unit">号車</span>
@@ -69,7 +73,7 @@
         <!-- 下部路線図 -->
         <main class="main-content">
             <div class="route-map-grid" id="route-map-grid">
-                <!-- JavaScriptで動的生成 -->
+                <!-- JavaScriptで動的生成および更新 -->
             </div>
             <div class="footer-note">
                 のりかえ、待ち合わせ時間は含まれません。電車により多少時間は異なります。

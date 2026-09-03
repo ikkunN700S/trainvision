@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentState = 0;   
     let isRouteEn = false;  
     let presetsCache = {};
+    let isRouteMapInitialized = false; // DOM初回生成フラグ
 
     // プリセット読み込み
     fetch('presets.json')
@@ -55,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderRouteMap();
     }, 5000);
 
-
     function getStateName(state) {
         if (state === 0) return 'kanji';
         if (state === 1) return 'kana';
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentText = currentElem.textContent.replace(/\s+/g, '');
         const nextText = nextElem.textContent.replace(/\s+/g, '');
 
-        // 文字列が同一の場合はフェード・スライドさせず瞬時に状態切替
+        // 文字列が同一の場合はフェード・スライドさせず瞬時に状態切替（チラつき防止）
         if (currentText === nextText) {
             currentElem.style.transition = 'none';
             nextElem.style.transition = 'none';
@@ -121,77 +121,95 @@ document.addEventListener('DOMContentLoaded', () => {
         nextElem.classList.add('active');
     }
 
-    // === 路線図グリッドレンダリング ===
+    // === 路線図グリッドレンダリング（DOM再生成を防ぐ方式） ===
     function renderRouteMap() {
         const grid = document.getElementById('route-map-grid');
-        grid.innerHTML = '';
 
-        const bg = document.createElement('div');
-        bg.className = 'time-bar-bg';
-        grid.appendChild(bg);
+        // 初回のみHTML要素を生成
+        if (!isRouteMapInitialized) {
+            grid.innerHTML = '';
 
-        // 1行目：駅名
-        const emptyRow1 = document.createElement('div');
-        emptyRow1.className = 'grid-item row-1';
-        grid.appendChild(emptyRow1);
+            const bg = document.createElement('div');
+            bg.className = 'time-bar-bg';
+            grid.appendChild(bg);
+
+            const emptyRow1 = document.createElement('div');
+            emptyRow1.className = 'grid-item row-1';
+            grid.appendChild(emptyRow1);
+
+            for (let i = 7; i >= 0; i--) {
+                const item = document.createElement('div');
+                item.className = 'grid-item st-name-vert row-1';
+                item.id = `route-st-name-${i}`;
+                grid.appendChild(item);
+            }
+
+            const emptyRow2 = document.createElement('div');
+            emptyRow2.className = 'grid-item row-2';
+            grid.appendChild(emptyRow2);
+
+            for (let i = 7; i >= 0; i--) {
+                const item = document.createElement('div');
+                item.className = 'grid-item st-id row-2';
+                item.id = `route-st-id-${i}`;
+                grid.appendChild(item);
+            }
+
+            const labelItem = document.createElement('div');
+            labelItem.className = 'grid-item time-label row-3';
+            labelItem.id = 'route-time-label';
+            grid.appendChild(labelItem);
+
+            for (let i = 7; i >= 0; i--) {
+                const item = document.createElement('div');
+                item.className = 'grid-item row-3';
+                item.id = `route-time-box-${i}`;
+
+                if (i === 0) {
+                    // 赤矢印部分は最初から固定で生成して中身はもう触らない
+                    item.className += ' red-chevron-container';
+                    item.innerHTML = `
+                        <div class="time-box-bg"></div>
+                        <div class="red-chevron-large"></div>
+                    `;
+                }
+                grid.appendChild(item);
+            }
+            isRouteMapInitialized = true;
+        }
+
+        // 以降は中身のテキスト・クラスのみを更新
+        document.getElementById('route-time-label').textContent = isRouteEn ? 'min' : '分';
 
         for (let i = 7; i >= 0; i--) {
             const st = stationData[i];
-            const item = document.createElement('div');
-            item.className = `grid-item st-name-vert row-1 ${st.isPass ? 'grey-text' : ''}`;
             
+            // 駅名の更新
+            const nameItem = document.getElementById(`route-st-name-${i}`);
+            nameItem.className = `grid-item st-name-vert row-1 ${st.isPass ? 'grey-text' : ''}`;
             const nameText = isRouteEn ? st.nameEn : st.nameJa;
             const langClass = isRouteEn ? 'en-st-name' : 'ja-st-name';
-            item.innerHTML = `<div class="st-name-inner ${langClass}">${nameText}</div>`;
-            grid.appendChild(item);
-        }
+            nameItem.innerHTML = `<div class="st-name-inner ${langClass}">${nameText}</div>`;
 
-        // 2行目：駅ID
-        const emptyRow2 = document.createElement('div');
-        emptyRow2.className = 'grid-item row-2';
-        grid.appendChild(emptyRow2);
+            // 駅IDの更新
+            const idItem = document.getElementById(`route-st-id-${i}`);
+            idItem.className = `grid-item st-id row-2 ${st.isPass ? 'grey-text' : ''}`;
+            idItem.textContent = st.id;
 
-        for (let i = 7; i >= 0; i--) {
-            const st = stationData[i];
-            const item = document.createElement('div');
-            item.className = `grid-item st-id row-2 ${st.isPass ? 'grey-text' : ''}`;
-            item.textContent = st.id;
-            grid.appendChild(item);
-        }
-
-        // 3行目：所要時間/矢印
-        const labelItem = document.createElement('div');
-        labelItem.className = 'grid-item time-label row-3';
-        labelItem.textContent = isRouteEn ? 'min' : '分';
-        grid.appendChild(labelItem);
-
-        let redChevronElem = null;
-
-        for (let i = 7; i >= 0; i--) {
-            const st = stationData[i];
-            const item = document.createElement('div');
-            item.className = 'grid-item row-3';
-
-            if (i === 0) {
-                item.className += ' red-chevron-container';
-                item.innerHTML = `
-                    <div class="time-box-bg"></div>
-                    <div class="red-chevron-large"></div>
-                `;
-                redChevronElem = item;
-            } else if (i === 1 && st.isPass) {
-                item.innerHTML = `<div class="white-chevron"></div>`;
-            } else if (st.isPass) {
-                item.innerHTML = `<div class="white-chevron"></div>`;
-            } else {
-                item.innerHTML = `<div class="time-box">${st.time}</div>`;
+            // 所要時間の更新（1駅目の赤矢印は更新スキップ）
+            if (i !== 0) {
+                const timeItem = document.getElementById(`route-time-box-${i}`);
+                if (st.isPass) {
+                    timeItem.innerHTML = `<div class="white-chevron"></div>`;
+                } else {
+                    timeItem.innerHTML = `<div class="time-box">${st.time}</div>`;
+                }
             }
-            grid.appendChild(item);
         }
 
-        // グレーラインの境界を赤矢印の右端にピクセル単位で合わせる処理
+        // グレーラインの境界合わせ（DOM生成後）
+        const redChevronElem = document.getElementById('route-time-box-0');
         if (redChevronElem) {
-            // setTimeoutを使ってDOM描画完了後に位置を取得
             setTimeout(() => {
                 const rightEdge = redChevronElem.offsetLeft + redChevronElem.offsetWidth;
                 const pct = (rightEdge / grid.offsetWidth) * 100;
@@ -255,7 +273,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.documentElement.style.setProperty('--line-color', e.target.value);
     });
     document.getElementById('input-type-color').addEventListener('input', (e) => {
-        // ※カスタムモード用
         document.documentElement.style.setProperty('--type-bg', e.target.value);
     });
     document.getElementById('btn-sync-color').addEventListener('click', () => {
@@ -266,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.documentElement.style.setProperty('--type-bg', c);
     });
 
-    // プリセット種別選択の連動
+    // プリセット連動
     const presetSelect = document.getElementById('preset-select');
     const typeSelect = document.getElementById('type-select');
     
@@ -293,13 +310,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // モーダル処理 (種別手動カスタム)
+    // モーダル処理 (手動カスタム)
     const modal = document.getElementById('type-modal');
     document.getElementById('btn-custom-type').addEventListener('click', () => {
-        // 現在の値をフォームにセット
         document.getElementById('modal-type-kanji').value = document.querySelector('#type-kanji .inner').textContent;
         document.getElementById('modal-type-en').value = document.querySelector('#type-en .inner').textContent;
-        // モーダル表示
         modal.style.display = 'flex';
     });
     document.getElementById('modal-close').addEventListener('click', () => {
