@@ -1,8 +1,12 @@
 /* 基本設定 */
 :root {
+    --company-color: #009b65;
     --line-color: #009b65;
-    --type-color: #009b65;
+    --type-bg: #009b65;
+    --type-text: #ffffff;
+    --type-border: none;
     --numbering-radius: 8px;
+    --line-fill-percent: 94%;
 }
 
 * {
@@ -19,6 +23,7 @@ body {
     padding: 40px 0;
     font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
     color: #fff;
+    overflow-x: hidden;
 }
 
 #lcd-monitor {
@@ -36,14 +41,16 @@ body {
     margin-bottom: 160px;
 }
 
+/* 会社カラーの独立設定 */
 .top-color-bar {
     height: 10px;
     background: 
         linear-gradient(to bottom, rgba(255,255,255,0.2), rgba(0,0,0,0.25)),
-        linear-gradient(to right, rgba(0,0,0,0) 0%, var(--line-color) 15%, var(--line-color) 85%, rgba(0,0,0,0) 100%);
+        linear-gradient(to right, rgba(0,0,0,0) 0%, var(--company-color) 15%, var(--company-color) 85%, rgba(0,0,0,0) 100%);
     width: 100%;
 }
 
+/* 行の高さを36pxに縮小 */
 .header-info {
     display: flex;
     align-items: center;
@@ -53,16 +60,19 @@ body {
     position: relative;
 }
 
-/* 種別 */
+/* 種別（下から上に暗くなるグラデーション） */
 .train-type-wrapper {
     position: relative;
     width: 130px;
     height: 36px;
     background-image: 
-        linear-gradient(to top, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.4) 100%),
-        linear-gradient(var(--type-color), var(--type-color));
+        linear-gradient(to top, rgba(0,0,0,0.4) 0%, rgba(255,255,255,0.15) 100%),
+        linear-gradient(var(--type-bg), var(--type-bg));
+    background-color: var(--type-bg); /* fallback */
     border-radius: 0 0 6px 6px;
+    box-shadow: var(--type-border); /* outline=trueの場合の枠線用 */
     overflow: hidden;
+    transition: background-image 0.3s, box-shadow 0.3s;
 }
 
 .train-type {
@@ -74,18 +84,16 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #ffffff;
-    font-size: 18px;
+    color: var(--type-text);
     font-weight: bold;
     letter-spacing: 2px;
     opacity: 0;
     transition: opacity 0.7s ease-in-out;
 }
-.train-type .inner {
-    display: inline-block;
-    white-space: nowrap;
-    transform-origin: center;
-}
+.train-type .inner { display: inline-block; white-space: nowrap; transform-origin: center; }
+/* 種別のフォントサイズ拡大 */
+.train-type.kanji .inner, .train-type.kana .inner { font-size: 22px; }
+.train-type.en .inner { font-size: 18px; }
 .train-type.active { opacity: 1; }
 
 .destination-wrapper {
@@ -105,21 +113,19 @@ body {
     top: 0;
     display: flex;
     align-items: center;
-    font-size: 21px;
     font-weight: bold;
     color: #222;
     letter-spacing: 2px;
     opacity: 0;
     transition: opacity 0.7s ease-in-out;
 }
-.destination .inner {
-    display: inline-block;
-    white-space: nowrap;
-    transform-origin: left center;
-}
+.destination .inner { display: inline-block; white-space: nowrap; transform-origin: left center; }
+/* 行先のフォントサイズ拡大 */
+.destination.kanji .inner, .destination.kana .inner { font-size: 24px; }
+.destination.en .inner { font-size: 20px; }
 .destination.active { opacity: 1; }
 
-/* 号車表示（日本語表示の位置を少し左寄りに微調整） */
+/* 号車表示の位置を左に微調整（margin-rightやpaddingで調整） */
 .car-number-wrapper {
     position: relative;
     width: 90px;
@@ -138,13 +144,13 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-right: 4px; /* 右パディングを設けて少し左寄りにバランス配置 */
+    padding-right: 8px; /* 日本語をより左に寄せるための調整 */
     color: #ffffff;
     opacity: 0;
     transition: opacity 0.7s ease-in-out;
 }
+.car-number.en { padding-right: 0; } /* 英語は中央寄り維持 */
 .car-number.active { opacity: 1; }
-
 .car-number .number-wrap { display: inline-flex; justify-content: center; align-items: center; width: 28px; }
 .car-number .number { font-size: 24px; font-weight: bold; display: inline-block; transform-origin: center; }
 .car-number.kanji .unit, .car-number.kana .unit { font-size: 12px; margin-left: 1px; font-weight: bold; transform: translateY(3px); }
@@ -251,7 +257,7 @@ body {
     width: 100%;
 }
 
-/* === 下部路線図エリア（レイアウト微調整版） === */
+/* === 下部路線図エリア === */
 .main-content {
     flex-grow: 1;
     background-color: #ffffff;
@@ -262,8 +268,8 @@ body {
 
 .route-map-grid {
     display: grid;
-    /* 右端に40pxの余白を作り、全8駅を全体的に左にシフトさせる設定 */
-    grid-template-columns: 45px repeat(8, 1fr) 40px;
+    /* 全体を左に寄せるために右端の余白(padding代わり)を80pxに拡大 */
+    grid-template-columns: 48px repeat(8, 1fr) 80px;
     grid-template-rows: 120px 22px 40px;
     align-items: center;
     justify-items: center;
@@ -273,11 +279,11 @@ body {
 }
 
 .grid-item { position: relative; z-index: 2; }
-.row-1 { grid-row: 1; }
-.row-2 { grid-row: 2; }
+.row-1 { grid-row: 1; align-self: flex-end; }
+.row-2 { grid-row: 2; align-self: flex-end; }
 .row-3 { grid-row: 3; }
 
-/* 1行目：縦書き・斜め配置共通の親要素（駅ナンバリングのすぐ上に下揃えで配置） */
+/* 1行目：縦書き・斜め配置共通（駅ナンバリングの直上に密着） */
 .st-name-vert { 
     height: 120px;
     display: flex;
@@ -285,7 +291,7 @@ body {
     align-items: flex-end;
     position: relative;
     width: 100%;
-    padding-bottom: 2px; /* 駅ナンバリング直上との隙間を最小化 */
+    padding-bottom: 0px; 
 }
 
 /* 日本語：縦書き */
@@ -298,10 +304,10 @@ body {
     color: #000;
     white-space: nowrap;
     transform-origin: center bottom;
-    margin-bottom: 0px;
+    margin-bottom: 2px;
 }
 
-/* 英語：横書き ＋ 斜め配置（起点：駅ナンバリングの直上） */
+/* 英語：横書き ＋ 斜め配置（駅ナンバリングのすぐ上を起点） */
 .st-name-inner.en-st-name {
     writing-mode: horizontal-tb; 
     font-size: 16px; 
@@ -309,21 +315,24 @@ body {
     color: #000;
     white-space: nowrap;
     position: absolute;
-    left: 28%; /* 列の中央よりやや左側を起点 */
-    bottom: 0px; /* 駅ナンバリングのすぐ上 */
+    /* 駅ナンバリングの真上付近を基点にする調整 */
+    left: 45%; 
+    bottom: 2px; 
     transform-origin: left bottom;
 }
 
-/* 2行目：駅ナンバリング（カラーライン直上に密着配置） */
+/* 2行目：駅ナンバリング（カラーライン直上に密着） */
 .st-id { 
     font-size: 14px; 
     font-weight: bold; 
     color: #000;
-    align-self: flex-end; /* 下揃え */
-    margin-bottom: 1px;  /* カラーラインにギリギリ近づける */
+    line-height: 1;
+    margin-bottom: 1px;
 }
 .grey-text { color: #999 !important; }
 
+/* グラデーションオーバーレイ付きのカラーバー。
+   グレー部分のはみ出しを防ぐため var(--line-fill-percent) を使用 */
 .time-bar-bg {
     position: absolute;
     bottom: 0;
@@ -331,24 +340,26 @@ body {
     width: 100%;
     height: 40px;
     background: 
-        linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.3) 100%),
-        linear-gradient(to right, var(--line-color) 0%, var(--line-color) 94%, #888888 94%, #888888 100%);
+        linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, rgba(0,0,0,0.25) 100%),
+        linear-gradient(to right, var(--line-color) 0%, var(--line-color) var(--line-fill-percent), #888888 var(--line-fill-percent), #888888 100%);
     clip-path: polygon(0 50%, 15px 0, 100% 0, 100% 100%, 15px 100%);
     z-index: 1;
 }
 
+/* 「分 / min」：鋭くなる直前(15px以降)に下寄せで配置 */
 .time-label { 
     color: #fff; 
     font-size: 13px; 
     font-weight: bold; 
     align-self: flex-end;
     justify-self: start;
-    margin-left: 17px;
+    margin-left: 20px;
     margin-bottom: 2px;
 }
 
+/* 時間ボックス：白系 ＋ 角丸なし ＋ 下部陰影 */
 .time-box {
-    background: linear-gradient(to bottom, #ffffff 0%, #dcdcdc 100%);
+    background: linear-gradient(to bottom, rgba(255,255,255,0.7) 0%, rgba(0,0,0,0.15) 100%), #ebebeb;
     color: #000;
     width: 50px;
     height: 32px;
@@ -384,7 +395,7 @@ body {
     position: absolute;
     width: 50px;
     height: 32px;
-    background: linear-gradient(to bottom, #ffffff 0%, #dcdcdc 100%);
+    background: linear-gradient(to bottom, rgba(255,255,255,0.7) 0%, rgba(0,0,0,0.15) 100%), #ebebeb;
     border-radius: 0;
     z-index: 1;
 }
@@ -408,7 +419,7 @@ body {
 
 .footer-note { position: absolute; bottom: 5px; right: 15px; font-size: 10px; color: #000; font-weight: bold; }
 
-/* === 設定パネルUI === */
+/* === 設定パネル・モーダル UI === */
 #control-panel { width: 1040px; background-color: #2b2b2b; border: 1px solid #444; border-radius: 8px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 #control-panel h2 { font-size: 18px; border-bottom: 2px solid #009b65; padding-bottom: 8px; margin-bottom: 15px; color: #4de0a7; }
 .panel-section { background-color: #222; padding: 12px 15px; border-radius: 6px; margin-bottom: 15px; }
@@ -424,3 +435,12 @@ button:hover { background-color: #00b878; }
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
 th, td { padding: 6px; text-align: center; border: 1px solid #444; }
 th { background-color: #333; color: #ddd; }
+
+/* モーダルスタイル */
+.modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); justify-content: center; align-items: center; }
+.modal-content { background-color: #2b2b2b; padding: 20px; border-radius: 8px; width: 400px; color: #fff; border: 1px solid #555; }
+.modal-content h3 { border-bottom: 2px solid #009b65; padding-bottom: 8px; margin-bottom: 15px; }
+.modal-body label { flex-direction: column; align-items: flex-start; margin-bottom: 10px; }
+.modal-body label input[type="text"] { width: 100%; }
+.modal-body label[style*="flex-direction: row"] { flex-direction: row; align-items: center; }
+.modal-footer { margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end; }

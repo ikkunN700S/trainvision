@@ -13,6 +13,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentState = 0;   
     let isRouteEn = false;  
+    let presetsCache = {};
+
+    // プリセット読み込み
+    fetch('presets.json')
+        .then(res => res.json())
+        .then(data => {
+            presetsCache = data;
+            const presetSelect = document.getElementById('preset-select');
+            presetSelect.innerHTML = '<option value="">プリセットを選択</option>';
+            for (const key in data) {
+                const opt = document.createElement('option');
+                opt.value = key;
+                opt.textContent = data[key].name;
+                presetSelect.appendChild(opt);
+            }
+        })
+        .catch(err => {
+            console.error('Presets loading failed', err);
+            document.getElementById('preset-select').innerHTML = '<option value="">プリセットなし</option>';
+        });
 
     renderRouteMap();
     renderControlTable();
@@ -21,13 +41,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // 4秒周期：上部テキスト切替
     setInterval(() => {
         let nextState = (currentState + 1) % 3;
-
         updatePart('type', currentState, nextState, false); 
         updatePart('dest', currentState, nextState, false); 
         updatePart('car',  currentState, nextState, false); 
         updatePart('next', currentState, nextState, false); 
         updatePart('st',   currentState, nextState, true);  
-
         currentState = nextState;
     }, 4000);
 
@@ -53,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentText = currentElem.textContent.replace(/\s+/g, '');
         const nextText = nextElem.textContent.replace(/\s+/g, '');
 
-        // 切り替え前後の文字列が同じ場合：フェードやアニメーションを行わずに即座に状態だけを移行する
+        // 文字列が同一の場合はフェード・スライドさせず瞬時に状態切替
         if (currentText === nextText) {
             currentElem.style.transition = 'none';
             nextElem.style.transition = 'none';
@@ -61,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
             currentElem.classList.remove('active', 'enter-down', 'exit-down');
             nextElem.classList.add('active');
 
-            // 強制リフロー（CSS適用）
             void currentElem.offsetWidth;
             void nextElem.offsetWidth;
 
@@ -113,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
         bg.className = 'time-bar-bg';
         grid.appendChild(bg);
 
-        // 1行目：駅名 (8駅目〜1駅目)
+        // 1行目：駅名
         const emptyRow1 = document.createElement('div');
         emptyRow1.className = 'grid-item row-1';
         grid.appendChild(emptyRow1);
@@ -129,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
             grid.appendChild(item);
         }
 
-        // 2行目：駅ID (8駅目〜1駅目)
+        // 2行目：駅ID
         const emptyRow2 = document.createElement('div');
         emptyRow2.className = 'grid-item row-2';
         grid.appendChild(emptyRow2);
@@ -148,6 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
         labelItem.textContent = isRouteEn ? 'min' : '分';
         grid.appendChild(labelItem);
 
+        let redChevronElem = null;
+
         for (let i = 7; i >= 0; i--) {
             const st = stationData[i];
             const item = document.createElement('div');
@@ -159,6 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="time-box-bg"></div>
                     <div class="red-chevron-large"></div>
                 `;
+                redChevronElem = item;
             } else if (i === 1 && st.isPass) {
                 item.innerHTML = `<div class="white-chevron"></div>`;
             } else if (st.isPass) {
@@ -167,6 +187,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.innerHTML = `<div class="time-box">${st.time}</div>`;
             }
             grid.appendChild(item);
+        }
+
+        // グレーラインの境界を赤矢印の右端にピクセル単位で合わせる処理
+        if (redChevronElem) {
+            // setTimeoutを使ってDOM描画完了後に位置を取得
+            setTimeout(() => {
+                const rightEdge = redChevronElem.offsetLeft + redChevronElem.offsetWidth;
+                const pct = (rightEdge / grid.offsetWidth) * 100;
+                document.documentElement.style.setProperty('--line-fill-percent', pct + '%');
+            }, 0);
         }
 
         adjustAllFittedTexts();
@@ -199,7 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const vertInners = document.querySelectorAll('.st-name-inner');
         vertInners.forEach(inner => {
             if (inner.classList.contains('en-st-name')) {
-                // 英語斜め配置（-55度）のはみ出し調整
                 inner.style.transform = 'rotate(-55deg) scale(1)'; 
                 const maxWidth = 110; 
                 const currentWidth = inner.scrollWidth;
@@ -208,7 +237,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     inner.style.transform = `rotate(-55deg) scale(${ratio})`;
                 }
             } else {
-                // 日本語縦書きのはみ出し調整
                 inner.style.transform = 'scaleY(1)';
                 const maxHeight = 100;
                 const currentHeight = inner.scrollHeight;
@@ -219,22 +247,90 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // === UIイベントリスナー設定 ===
+    // === コントロールパネル UIイベント ===
+    document.getElementById('input-company-color').addEventListener('input', (e) => {
+        document.documentElement.style.setProperty('--company-color', e.target.value);
+    });
     document.getElementById('input-line-color').addEventListener('input', (e) => {
         document.documentElement.style.setProperty('--line-color', e.target.value);
     });
     document.getElementById('input-type-color').addEventListener('input', (e) => {
-        document.documentElement.style.setProperty('--type-color', e.target.value);
+        // ※カスタムモード用
+        document.documentElement.style.setProperty('--type-bg', e.target.value);
     });
     document.getElementById('btn-sync-color').addEventListener('click', () => {
-        const lineColor = document.getElementById('input-line-color').value;
-        document.getElementById('input-type-color').value = lineColor;
-        document.documentElement.style.setProperty('--type-color', lineColor);
+        const c = document.getElementById('input-company-color').value;
+        document.getElementById('input-line-color').value = c;
+        document.getElementById('input-type-color').value = c;
+        document.documentElement.style.setProperty('--line-color', c);
+        document.documentElement.style.setProperty('--type-bg', c);
     });
 
-    setupInputSync('input-type-kanji', 'type-kanji');
-    setupInputSync('input-type-kana',  'type-kana');
-    setupInputSync('input-type-en',    'type-en');
+    // プリセット種別選択の連動
+    const presetSelect = document.getElementById('preset-select');
+    const typeSelect = document.getElementById('type-select');
+    
+    presetSelect.addEventListener('change', (e) => {
+        typeSelect.innerHTML = '<option value="">-</option>';
+        const presetKey = e.target.value;
+        if (presetsCache[presetKey]) {
+            const types = presetsCache[presetKey].types;
+            types.forEach((t, i) => {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = t.ja;
+                typeSelect.appendChild(opt);
+            });
+        }
+    });
+
+    typeSelect.addEventListener('change', (e) => {
+        const presetKey = presetSelect.value;
+        const typeIdx = e.target.value;
+        if (presetKey && typeIdx !== "") {
+            const t = presetsCache[presetKey].types[typeIdx];
+            applyTypeConfig(t.ja, t.ja, t.en, t.bg, t.text, t.outline);
+        }
+    });
+
+    // モーダル処理 (種別手動カスタム)
+    const modal = document.getElementById('type-modal');
+    document.getElementById('btn-custom-type').addEventListener('click', () => {
+        // 現在の値をフォームにセット
+        document.getElementById('modal-type-kanji').value = document.querySelector('#type-kanji .inner').textContent;
+        document.getElementById('modal-type-en').value = document.querySelector('#type-en .inner').textContent;
+        // モーダル表示
+        modal.style.display = 'flex';
+    });
+    document.getElementById('modal-close').addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+    document.getElementById('modal-save').addEventListener('click', () => {
+        const kanji = document.getElementById('modal-type-kanji').value;
+        const en = document.getElementById('modal-type-en').value;
+        const bg = document.getElementById('modal-type-bg').value;
+        const txt = document.getElementById('modal-type-text').value;
+        const outline = document.getElementById('modal-type-outline').checked;
+        applyTypeConfig(kanji, kanji, en, bg, txt, outline);
+        modal.style.display = 'none';
+        presetSelect.value = "";
+        typeSelect.innerHTML = '<option value="">-</option>';
+    });
+
+    function applyTypeConfig(kanji, kana, en, bg, text, outline) {
+        document.querySelector('#type-kanji .inner').textContent = kanji;
+        document.querySelector('#type-kana .inner').textContent = kana;
+        document.querySelector('#type-en .inner').textContent = en;
+        
+        document.documentElement.style.setProperty('--type-bg', bg);
+        document.documentElement.style.setProperty('--type-text', text);
+        if (outline) {
+            document.documentElement.style.setProperty('--type-border', `inset 0 0 0 2px ${text}`);
+        } else {
+            document.documentElement.style.setProperty('--type-border', 'none');
+        }
+        adjustAllFittedTexts();
+    }
 
     setupInputSync('input-dest-kanji', 'dest-kanji');
     setupInputSync('input-dest-kana',  'dest-kana');
