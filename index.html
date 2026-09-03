@@ -1,61 +1,46 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>トレインビジョン</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Train Vision Simulator - Step 1</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- 上段：種別・行先・号車 -->
-  <div class="header-bar">
-    <div class="train-info">
-      <div id="train-type" class="train-type">普通</div>
-      <div id="destination" class="destination">
-        <span id="last-station-name">浜松</span>行
-      </div>
-    </div>
-    <div id="car-number" class="car-number">2号車</div>
-  </div>
+    <div id="lcd-monitor">
+        <!-- 一番上のカラー線 -->
+        <div class="top-color-bar"></div>
 
-  <!-- 中段：つぎは・駅名・駅番号 -->
-  <div class="next-bar">
-    <div class="next-label">つぎは</div>
-    <div class="next-station">
-      <div id="next-station-name" class="next-station-name">舞阪</div>
-      <div class="station-code">
-        <div id="railway" class="railway">CA</div>
-        <div id="next-station-number" class="station-number">36</div>
-      </div>
-    </div>
-  </div>
+        <!-- 種別、行先、号車表示の行 -->
+        <header class="header-info">
+            <div class="train-type">各駅停車</div>
+            <div class="destination">行き先 行</div>
+            <div class="car-number">
+                <span class="number">1</span><span class="unit">号車</span>
+            </div>
+        </header>
 
-  <!-- 下段：停車駅一覧 -->
-  <div class="station-list" id="station-list">
-    <div class="station current">
-      <div class="station-name">浜松</div>
-      <div class="station-code-box">
-        <div class="station-code-top">CA</div>
-        <div class="station-code-bottom">34</div>
-      </div>
-      <div class="change-train">東海道新幹線</div>
-    </div>
-    <div class="station">
-      <div class="station-name">高塚</div>
-      <div class="station-code-box">
-        <div class="station-code-top">CA</div>
-        <div class="station-code-bottom">35</div>
-      </div>
-    </div>
-    <div class="station">
-      <div class="station-name">舞阪</div>
-      <div class="station-code-box">
-        <div class="station-code-top">CA</div>
-        <div class="station-code-bottom">36</div>
-      </div>
-    </div>
-    <!-- 以下追加可能 -->
-  </div>
+        <!-- 次駅案内の行 -->
+        <div class="next-station-area">
+            <div class="next-label">つぎは</div>
+            
+            <div class="station-number-box">
+                <div class="line-code">JA</div>
+                <div class="st-num">01</div>
+            </div>
 
-  <script src="app.js"></script>
+            <div class="station-name" id="station-name">えきめい</div>
+        </div>
+
+        <!-- 下部のグラデーション線 -->
+        <div class="separator-bar"></div>
+        
+        <!-- 下半分のコンテンツ用（今回は空） -->
+        <main class="main-content">
+            <!-- 今後ここに所要時間や路線図を追加します -->
+        </main>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
