@@ -33,21 +33,24 @@ body {
     width: 100%;
 }
 
+/* ヘッダー背景グラデーションの開始色を濃いめ（#b5b5b5）に調整 */
 .header-info {
     display: flex;
     align-items: center;
     height: 45px;
-    background: linear-gradient(to bottom, #dcdcdc 0%, rgba(255,255,255,0) 100%);
+    background: linear-gradient(to bottom, #b5b5b5 0%, rgba(255,255,255,0) 100%);
     padding: 0 15px;
     position: relative;
 }
 
-/* 種別 */
+/* 種別（左右の下側のみ角を丸く設定） */
 .train-type-wrapper {
     position: relative;
     width: 130px;
     height: 45px;
     background-color: #009b65;
+    border-radius: 0 0 6px 6px; /* 左右の下側のみ丸角 */
+    overflow: hidden;
 }
 
 .train-type {
@@ -91,15 +94,16 @@ body {
 
 .destination.active { opacity: 1; }
 
-/* 号車表示 */
+/* 号車表示（背景色をほぼ黒に、左右の下側のみ角を丸く設定） */
 .car-number {
-    background-color: #555555;
+    background-color: #202020; /* 暗めのほぼ黒に変更 */
     color: #ffffff;
     padding: 2px 15px;
-    border-radius: 6px;
+    height: 40px;
+    border-radius: 0 0 6px 6px; /* 左右の下側のみ丸角 */
     display: flex;
-    align-items: baseline;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+    align-items: center;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
 }
 
 .car-number .number { font-size: 28px; font-weight: bold; }
@@ -114,7 +118,6 @@ body {
     background-color: #ffffff;
 }
 
-/* 「つぎは / Next」 */
 .next-label-wrapper {
     position: relative;
     width: 90px;
@@ -263,9 +266,7 @@ body {
     transform: rotate(-135deg);
 }
 
-/* === 1駅目の赤矢印（点滅・トリミング羽形状） === */
-
-/* 高さ40px（ラインと同じ）に指定し、上下にはみ出た部分を切り落とすコンテナ */
+/* === 1駅目の赤矢印（1秒ごとの点滅設定） === */
 .red-chevron-container {
     position: relative;
     width: 50px;
@@ -276,7 +277,6 @@ body {
     align-items: center;
 }
 
-/* 後ろに敷くグレーの四角（他の時間ボックスと同じ見た目） */
 .time-box-bg {
     position: absolute;
     width: 50px;
@@ -286,7 +286,6 @@ body {
     z-index: 1;
 }
 
-/* 大きくして上下をはみ出させる矢印本体 */
 .red-chevron-large {
     position: relative;
     z-index: 2;
@@ -295,13 +294,14 @@ body {
     border-top: 12px solid #e60012;
     border-right: 12px solid #e60012;
     transform: rotate(-135deg);
-    margin-left: 15px; /* 右寄りに調整 */
-    animation: blinkChevron 1s infinite;
+    margin-left: 15px;
+    /* 2秒周期で1秒赤・1秒グレーの点滅 */
+    animation: blinkChevron 2s infinite;
 }
 
-/* 赤色 ↔ グレー色の点滅アニメーション (0.5秒ごとに切り替え) */
+/* 1秒ごとに色がパッパッと切り替わるアニメーション */
 @keyframes blinkChevron {
-    0%, 49% { border-color: #e60012; }
+    0%, 49.9% { border-color: #e60012; }
     50%, 100% { border-color: #999999; }
 }
 
