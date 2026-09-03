@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return 'en';
     }
 
+    // === テキスト変更とアニメーション処理 ===
     function updatePart(prefix, current, next, isSlide) {
         const currentElem = document.getElementById(`${prefix}-${getStateName(current)}`);
         const nextElem = document.getElementById(`${prefix}-${getStateName(next)}`);
@@ -52,9 +53,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentText = currentElem.textContent.replace(/\s+/g, '');
         const nextText = nextElem.textContent.replace(/\s+/g, '');
 
+        // 切り替え前後の文字列が同じ場合：フェードやアニメーションを行わずに即座に状態だけを移行する
         if (currentText === nextText) {
+            currentElem.style.transition = 'none';
+            nextElem.style.transition = 'none';
+
             currentElem.classList.remove('active', 'enter-down', 'exit-down');
             nextElem.classList.add('active');
+
+            // 強制リフロー（CSS適用）
+            void currentElem.offsetWidth;
+            void nextElem.offsetWidth;
+
+            setTimeout(() => {
+                currentElem.style.transition = '';
+                nextElem.style.transition = '';
+            }, 50);
+
             adjustAllFittedTexts();
             return; 
         }
@@ -114,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
             grid.appendChild(item);
         }
 
-        // 2行目：駅ID
+        // 2行目：駅ID (8駅目〜1駅目)
         const emptyRow2 = document.createElement('div');
         emptyRow2.className = 'grid-item row-2';
         grid.appendChild(emptyRow2);
@@ -186,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (inner.classList.contains('en-st-name')) {
                 // 英語斜め配置（-55度）のはみ出し調整
                 inner.style.transform = 'rotate(-55deg) scale(1)'; 
-                const maxWidth = 120; // 斜め状態での許容最大幅
+                const maxWidth = 110; 
                 const currentWidth = inner.scrollWidth;
                 if (currentWidth > maxWidth) {
                     const ratio = maxWidth / currentWidth;
@@ -205,7 +220,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // === UIイベントリスナー設定 ===
-    
     document.getElementById('input-line-color').addEventListener('input', (e) => {
         document.documentElement.style.setProperty('--line-color', e.target.value);
     });

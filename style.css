@@ -53,7 +53,7 @@ body {
     position: relative;
 }
 
-/* === 種別（下から上へ暗くなる透過グラデーションを追加） === */
+/* 種別 */
 .train-type-wrapper {
     position: relative;
     width: 130px;
@@ -119,6 +119,7 @@ body {
 }
 .destination.active { opacity: 1; }
 
+/* 号車表示（日本語表示の位置を少し左寄りに微調整） */
 .car-number-wrapper {
     position: relative;
     width: 90px;
@@ -137,15 +138,16 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    padding-right: 4px; /* 右パディングを設けて少し左寄りにバランス配置 */
     color: #ffffff;
     opacity: 0;
     transition: opacity 0.7s ease-in-out;
 }
 .car-number.active { opacity: 1; }
 
-.car-number .number-wrap { display: inline-flex; justify-content: center; align-items: center; width: 30px; }
+.car-number .number-wrap { display: inline-flex; justify-content: center; align-items: center; width: 28px; }
 .car-number .number { font-size: 24px; font-weight: bold; display: inline-block; transform-origin: center; }
-.car-number.kanji .unit, .car-number.kana .unit { font-size: 12px; margin-left: 2px; font-weight: bold; transform: translateY(3px); }
+.car-number.kanji .unit, .car-number.kana .unit { font-size: 12px; margin-left: 1px; font-weight: bold; transform: translateY(3px); }
 .car-en-text { display: flex; flex-direction: column; font-size: 10px; font-weight: bold; line-height: 1.1; margin-right: 4px; text-align: left; }
 .car-number.en .number { font-size: 24px; font-weight: bold; }
 
@@ -249,7 +251,7 @@ body {
     width: 100%;
 }
 
-/* === 下部路線図エリア === */
+/* === 下部路線図エリア（レイアウト微調整版） === */
 .main-content {
     flex-grow: 1;
     background-color: #ffffff;
@@ -260,9 +262,9 @@ body {
 
 .route-map-grid {
     display: grid;
-    /* 1列目の幅を微調整し「分」が入りやすくする */
-    grid-template-columns: 48px repeat(8, 1fr);
-    grid-template-rows: 120px 30px 40px;
+    /* 右端に40pxの余白を作り、全8駅を全体的に左にシフトさせる設定 */
+    grid-template-columns: 45px repeat(8, 1fr) 40px;
+    grid-template-rows: 120px 22px 40px;
     align-items: center;
     justify-items: center;
     width: 100%;
@@ -275,14 +277,15 @@ body {
 .row-2 { grid-row: 2; }
 .row-3 { grid-row: 3; }
 
-/* 縦書き・斜め配置共通の親要素（下揃えで回転軸を安定させる） */
+/* 1行目：縦書き・斜め配置共通の親要素（駅ナンバリングのすぐ上に下揃えで配置） */
 .st-name-vert { 
-    height: 110px;
+    height: 120px;
     display: flex;
     justify-content: center;
     align-items: flex-end;
     position: relative;
     width: 100%;
+    padding-bottom: 2px; /* 駅ナンバリング直上との隙間を最小化 */
 }
 
 /* 日本語：縦書き */
@@ -295,24 +298,30 @@ body {
     color: #000;
     white-space: nowrap;
     transform-origin: center bottom;
-    margin-bottom: 5px;
+    margin-bottom: 0px;
 }
 
-/* 英語：横書き ＋ 斜め配置 */
+/* 英語：横書き ＋ 斜め配置（起点：駅ナンバリングの直上） */
 .st-name-inner.en-st-name {
     writing-mode: horizontal-tb; 
-    font-size: 17px; 
+    font-size: 16px; 
     font-weight: bold; 
     color: #000;
     white-space: nowrap;
     position: absolute;
-    left: 20px;
-    bottom: 5px;
+    left: 28%; /* 列の中央よりやや左側を起点 */
+    bottom: 0px; /* 駅ナンバリングのすぐ上 */
     transform-origin: left bottom;
-    /* transform (rotate & scale) はJSで自動計算して付与されます */
 }
 
-.st-id { font-size: 14px; font-weight: bold; color: #000; }
+/* 2行目：駅ナンバリング（カラーライン直上に密着配置） */
+.st-id { 
+    font-size: 14px; 
+    font-weight: bold; 
+    color: #000;
+    align-self: flex-end; /* 下揃え */
+    margin-bottom: 1px;  /* カラーラインにギリギリ近づける */
+}
 .grey-text { color: #999 !important; }
 
 .time-bar-bg {
@@ -328,7 +337,6 @@ body {
     z-index: 1;
 }
 
-/* 「分 / min」：斜めカット直後の下寄せに微調整 */
 .time-label { 
     color: #fff; 
     font-size: 13px; 
