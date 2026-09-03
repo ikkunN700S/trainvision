@@ -1,0 +1,246 @@
+{
+  "jrcentral": {
+    "name": "JR東海風種別表示",
+    "types": [
+      {
+        "ja": "普　通",
+        "en": "Local",
+        "bg": "#000000",
+        "text": "#ffffff",
+        "outline": true
+      },
+      {
+        "ja": "区間快速",
+        "en": "Semi Rapid",
+        "bg": "#00cc44",
+        "text": "#ffffff",
+        "outline": true
+      },
+      {
+        "ja": "快速",
+        "en": "Rapid",
+        "bg": "#0052cc",
+        "text": "#ffffff",
+        "outline": true
+      },
+      {
+        "ja": "新快速",
+        "en": "New Rapid",
+        "bg": "#ff4400",
+        "text": "#ffffff",
+        "outline": true
+      },
+      {
+        "ja": "特別快速",
+        "en": "Special Rapid",
+        "bg": "#ffff00",
+        "text": "#000000",
+        "outline": false
+      },
+      {
+        "ja": "試運転",
+        "en": "Test Run",
+        "bg": "#000000",
+        "text": "#ffffff",
+        "outline": true
+      },
+      {
+        "ja": "臨時",
+        "en": "Extra",
+        "bg": "#000000",
+        "text": "#ffffff",
+        "outline": true
+      },
+      {
+        "ja": "回送",
+        "en": "Out of Service",
+        "bg": "#000000",
+        "text": "#ffffff",
+        "outline": true
+      }
+    ]
+  },
+  "jrwest": {
+    "name": "JR西日本風種別表示",
+    "types": [
+      {
+        "ja": "普通",
+        "en": "Local",
+        "bg": "#000000",
+        "text": "#ffffff",
+        "outline": true
+      },
+      {
+        "ja": "区間快速",
+        "en": "Semi Rapid",
+        "bg": "#000000",
+        "text": "#00cc44",
+        "outline": true
+      },
+      {
+        "ja": "快速",
+        "en": "Rapid",
+        "bg": "#000000",
+        "text": "#ff8b1f",
+        "outline": true
+      },
+      {
+        "ja": "新快速",
+        "en": "Special Rapid",
+        "bg": "#000000",
+        "text": "#0169B7",
+        "outline": true
+      },
+      {
+        "ja": "試運転",
+        "en": "Test Run",
+        "bg": "#000000",
+        "text": "#ffffff",
+        "outline": true
+      },
+      {
+        "ja": "臨時",
+        "en": "Special Train",
+        "bg": "#000000",
+        "text": "#ffffff",
+        "outline": true
+      },
+      {
+        "ja": "回送",
+        "en": "Not in Service",
+        "bg": "#000000",
+        "text": "#ffffff",
+        "outline": true
+      }
+    ]
+  },
+  "meitetsu": {
+    "name": "名古屋鉄道風種別表示",
+    "types": [
+      {
+        "ja": "普通",
+        "en": "Local",
+        "bg": "#787878",
+        "text": "#ffffff",
+        "outline": true
+      },
+      {
+        "ja": "準急",
+        "en": "Semi Express",
+        "bg": "#32cd32",
+        "text": "#ffffff",
+        "outline": true
+      },
+      {
+        "ja": "急行",
+        "en": "Express",
+        "bg": "#00bfff",
+        "text": "#ffffff",
+        "outline": true
+      },
+      {
+        "ja": "快速急行",
+        "en": "Rapid Express",
+        "bg": "#ffffff",
+        "text": "#00bfff",
+        "outline": true
+      },
+      {
+        "ja": "特急",
+        "en": "Ltd. Exp.",
+        "bg": "#ff0000",
+        "text": "#ffffff",
+        "outline": true
+      },
+      {
+        "ja": "快速特急",
+        "en": "Rapid Ltd. Exp.",
+        "bg": "#ffffff",
+        "text": "#ff0000",
+        "outline": true
+      },
+      {
+        "ja": "ﾐｭｰｽｶｲ",
+        "en": "μSKY Ltd.Exp.",
+        "bg": "#ffffff",
+        "text": "#ff0000",
+        "outline": true
+      },
+      {
+        "ja": "試運転",
+        "en": "Test Run",
+        "bg": "#000000",
+        "text": "#ffffff",
+        "outline": true
+      },
+      {
+        "ja": "回送",
+        "en": "Not in Service",
+        "bg": "#000000",
+        "text": "#ffffff",
+        "outline": true
+      }
+    ]
+  },
+  "tatehama": {
+    "name": "館浜電鉄風種別表示",
+    "types": [
+      {
+        "ja": "普通",
+        "en": "Local",
+        "bg": "#000000",
+        "text": "#ffffff",
+        "outline": true
+      },
+      {
+        "ja": "準急",
+        "en": "Semi-Exp.",
+        "bg": "#0080ff",
+        "text": "#ffffff",
+        "outline": true
+      },
+      {
+        "ja": "区急",
+        "en": "Sub-Exp.",
+        "bg": "#32cd32",
+        "text": "#ffffff",
+        "outline": true
+      },
+      {
+        "ja": "急行",
+        "en": "Express",
+        "bg": "#ff8000",
+        "text": "#ffffff",
+        "outline": true
+      },
+      {
+        "ja": "快急",
+        "en": "Rapid-Exp.",
+        "bg": "#cf31ff",
+        "text": "#ffffff",
+        "outline": true
+      },
+      {
+        "ja": "特急",
+        "en": "Limited-Exp.",
+        "bg": "#ff0000",
+        "text": "#ffffff",
+        "outline": true
+      },
+      {
+        "ja": "試運転",
+        "en": "Test Run",
+        "bg": "#000000",
+        "text": "#ffffff",
+        "outline": true
+      },
+      {
+        "ja": "回送",
+        "en": "Not in Service",
+        "bg": "#ff0000",
+        "text": "#ffffff",
+        "outline": true
+      }
+    ]
+  }
+}

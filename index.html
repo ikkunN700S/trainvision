@@ -4,108 +4,177 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Train Vision Simulator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="lcd-monitor">
+        <!-- 会社カラーライン（独立） -->
         <div class="top-color-bar"></div>
         <header class="header-info">
             
+            <!-- 種別 -->
             <div class="train-type-wrapper">
-                <div class="train-type kanji active" id="type-kanji"><span class="inner">各駅停車</span></div>
-                <div class="train-type kana" id="type-kana"><span class="inner">かくえきていしゃ</span></div>
+                <div class="train-type kanji active" id="type-kanji"><span class="inner">普通</span></div>
+                <div class="train-type kana" id="type-kana"><span class="inner">普通</span></div>
                 <div class="train-type en" id="type-en"><span class="inner">Local</span></div>
             </div>
 
+            <!-- 行き先 -->
             <div class="destination-wrapper">
-                <div class="destination kanji active" id="dest-kanji"><span class="inner">新宿 行</span></div>
-                <div class="destination kana" id="dest-kana"><span class="inner">しんじゅく ゆき</span></div>
-                <div class="destination en" id="dest-en"><span class="inner">for Shinjuku</span></div>
+                <div class="destination kanji active" id="dest-kanji"><span class="inner">浜松 行</span></div>
+                <div class="destination kana" id="dest-kana"><span class="inner">はままつ ゆき</span></div>
+                <div class="destination en" id="dest-en"><span class="inner">for Hamamatsu</span></div>
             </div>
 
+            <!-- 号車表示 -->
             <div class="car-number-wrapper">
                 <div class="car-number kanji active" id="car-kanji">
-                    <span class="number-wrap"><span class="number">1</span></span><span class="unit">号車</span>
+                    <span class="number-wrap"><span class="number" id="car-num-kanji">1</span></span><span class="unit">号車</span>
                 </div>
                 <div class="car-number kana" id="car-kana">
-                    <span class="number-wrap"><span class="number">1</span></span><span class="unit">ごうしゃ</span>
+                    <span class="number-wrap"><span class="number" id="car-num-kana">1</span></span><span class="unit">号車</span>
                 </div>
                 <div class="car-number en" id="car-en">
                     <div class="car-en-text">
                         <span>Car</span>
                         <span>No.</span>
                     </div>
-                    <span class="number-wrap"><span class="number">1</span></span>
+                    <span class="number-wrap"><span class="number" id="car-num-en">1</span></span>
                 </div>
             </div>
         </header>
 
+        <!-- 次駅案内 -->
         <div class="next-station-area">
-            
             <div class="next-label-wrapper">
-                <div class="next-label kanji active" id="next-kanji"><span class="inner">つぎは</span></div>
+                <div class="next-label kanji active" id="next-kanji"><span class="inner">次は</span></div>
                 <div class="next-label kana" id="next-kana"><span class="inner">つぎは</span></div>
                 <div class="next-label en" id="next-en"><span class="inner">Next</span></div>
             </div>
 
-            <div class="station-number-box">
-                <div class="line-code">JA</div>
-                <div class="st-num">01</div>
+            <div class="station-number-box" id="st-number-box">
+                <div class="line-code" id="st-line-code">CA</div>
+                <div class="st-num" id="st-num-val">41</div>
             </div>
             
             <div class="station-name-wrapper" id="station-name-wrapper">
-                <div class="station-name kanji active" id="st-kanji"><span class="inner">新宿</span></div>
-                <div class="station-name kana" id="st-kana"><span class="inner">しんじゅく</span></div>
-                <div class="station-name en" id="st-en"><span class="inner">SHINJUKU</span></div>
+                <div class="station-name kanji active" id="st-kanji"><span class="inner">二川</span></div>
+                <div class="station-name kana" id="st-kana"><span class="inner">ふたがわ</span></div>
+                <div class="station-name en" id="st-en"><span class="inner">Futagawa</span></div>
             </div>
         </div>
         
         <div class="separator-bar"></div>
         
+        <!-- 下部路線図 -->
         <main class="main-content">
-            <div class="route-map-grid">
-                
-                <div class="grid-item row-1"></div>
-                <div class="grid-item st-name-vert row-1"><div class="st-name-inner">八駅目</div></div>
-                <div class="grid-item st-name-vert row-1"><div class="st-name-inner">七駅目</div></div>
-                <div class="grid-item st-name-vert row-1"><div class="st-name-inner">六駅目</div></div>
-                <div class="grid-item st-name-vert row-1"><div class="st-name-inner">五駅目</div></div>
-                <div class="grid-item st-name-vert row-1"><div class="st-name-inner">四駅目</div></div>
-                <div class="grid-item st-name-vert row-1"><div class="st-name-inner">三駅目</div></div>
-                <div class="grid-item st-name-vert grey-text row-1"><div class="st-name-inner">二駅目</div></div>
-                <div class="grid-item st-name-vert row-1"><div class="st-name-inner">一駅目</div></div>
-
-                <div class="grid-item row-2"></div>
-                <div class="grid-item st-id row-2">JA-08</div>
-                <div class="grid-item st-id row-2">JA-07</div>
-                <div class="grid-item st-id row-2">JA-06</div>
-                <div class="grid-item st-id row-2">JA-05</div>
-                <div class="grid-item st-id row-2">JA-04</div>
-                <div class="grid-item st-id row-2">JA-03</div>
-                <div class="grid-item st-id grey-text row-2">JA-02</div>
-                <div class="grid-item st-id row-2">JA-01</div>
-
-                <div class="time-bar-bg"></div>
-                
-                <div class="grid-item time-label row-3">分</div>
-                <div class="grid-item row-3"><div class="time-box">35</div></div>
-                <div class="grid-item row-3"><div class="time-box">30</div></div>
-                <div class="grid-item row-3"><div class="time-box">25</div></div>
-                <div class="grid-item row-3"><div class="time-box">20</div></div>
-                <div class="grid-item row-3"><div class="time-box">15</div></div>
-                <div class="grid-item row-3"><div class="time-box">10</div></div>
-                <div class="grid-item row-3"><div class="white-chevron"></div></div>
-                
-                <div class="grid-item row-3 red-chevron-container">
-                    <div class="time-box-bg"></div>
-                    <div class="red-chevron-large"></div>
-                </div>
+            <div class="route-map-grid" id="route-map-grid">
+                <!-- JavaScriptで動的生成 -->
             </div>
-
             <div class="footer-note">
-                のりかえ、待ち合わせ時間は含まれません。電車により多少時間は異なります。
+                運転状況により、多少時間は異なります。
             </div>
         </main>
+    </div>
+
+    <!-- 設定コントロールパネル -->
+    <div id="control-panel">
+        <h2>トレインビジョン 設定パネル</h2>
+        
+        <div class="panel-section">
+            <h3>カラー設定</h3>
+            <div class="panel-row">
+                <label>会社カラー: <input type="color" id="input-company-color" value="#ed6d00"></label>
+                <label>路線カラー: <input type="color" id="input-line-color" value="#ed6d00"></label>
+                <button type="button" id="btn-sync-color">全ての色を同期</button>
+            </div>
+        </div>
+
+        <div class="panel-section">
+            <h3>表示テキスト設定</h3>
+            <div class="panel-grid-3">
+                <div class="custom-type-panel">
+                    <h4>種別設定 (プリセット or カスタム)</h4>
+                    <div style="margin-bottom:8px;">
+                        <select id="preset-select" style="width:100%; margin-bottom:4px;">
+                            <option value="">プリセットを読み込み中...</option>
+                        </select>
+                        <select id="type-select" style="width:100%;">
+                            <option value="">-</option>
+                        </select>
+                    </div>
+                    <button type="button" id="btn-custom-type" style="width:100%;">手動でカスタム設定する</button>
+                </div>
+                <div>
+                    <h4>行先</h4>
+                    <label>漢字: <input type="text" id="input-dest-kanji" value="浜松 行"></label>
+                    <label>ひらがな: <input type="text" id="input-dest-kana" value="はままつ ゆき"></label>
+                    <label>英語: <input type="text" id="input-dest-en" value="for Hamamatsu"></label>
+                </div>
+                <div>
+                    <h4>次の駅名</h4>
+                    <label>漢字: <input type="text" id="input-st-kanji" value="二川"></label>
+                    <label>ひらがな: <input type="text" id="input-st-kana" value="ふたがわ"></label>
+                    <label>英語: <input type="text" id="input-st-en" value="Futagawa"></label>
+                </div>
+            </div>
+            <div class="panel-row" style="margin-top:10px;">
+                <label>号車番号: <input type="number" id="input-car-num" value="1" min="1" max="15" style="width:60px;"></label>
+                <label>駅記号: <input type="text" id="input-line-code" value="JA" style="width:60px;"></label>
+                <label>駅番号: <input type="text" id="input-st-num" value="01" style="width:60px;"></label>
+                <label>ナンバリング図形: 
+                    <select id="select-shape">
+                        <option value="square">正方形</option>
+                        <option value="rounded" selected>角丸正方形</option>
+                        <option value="circle">丸</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+
+        <div class="panel-section">
+            <h3>1〜8駅目の停車駅・所要時間設定</h3>
+            <div class="table-scroll">
+                <table id="stations-table">
+                    <thead>
+                        <tr>
+                            <th>順</th>
+                            <th>漢字/かな</th>
+                            <th>英語</th>
+                            <th>ナンバリング</th>
+                            <th>所要時間(分)</th>
+                            <th>通過</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stations-table-body">
+                        <!-- JSで動的生成 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 種別カスタム用ポップアップ(モーダル) -->
+    <div id="type-modal" class="modal">
+        <div class="modal-content">
+            <h3>種別 カスタム設定</h3>
+            <div class="modal-body">
+                <label>漢字 (かな共通): <input type="text" id="modal-type-kanji" style="width:100%;"></label>
+                <label>英語: <input type="text" id="modal-type-en" style="width:100%;"></label>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <label>背景色: <input type="color" id="modal-type-bg"></label>
+                    <label>文字色: <input type="color" id="modal-type-text"></label>
+                </div>
+                <label style="margin-top:10px;"><input type="checkbox" id="modal-type-outline"> 枠線を付ける (文字色と同色)</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="modal-save">保存</button>
+                <button type="button" id="modal-close" style="background-color:#777;">キャンセル</button>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
