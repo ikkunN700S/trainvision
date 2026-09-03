@@ -37,26 +37,25 @@ body {
     display: flex;
     align-items: center;
     height: 45px;
-    /* 上がグレーで、下に向かって透明（下の白背景とスムーズに繋がる） */
     background: linear-gradient(to bottom, #dcdcdc 0%, rgba(255,255,255,0) 100%);
     padding: 0 15px;
     position: relative;
 }
 
-/* === 種別（背景固定・フェードアニメーション） === */
+/* 種別 */
 .train-type-wrapper {
     position: relative;
-    width: 130px; /* 固定幅 */
-    height: 45px; /* 行の高さと同じ */
-    background-color: #009b65; /* 背景色を枠側に持たせ、サイズを不変にする */
+    width: 130px;
+    height: 45px;
+    background-color: #009b65;
 }
 
 .train-type {
     position: absolute;
     width: 100%;
     top: 50%;
-    transform: translateY(-50%); /* 上下中央揃え */
-    text-align: center; /* 左右中央揃え */
+    transform: translateY(-50%);
+    text-align: center;
     color: #ffffff;
     font-size: 22px;
     font-weight: bold;
@@ -66,14 +65,12 @@ body {
     white-space: nowrap;
 }
 
-.train-type.active {
-    opacity: 1;
-}
+.train-type.active { opacity: 1; }
 
-/* === 行先（フェードアニメーション） === */
+/* 行先 */
 .destination-wrapper {
     position: relative;
-    height: 45px; /* 行の高さと同じ */
+    height: 45px;
     margin-left: 15px;
     flex-grow: 1;
 }
@@ -82,7 +79,7 @@ body {
     position: absolute;
     left: 0;
     top: 50%;
-    transform: translateY(-50%); /* 上下中央揃え */
+    transform: translateY(-50%);
     font-size: 24px;
     font-weight: bold;
     color: #222;
@@ -92,9 +89,7 @@ body {
     white-space: nowrap;
 }
 
-.destination.active {
-    opacity: 1;
-}
+.destination.active { opacity: 1; }
 
 /* 号車表示 */
 .car-number {
@@ -119,7 +114,7 @@ body {
     background-color: #ffffff;
 }
 
-/* === 「つぎは / Next」（フェードアニメーション） === */
+/* 「つぎは / Next」 */
 .next-label-wrapper {
     position: relative;
     width: 90px;
@@ -141,9 +136,7 @@ body {
     white-space: nowrap;
 }
 
-.next-label.active {
-    opacity: 1;
-}
+.next-label.active { opacity: 1; }
 
 /* 駅ナンバリング */
 .station-number-box {
@@ -161,7 +154,7 @@ body {
 .station-number-box .line-code { font-size: 16px; font-weight: bold; line-height: 1.1; color: #000; }
 .station-number-box .st-num { font-size: 32px; font-weight: bold; line-height: 1; color: #000; }
 
-/* === 駅名スライド表示エリア（0.7s） === */
+/* 駅名スライド */
 .station-name-wrapper {
     position: relative;
     height: 85px;
@@ -185,18 +178,9 @@ body {
 .station-name.ja { font-size: 80px; letter-spacing: 8px; }
 .station-name.en { font-size: 55px; letter-spacing: 4px; }
 
-.station-name.active {
-    opacity: 1;
-    transform: translateY(0) scaleY(1);
-}
-
-.station-name.exit-down {
-    animation: animExitDown 0.7s ease-in forwards;
-}
-
-.station-name.enter-down {
-    animation: animEnterDown 0.7s ease-out forwards;
-}
+.station-name.active { opacity: 1; transform: translateY(0) scaleY(1); }
+.station-name.exit-down { animation: animExitDown 0.7s ease-in forwards; }
+.station-name.enter-down { animation: animEnterDown 0.7s ease-out forwards; }
 
 @keyframes animExitDown {
     0% { transform: translateY(0) scaleY(1); transform-origin: bottom; opacity: 1; }
@@ -236,7 +220,6 @@ body {
 }
 
 .grid-item { position: relative; z-index: 2; }
-
 .row-1 { grid-row: 1; }
 .row-2 { grid-row: 2; }
 .row-3 { grid-row: 3; }
@@ -280,13 +263,46 @@ body {
     transform: rotate(-135deg);
 }
 
-.red-chevron {
-    width: 22px;
-    height: 22px;
-    border-top: 7px solid #e60012;
-    border-right: 7px solid #e60012;
+/* === 1駅目の赤矢印（点滅・トリミング羽形状） === */
+
+/* 高さ40px（ラインと同じ）に指定し、上下にはみ出た部分を切り落とすコンテナ */
+.red-chevron-container {
+    position: relative;
+    width: 50px;
+    height: 40px; 
+    overflow: hidden; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 後ろに敷くグレーの四角（他の時間ボックスと同じ見た目） */
+.time-box-bg {
+    position: absolute;
+    width: 50px;
+    height: 32px;
+    background-color: #dcdcdc;
+    border-radius: 2px;
+    z-index: 1;
+}
+
+/* 大きくして上下をはみ出させる矢印本体 */
+.red-chevron-large {
+    position: relative;
+    z-index: 2;
+    width: 40px;
+    height: 40px;
+    border-top: 12px solid #e60012;
+    border-right: 12px solid #e60012;
     transform: rotate(-135deg);
-    margin-left: 5px; 
+    margin-left: 15px; /* 右寄りに調整 */
+    animation: blinkChevron 1s infinite;
+}
+
+/* 赤色 ↔ グレー色の点滅アニメーション (0.5秒ごとに切り替え) */
+@keyframes blinkChevron {
+    0%, 49% { border-color: #e60012; }
+    50%, 100% { border-color: #999999; }
 }
 
 .footer-note { position: absolute; bottom: 5px; right: 15px; font-size: 10px; color: #000; font-weight: bold; }
