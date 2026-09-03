@@ -12,18 +12,23 @@ body {
     align-items: center;
     height: 100vh;
     font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+    overflow: hidden; /* 拡大によるスクロールバー非表示用 */
 }
 
+/* === 画面全体の設定（scaleで一括拡大） === */
 #lcd-monitor {
     width: 800px;
     height: 450px;
     background-color: #ffffff;
     border: 12px solid #000;
     border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    box-shadow: 0 5px 25px rgba(0,0,0,0.8);
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    /* ここで全体の表示倍率を変更します（1.3倍） */
+    transform: scale(1.3);
+    transform-origin: center;
 }
 
 /* --- 上部エリア --- */
@@ -33,7 +38,6 @@ body {
     width: 100%;
 }
 
-/* ヘッダー背景グラデーションの開始色を濃いめ（#b5b5b5）に調整 */
 .header-info {
     display: flex;
     align-items: center;
@@ -43,13 +47,13 @@ body {
     position: relative;
 }
 
-/* 種別（左右の下側のみ角を丸く設定） */
+/* 種別 */
 .train-type-wrapper {
     position: relative;
     width: 130px;
     height: 45px;
     background-color: #009b65;
-    border-radius: 0 0 6px 6px; /* 左右の下側のみ丸角 */
+    border-radius: 0 0 6px 6px;
     overflow: hidden;
 }
 
@@ -94,20 +98,46 @@ body {
 
 .destination.active { opacity: 1; }
 
-/* 号車表示（背景色をほぼ黒に、左右の下側のみ角を丸く設定） */
-.car-number {
-    background-color: #202020; /* 暗めのほぼ黒に変更 */
-    color: #ffffff;
-    padding: 2px 15px;
+/* === 号車表示（アニメーション対応版） === */
+.car-number-wrapper {
+    position: relative;
+    width: 90px;
     height: 40px;
-    border-radius: 0 0 6px 6px; /* 左右の下側のみ丸角 */
-    display: flex;
-    align-items: center;
+    background-color: #202020;
+    border-radius: 0 0 6px 6px;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+    overflow: hidden;
 }
 
-.car-number .number { font-size: 28px; font-weight: bold; }
-.car-number .unit { font-size: 14px; margin-left: 4px; font-weight: bold; }
+.car-number {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    opacity: 0;
+    transition: opacity 0.7s ease-in-out;
+}
+
+.car-number.active { opacity: 1; }
+
+/* 日本語レイアウト */
+.car-number.ja .number { font-size: 26px; font-weight: bold; }
+.car-number.ja .unit { font-size: 13px; margin-left: 4px; font-weight: bold; transform: translateY(4px); }
+
+/* 英語レイアウト（画像準拠） */
+.car-en-text {
+    display: flex;
+    flex-direction: column;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 1.1;
+    margin-right: 6px;
+    text-align: left;
+}
+.car-number.en .number { font-size: 28px; font-weight: bold; }
 
 /* --- 次駅案内エリア --- */
 .next-station-area {
@@ -141,12 +171,12 @@ body {
 
 .next-label.active { opacity: 1; }
 
-/* 駅ナンバリング */
+/* === 駅ナンバリング（完全な正方形に修正） === */
 .station-number-box {
     border: 5px solid #009b65;
-    border-radius: 8px;
-    width: 60px;
-    height: 75px;
+    border-radius: 8px; /* 丸機能追加に備えて角丸指定は維持 */
+    width: 75px;   /* 縦横のサイズを統一 */
+    height: 75px;  /* 縦横のサイズを統一 */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -266,7 +296,6 @@ body {
     transform: rotate(-135deg);
 }
 
-/* === 1駅目の赤矢印（1秒ごとの点滅設定） === */
 .red-chevron-container {
     position: relative;
     width: 50px;
@@ -295,11 +324,9 @@ body {
     border-right: 12px solid #e60012;
     transform: rotate(-135deg);
     margin-left: 15px;
-    /* 2秒周期で1秒赤・1秒グレーの点滅 */
     animation: blinkChevron 2s infinite;
 }
 
-/* 1秒ごとに色がパッパッと切り替わるアニメーション */
 @keyframes blinkChevron {
     0%, 49.9% { border-color: #e60012; }
     50%, 100% { border-color: #999999; }

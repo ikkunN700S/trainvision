@@ -15,24 +15,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const destJa = document.getElementById('dest-ja');
     const destEn = document.getElementById('dest-en');
     
+    // 号車表示（フェード）
+    const carJa = document.getElementById('car-ja');
+    const carEn = document.getElementById('car-en');
+    
     let isEnglish = false;
 
     // 4秒ごとに日英切り替え
     setInterval(() => {
         if (!isEnglish) {
+            // 日本語 → 英語
             slideText(stJa, stEn);
             fadeText(nextJa, nextEn);
             fadeText(typeJa, typeEn);
             fadeText(destJa, destEn);
+            fadeText(carJa, carEn);
         } else {
+            // 英語 → 日本語
             slideText(stEn, stJa);
             fadeText(nextEn, nextJa);
             fadeText(typeEn, typeJa);
             fadeText(destEn, destJa);
+            fadeText(carEn, carJa);
         }
         isEnglish = !isEnglish;
     }, 4000);
 
+    // 上から下へのスライド切替関数
     function slideText(currentElem, nextElem) {
         currentElem.classList.remove('active', 'enter-down', 'exit-down');
         nextElem.classList.remove('active', 'enter-down', 'exit-down');
@@ -50,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 700); 
     }
 
+    // フェードインアウト切替関数
     function fadeText(currentElem, nextElem) {
         currentElem.classList.remove('active');
         nextElem.classList.add('active');
