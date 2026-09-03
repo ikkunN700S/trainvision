@@ -14,7 +14,7 @@ body {
     font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
 }
 
-/* 画面の基本フレーム (16:9) */
+/* 画面の基本フレーム (16:9, 800x450px) */
 #lcd-monitor {
     width: 800px;
     height: 450px;
@@ -28,25 +28,20 @@ body {
 }
 
 /* --- 上部エリアのスタイリング --- */
-
-/* 一番上のカラー線 */
 .top-color-bar {
     height: 10px;
-    background-color: #009b65; /* 指定画像の緑色に近い色 */
+    background-color: #009b65;
     width: 100%;
 }
 
-/* 種別・行先・号車表示の行 */
 .header-info {
     display: flex;
     align-items: center;
     height: 45px;
-    /* 上から下へ白からグレーになるグラデーション */
     background: linear-gradient(to bottom, #ffffff 0%, #dcdcdc 100%);
     padding: 0 15px;
 }
 
-/* 種別（各駅停車） */
 .train-type {
     background-color: #009b65;
     color: #ffffff;
@@ -57,17 +52,15 @@ body {
     letter-spacing: 2px;
 }
 
-/* 行先表示 */
 .destination {
     font-size: 24px;
     font-weight: bold;
     color: #222;
     margin-left: 15px;
     letter-spacing: 2px;
-    flex-grow: 1; /* 残りのスペースを埋める */
+    flex-grow: 1;
 }
 
-/* 号車表示 */
 .car-number {
     background-color: #555555;
     color: #ffffff;
@@ -78,18 +71,8 @@ body {
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
 }
 
-.car-number .number {
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.car-number .unit {
-    font-size: 14px;
-    margin-left: 4px;
-    font-weight: bold;
-}
-
-/* --- 次駅案内のスタイリング --- */
+.car-number .number { font-size: 28px; font-weight: bold; }
+.car-number .unit { font-size: 14px; margin-left: 4px; font-weight: bold; }
 
 .next-station-area {
     display: flex;
@@ -99,17 +82,15 @@ body {
     background-color: #ffffff;
 }
 
-/* 「つぎは」の文字 */
 .next-label {
     font-size: 24px;
     font-weight: bold;
     color: #000;
     margin-right: 20px;
-    align-self: flex-end; /* 下揃えにする */
+    align-self: flex-end;
     margin-bottom: 25px;
 }
 
-/* 駅ナンバリングの箱 */
 .station-number-box {
     border: 5px solid #009b65;
     border-radius: 8px;
@@ -122,21 +103,9 @@ body {
     background-color: #ffffff;
 }
 
-.station-number-box .line-code {
-    font-size: 16px;
-    font-weight: bold;
-    line-height: 1.1;
-    color: #000;
-}
+.station-number-box .line-code { font-size: 16px; font-weight: bold; line-height: 1.1; color: #000; }
+.station-number-box .st-num { font-size: 32px; font-weight: bold; line-height: 1; color: #000; }
 
-.station-number-box .st-num {
-    font-size: 32px;
-    font-weight: bold;
-    line-height: 1;
-    color: #000;
-}
-
-/* 駅名 */
 .station-name {
     font-size: 80px;
     font-weight: bold;
@@ -145,15 +114,119 @@ body {
     letter-spacing: 8px;
 }
 
-/* 下部のグラデーション線 (緑から透明へフェードアウト) */
 .separator-bar {
     height: 12px;
     background: linear-gradient(to right, #009b65 0%, #009b65 50%, rgba(255,255,255,0) 100%);
     width: 100%;
 }
 
-/* メインコンテンツ（今後の拡張用） */
+/* --- 下部エリア（路線図・所要時間）のスタイリング --- */
 .main-content {
     flex-grow: 1;
     background-color: #ffffff;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* グリッドレイアウトで列を揃える */
+.route-map-grid {
+    display: grid;
+    /* 左端の「分」列(40px) ＋ 駅の列×8 */
+    grid-template-columns: 40px repeat(8, 1fr);
+    /* 駅名(120px) ＋ ID(30px) ＋ 所要時間バー(40px) */
+    grid-template-rows: 120px 30px 40px;
+    align-items: center;
+    justify-items: center;
+    width: 100%;
+    padding-top: 15px;
+    position: relative;
+}
+
+.grid-item {
+    z-index: 2; /* 背景の緑バーより前面に出す */
+}
+
+/* 縦書き駅名 */
+.st-name-vert {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    font-size: 26px;
+    font-weight: bold;
+    letter-spacing: 4px;
+    color: #000;
+}
+
+/* 駅ID */
+.st-id {
+    font-size: 14px;
+    font-weight: bold;
+    color: #000;
+}
+
+/* 薄いグレー表示（通過駅や二駅目など） */
+.grey-text {
+    color: #999;
+}
+
+/* 緑色の所要時間バー背景 */
+.time-bar-bg {
+    grid-row: 3;
+    grid-column: 1 / 10;
+    width: 100%;
+    height: 100%;
+    background-color: #007b4d;
+    /* CSSで左端を矢印の形に切り抜く */
+    clip-path: polygon(0 50%, 15px 0, 100% 0, 100% 100%, 15px 100%);
+    z-index: 1;
+}
+
+/* 「分」のラベル */
+.time-label {
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* 時間表示の四角い箱 */
+.time-box {
+    background-color: #dcdcdc;
+    color: #000;
+    width: 50px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    font-family: 'Arial', sans-serif;
+    border-radius: 2px;
+}
+
+/* 左向きの白い矢印 (シェブロン) */
+.white-chevron {
+    width: 16px;
+    height: 16px;
+    border-top: 5px solid #fff;
+    border-right: 5px solid #fff;
+    transform: rotate(-135deg); /* 左を向かせる */
+}
+
+/* 赤い矢印（CSSのボーダーで作る三角形） */
+.red-arrow {
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-right: 25px solid #e60012; /* 赤色 */
+}
+
+/* 右下の注意書き */
+.footer-note {
+    position: absolute;
+    bottom: 5px;
+    right: 15px;
+    font-size: 10px;
+    color: #000;
+    font-weight: bold;
 }

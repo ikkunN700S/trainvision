@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Train Vision Simulator - Step 1</title>
+    <title>Train Vision Simulator - Step 2</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="lcd-monitor">
-        <!-- 一番上のカラー線 -->
+        <!-- 上部：共通ヘッダー -->
         <div class="top-color-bar"></div>
-
-        <!-- 種別、行先、号車表示の行 -->
         <header class="header-info">
             <div class="train-type">各駅停車</div>
             <div class="destination">行き先 行</div>
@@ -20,24 +18,63 @@
             </div>
         </header>
 
-        <!-- 次駅案内の行 -->
+        <!-- 上部：次駅案内 -->
         <div class="next-station-area">
             <div class="next-label">つぎは</div>
-            
             <div class="station-number-box">
                 <div class="line-code">JA</div>
                 <div class="st-num">01</div>
             </div>
-
             <div class="station-name" id="station-name">えきめい</div>
         </div>
-
-        <!-- 下部のグラデーション線 -->
         <div class="separator-bar"></div>
         
-        <!-- 下半分のコンテンツ用（今回は空） -->
+        <!-- 下部：停車駅と所要時間表示 -->
         <main class="main-content">
-            <!-- 今後ここに所要時間や路線図を追加します -->
+            <div class="route-map-grid">
+                
+                <!-- 1行目：縦書きの駅名 -->
+                <div class="grid-item"></div> <!-- 「分」の上の余白 -->
+                <div class="grid-item st-name-vert">八駅目</div>
+                <div class="grid-item st-name-vert">七駅目</div>
+                <div class="grid-item st-name-vert">六駅目</div>
+                <div class="grid-item st-name-vert">五駅目</div>
+                <div class="grid-item st-name-vert">四駅目</div>
+                <div class="grid-item st-name-vert">三駅目</div>
+                <div class="grid-item st-name-vert grey-text">二駅目</div>
+                <div class="grid-item st-name-vert">一駅目</div>
+
+                <!-- 2行目：駅ナンバリング -->
+                <div class="grid-item"></div>
+                <div class="grid-item st-id">JA-08</div>
+                <div class="grid-item st-id">JA-07</div>
+                <div class="grid-item st-id">JA-06</div>
+                <div class="grid-item st-id">JA-05</div>
+                <div class="grid-item st-id">JA-04</div>
+                <div class="grid-item st-id">JA-03</div>
+                <div class="grid-item st-id grey-text">JA-02</div>
+                <div class="grid-item st-id">JA-01</div>
+
+                <!-- 3行目：所要時間の緑バー -->
+                <!-- 背景となる緑の矢印帯 -->
+                <div class="time-bar-bg"></div>
+                
+                <!-- バーの中身 -->
+                <div class="grid-item time-label">分</div>
+                <div class="grid-item"><div class="time-box">35</div></div>
+                <div class="grid-item"><div class="time-box">30</div></div>
+                <div class="grid-item"><div class="time-box">25</div></div>
+                <div class="grid-item"><div class="time-box">20</div></div>
+                <div class="grid-item"><div class="time-box">15</div></div>
+                <div class="grid-item"><div class="time-box">10</div></div>
+                <div class="grid-item"><div class="white-chevron"></div></div>
+                <div class="grid-item"><div class="red-arrow"></div></div>
+            </div>
+
+            <!-- 右下の注意書き -->
+            <div class="footer-note">
+                のりかえ、待ち合わせ時間は含まれません。電車により多少時間は異なります。
+            </div>
         </main>
     </div>
 
