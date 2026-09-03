@@ -1,14 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     let stationData = [
-        { nameJa: "一駅目", nameEn: "STATION 1", id: "JA-01", time: "",  isPass: false },
-        { nameJa: "二駅目", nameEn: "STATION 2", id: "JA-02", time: "10", isPass: true  },
-        { nameJa: "三駅目", nameEn: "STATION 3", id: "JA-03", time: "10", isPass: false },
-        { nameJa: "四駅目", nameEn: "STATION 4", id: "JA-04", time: "15", isPass: false },
-        { nameJa: "五駅目", nameEn: "STATION 5", id: "JA-05", time: "20", isPass: false },
-        { nameJa: "六駅目", nameEn: "STATION 6", id: "JA-06", time: "25", isPass: false },
-        { nameJa: "七駅目", nameEn: "STATION 7", id: "JA-07", time: "30", isPass: false },
-        { nameJa: "八駅目", nameEn: "STATION 8", id: "JA-08", time: "35", isPass: false }
+        { nameJa: "豊橋", nameEn: "Toyohashi", id: "CA-42", time: "",  isPass: false },
+        { nameJa: "二川", nameEn: "Futagawa", id: "CA-41", time: "6", isPass: false  },
+        { nameJa: "新所原", nameEn: "Shinjohara", id: "CA-40", time: "3", isPass: false },
+        { nameJa: "鷲津", nameEn: "Washizu", id: "CA-39", time: "5", isPass: false },
+        { nameJa: "新居町", nameEn: "Araimachi", id: "CA-38", time: "4", isPass: false },
+        { nameJa: "弁天島", nameEn: "Bentenjima", id: "CA-37", time: "3", isPass: false },
+        { nameJa: "舞阪", nameEn: "Maisaka", id: "CA-36", time: "3", isPass: false },
+        { nameJa: "高塚", nameEn: "Takatsuka", id: "CA-35", time: "4", isPass: false }
     ];
 
     let currentState = 0;   
