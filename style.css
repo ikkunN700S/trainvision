@@ -14,7 +14,6 @@ body {
     font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
 }
 
-/* 画面の基本フレーム (16:9, 800x450px) */
 #lcd-monitor {
     width: 800px;
     height: 450px;
@@ -27,10 +26,10 @@ body {
     overflow: hidden;
 }
 
-/* --- 上部エリアのスタイリング --- */
+/* --- 上部エリア --- */
 .top-color-bar {
     height: 10px;
-    background-color: #009b65;
+    background: linear-gradient(to right, rgba(0,155,101,0) 0%, #009b65 15%, #009b65 85%, rgba(0,155,101,0) 100%);
     width: 100%;
 }
 
@@ -42,35 +41,9 @@ body {
     padding: 0 15px;
 }
 
-.train-type {
-    background-color: #009b65;
-    color: #ffffff;
-    font-size: 22px;
-    font-weight: bold;
-    padding: 4px 12px;
-    border-radius: 4px;
-    letter-spacing: 2px;
-}
-
-.destination {
-    font-size: 24px;
-    font-weight: bold;
-    color: #222;
-    margin-left: 15px;
-    letter-spacing: 2px;
-    flex-grow: 1;
-}
-
-.car-number {
-    background-color: #555555;
-    color: #ffffff;
-    padding: 2px 15px;
-    border-radius: 6px;
-    display: flex;
-    align-items: baseline;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
-}
-
+.train-type { background-color: #009b65; color: #ffffff; font-size: 22px; font-weight: bold; padding: 4px 12px; border-radius: 4px; letter-spacing: 2px; }
+.destination { font-size: 24px; font-weight: bold; color: #222; margin-left: 15px; letter-spacing: 2px; flex-grow: 1; }
+.car-number { background-color: #555555; color: #ffffff; padding: 2px 15px; border-radius: 6px; display: flex; align-items: baseline; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
 .car-number .number { font-size: 28px; font-weight: bold; }
 .car-number .unit { font-size: 14px; margin-left: 4px; font-weight: bold; }
 
@@ -106,21 +79,61 @@ body {
 .station-number-box .line-code { font-size: 16px; font-weight: bold; line-height: 1.1; color: #000; }
 .station-number-box .st-num { font-size: 32px; font-weight: bold; line-height: 1; color: #000; }
 
-.station-name {
-    font-size: 80px;
-    font-weight: bold;
-    color: #000;
+/* === 駅名アニメーション設定 === */
+.station-name-wrapper {
+    position: relative;
+    height: 80px;
+    display: flex;
+    align-items: center;
     margin-left: 50px;
-    letter-spacing: 8px;
+    flex-grow: 1;
 }
 
+.station-name {
+    position: absolute;
+    font-weight: bold;
+    color: #000;
+    /* 動きの滑らかさを指定（ease-in-out） */
+    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out; 
+}
+
+/* 日本語の基本状態（下を起点にしておく） */
+.station-name.ja {
+    font-size: 80px;
+    letter-spacing: 8px;
+    transform-origin: bottom;
+    transform: translateY(0) scaleY(1);
+    opacity: 1;
+}
+
+/* 英語の基本状態（最初は上に隠し、上を起点にする） */
+.station-name.en {
+    font-size: 60px;
+    letter-spacing: 4px;
+    transform-origin: top;
+    transform: translateY(-50px) scaleY(0);
+    opacity: 0;
+}
+
+/* --- JSで .is-en クラスが付与された時の状態（押しつぶし＆下りてくる） --- */
+.is-en .station-name.ja {
+    transform: translateY(40px) scaleY(0); /* 下に押しつぶされる */
+    opacity: 0;
+}
+
+.is-en .station-name.en {
+    transform: translateY(0) scaleY(1); /* 上から下りてきて実体化 */
+    opacity: 1;
+}
+
+/* セパレーター */
 .separator-bar {
     height: 12px;
-    background: linear-gradient(to right, #009b65 0%, #009b65 50%, rgba(255,255,255,0) 100%);
+    background: linear-gradient(to right, rgba(0,155,101,0) 0%, #009b65 15%, #009b65 85%, rgba(0,155,101,0) 100%);
     width: 100%;
 }
 
-/* --- 下部エリア（路線図・所要時間）のスタイリング --- */
+/* --- 下部エリア（レイアウト崩れ修正版） --- */
 .main-content {
     flex-grow: 1;
     background-color: #ffffff;
@@ -129,104 +142,42 @@ body {
     flex-direction: column;
 }
 
-/* グリッドレイアウトで列を揃える */
 .route-map-grid {
     display: grid;
-    /* 左端の「分」列(40px) ＋ 駅の列×8 */
     grid-template-columns: 40px repeat(8, 1fr);
-    /* 駅名(120px) ＋ ID(30px) ＋ 所要時間バー(40px) */
     grid-template-rows: 120px 30px 40px;
     align-items: center;
     justify-items: center;
     width: 100%;
     padding-top: 15px;
-    position: relative;
+    position: relative; /* 背景帯を絶対配置するための基準 */
 }
 
-.grid-item {
-    z-index: 2; /* 背景の緑バーより前面に出す */
-}
+/* .grid-item は常に手前(z-index:2)にする */
+.grid-item { position: relative; z-index: 2; }
 
-/* 縦書き駅名 */
-.st-name-vert {
-    writing-mode: vertical-rl;
-    text-orientation: upright;
-    font-size: 26px;
-    font-weight: bold;
-    letter-spacing: 4px;
-    color: #000;
-}
+.row-1 { grid-row: 1; }
+.row-2 { grid-row: 2; }
+.row-3 { grid-row: 3; }
 
-/* 駅ID */
-.st-id {
-    font-size: 14px;
-    font-weight: bold;
-    color: #000;
-}
+.st-name-vert { writing-mode: vertical-rl; text-orientation: upright; font-size: 26px; font-weight: bold; letter-spacing: 4px; color: #000; }
+.st-id { font-size: 14px; font-weight: bold; color: #000; }
+.grey-text { color: #999; }
 
-/* 薄いグレー表示（通過駅や二駅目など） */
-.grey-text {
-    color: #999;
-}
-
-/* 緑色の所要時間バー背景 */
+/* 緑色の所要時間バー背景（絶対配置にしてGridの邪魔をしないように修正） */
 .time-bar-bg {
-    grid-row: 3;
-    grid-column: 1 / 10;
-    width: 100%;
-    height: 100%;
-    background-color: #007b4d;
-    /* CSSで左端を矢印の形に切り抜く */
-    clip-path: polygon(0 50%, 15px 0, 100% 0, 100% 100%, 15px 100%);
-    z-index: 1;
-}
-
-/* 「分」のラベル */
-.time-label {
-    color: #fff;
-    font-size: 18px;
-    font-weight: bold;
-}
-
-/* 時間表示の四角い箱 */
-.time-box {
-    background-color: #dcdcdc;
-    color: #000;
-    width: 50px;
-    height: 32px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 24px;
-    font-weight: bold;
-    font-family: 'Arial', sans-serif;
-    border-radius: 2px;
-}
-
-/* 左向きの白い矢印 (シェブロン) */
-.white-chevron {
-    width: 16px;
-    height: 16px;
-    border-top: 5px solid #fff;
-    border-right: 5px solid #fff;
-    transform: rotate(-135deg); /* 左を向かせる */
-}
-
-/* 赤い矢印（CSSのボーダーで作る三角形） */
-.red-arrow {
-    width: 0;
-    height: 0;
-    border-top: 15px solid transparent;
-    border-bottom: 15px solid transparent;
-    border-right: 25px solid #e60012; /* 赤色 */
-}
-
-/* 右下の注意書き */
-.footer-note {
     position: absolute;
-    bottom: 5px;
-    right: 15px;
-    font-size: 10px;
-    color: #000;
-    font-weight: bold;
+    bottom: 0; /* Gridの一番下（3行目）に合わせる */
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(to right, #009b65 0%, #009b65 89%, #888888 89%, #888888 100%);
+    clip-path: polygon(0 50%, 15px 0, 100% 0, 100% 100%, 15px 100%);
+    z-index: 1; /* 数字や矢印より後ろに置く */
 }
+
+.time-label { color: #fff; font-size: 18px; font-weight: bold; }
+.time-box { background-color: #dcdcdc; color: #000; width: 50px; height: 32px; display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: bold; font-family: 'Arial', sans-serif; border-radius: 2px; }
+.white-chevron { width: 16px; height: 16px; border-top: 6px solid #fff; border-right: 6px solid #fff; transform: rotate(-135deg); }
+.red-arrow { width: 0; height: 0; border-top: 20px solid transparent; border-bottom: 20px solid transparent; border-right: 30px solid #e60012; }
+.footer-note { position: absolute; bottom: 5px; right: 15px; font-size: 10px; color: #000; font-weight: bold; }

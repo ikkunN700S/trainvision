@@ -1,6 +1,17 @@
-// 現段階ではレイアウト作成がメインのため、JavaScriptは待機状態です。
-// 今後、このファイルに駅名の切り替えや、下半分の路線図アニメーションなどを追加していきます。
-
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("Train Vision Simulator: Step 1 Loaded.");
+    const stationNameWrapper = document.getElementById('station-name-wrapper');
+    let isEnglish = false;
+
+    // 4秒（4000ミリ秒）ごとに日英を切り替える
+    setInterval(() => {
+        isEnglish = !isEnglish;
+        
+        if (isEnglish) {
+            // クラス 'is-en' を付与して英語表示アニメーションを実行
+            stationNameWrapper.classList.add('is-en');
+        } else {
+            // クラス 'is-en' を外して日本語表示アニメーションを実行
+            stationNameWrapper.classList.remove('is-en');
+        }
+    }, 4000);
 });
