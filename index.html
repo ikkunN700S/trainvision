@@ -13,7 +13,7 @@
             
             <div class="train-type-wrapper">
                 <div class="train-type kanji active" id="type-kanji"><span class="inner">各駅停車</span></div>
-                <div class="train-type kana" id="type-kana"><span class="inner">かくえきていしゃ</span></div>
+                <div class="train-type kana" id="type-kana"><span class="inner">各駅停車</span></div>
                 <div class="train-type en" id="type-en"><span class="inner">Local</span></div>
             </div>
 
@@ -25,17 +25,17 @@
 
             <div class="car-number-wrapper">
                 <div class="car-number kanji active" id="car-kanji">
-                    <span class="number-wrap"><span class="number">1</span></span><span class="unit">号車</span>
+                    <span class="number-wrap"><span class="number" id="car-num-kanji">1</span></span><span class="unit">号車</span>
                 </div>
                 <div class="car-number kana" id="car-kana">
-                    <span class="number-wrap"><span class="number">1</span></span><span class="unit">ごうしゃ</span>
+                    <span class="number-wrap"><span class="number" id="car-num-kana">1</span></span><span class="unit">号車</span>
                 </div>
                 <div class="car-number en" id="car-en">
                     <div class="car-en-text">
                         <span>Car</span>
                         <span>No.</span>
                     </div>
-                    <span class="number-wrap"><span class="number">1</span></span>
+                    <span class="number-wrap"><span class="number" id="car-num-en">1</span></span>
                 </div>
             </div>
         </header>
@@ -48,9 +48,9 @@
                 <div class="next-label en" id="next-en"><span class="inner">Next</span></div>
             </div>
 
-            <div class="station-number-box">
-                <div class="line-code">JA</div>
-                <div class="st-num">01</div>
+            <div class="station-number-box" id="st-number-box">
+                <div class="line-code" id="st-line-code">JA</div>
+                <div class="st-num" id="st-num-val">01</div>
             </div>
             
             <div class="station-name-wrapper" id="station-name-wrapper">
@@ -63,49 +63,82 @@
         <div class="separator-bar"></div>
         
         <main class="main-content">
-            <div class="route-map-grid">
-                
-                <div class="grid-item row-1"></div>
-                <div class="grid-item st-name-vert row-1"><div class="st-name-inner">八駅目</div></div>
-                <div class="grid-item st-name-vert row-1"><div class="st-name-inner">七駅目</div></div>
-                <div class="grid-item st-name-vert row-1"><div class="st-name-inner">六駅目</div></div>
-                <div class="grid-item st-name-vert row-1"><div class="st-name-inner">五駅目</div></div>
-                <div class="grid-item st-name-vert row-1"><div class="st-name-inner">四駅目</div></div>
-                <div class="grid-item st-name-vert row-1"><div class="st-name-inner">三駅目</div></div>
-                <div class="grid-item st-name-vert grey-text row-1"><div class="st-name-inner">二駅目</div></div>
-                <div class="grid-item st-name-vert row-1"><div class="st-name-inner">一駅目</div></div>
-
-                <div class="grid-item row-2"></div>
-                <div class="grid-item st-id row-2">JA-08</div>
-                <div class="grid-item st-id row-2">JA-07</div>
-                <div class="grid-item st-id row-2">JA-06</div>
-                <div class="grid-item st-id row-2">JA-05</div>
-                <div class="grid-item st-id row-2">JA-04</div>
-                <div class="grid-item st-id row-2">JA-03</div>
-                <div class="grid-item st-id grey-text row-2">JA-02</div>
-                <div class="grid-item st-id row-2">JA-01</div>
-
-                <div class="time-bar-bg"></div>
-                
-                <div class="grid-item time-label row-3">分</div>
-                <div class="grid-item row-3"><div class="time-box">35</div></div>
-                <div class="grid-item row-3"><div class="time-box">30</div></div>
-                <div class="grid-item row-3"><div class="time-box">25</div></div>
-                <div class="grid-item row-3"><div class="time-box">20</div></div>
-                <div class="grid-item row-3"><div class="time-box">15</div></div>
-                <div class="grid-item row-3"><div class="time-box">10</div></div>
-                <div class="grid-item row-3"><div class="white-chevron"></div></div>
-                
-                <div class="grid-item row-3 red-chevron-container">
-                    <div class="time-box-bg"></div>
-                    <div class="red-chevron-large"></div>
+            <div class="route-map-grid" id="route-map-grid">
                 </div>
-            </div>
 
             <div class="footer-note">
                 のりかえ、待ち合わせ時間は含まれません。電車により多少時間は異なります。
             </div>
         </main>
+    </div>
+
+    <div id="control-panel">
+        <h2>トレインビジョン 設定パネル</h2>
+        
+        <div class="panel-section">
+            <h3>カラー・テーマ設定</h3>
+            <div class="panel-row">
+                <label>路線カラー: <input type="color" id="input-line-color" value="#009b65"></label>
+                <label>種別カラー: <input type="color" id="input-type-color" value="#009b65"></label>
+                <button type="button" id="btn-sync-color">路線・種別カラーを同期</button>
+            </div>
+        </div>
+
+        <div class="panel-section">
+            <h3>表示テキスト設定</h3>
+            <div class="panel-grid-3">
+                <div>
+                    <h4>種別</h4>
+                    <label>漢字: <input type="text" id="input-type-kanji" value="各駅停車"></label>
+                    <label>ひらがな: <input type="text" id="input-type-kana" value="各駅停車"></label>
+                    <label>英語: <input type="text" id="input-type-en" value="Local"></label>
+                </div>
+                <div>
+                    <h4>行先</h4>
+                    <label>漢字: <input type="text" id="input-dest-kanji" value="新宿 行"></label>
+                    <label>ひらがな: <input type="text" id="input-dest-kana" value="しんじゅく ゆき"></label>
+                    <label>英語: <input type="text" id="input-dest-en" value="for Shinjuku"></label>
+                </div>
+                <div>
+                    <h4>次の駅名</h4>
+                    <label>漢字: <input type="text" id="input-st-kanji" value="新宿"></label>
+                    <label>ひらがな: <input type="text" id="input-st-kana" value="しんじゅく"></label>
+                    <label>英語: <input type="text" id="input-st-en" value="SHINJUKU"></label>
+                </div>
+            </div>
+            <div class="panel-row" style="margin-top:10px;">
+                <label>号車番号: <input type="number" id="input-car-num" value="1" min="1" max="15" style="width:60px;"></label>
+                <label>駅記号: <input type="text" id="input-line-code" value="JA" style="width:60px;"></label>
+                <label>駅番号: <input type="text" id="input-st-num" value="01" style="width:60px;"></label>
+                <label>ナンバリング図形: 
+                    <select id="select-shape">
+                        <option value="square">正方形</option>
+                        <option value="rounded" selected>角丸正方形</option>
+                        <option value="circle">丸</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+
+        <div class="panel-section">
+            <h3>1〜8駅目の停車駅・所要時間設定</h3>
+            <div class="table-scroll">
+                <table id="stations-table">
+                    <thead>
+                        <tr>
+                            <th>順</th>
+                            <th>漢字/かな</th>
+                            <th>英語</th>
+                            <th>ナンバリング</th>
+                            <th>所要時間(分)</th>
+                            <th>通過</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stations-table-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
