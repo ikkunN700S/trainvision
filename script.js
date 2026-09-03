@@ -3,57 +3,54 @@ document.addEventListener('DOMContentLoaded', () => {
     // 現在の表示状態 (0: 漢字, 1: ひらがな, 2: 英語)
     let currentState = 0; 
 
+    // 初回ロード時にすべてのはみ出し自動調整を実行
+    adjustAllFittedTexts();
+
     // 4秒ごとに切り替え
     setInterval(() => {
         let nextState = (currentState + 1) % 3;
 
-        // 各パーツの更新 (prefix, 現在の状態, 次の状態, スライドにするか)
-        updatePart('type', currentState, nextState, false); // 種別
-        updatePart('dest', currentState, nextState, false); // 行先
-        updatePart('car',  currentState, nextState, false); // 号車
-        updatePart('next', currentState, nextState, false); // つぎは
-        updatePart('st',   currentState, nextState, true);  // 駅名
+        updatePart('type', currentState, nextState, false); 
+        updatePart('dest', currentState, nextState, false); 
+        updatePart('car',  currentState, nextState, false); 
+        updatePart('next', currentState, nextState, false); 
+        updatePart('st',   currentState, nextState, true);  
 
         currentState = nextState;
     }, 4000);
 
-    // 状態IDからクラス名を取得するヘルパー関数
     function getStateName(state) {
         if (state === 0) return 'kanji';
         if (state === 1) return 'kana';
         return 'en';
     }
 
-    // 表示切り替えとスキップ判定を行うメイン関数
     function updatePart(prefix, current, next, isSlide) {
         const currentElem = document.getElementById(`${prefix}-${getStateName(current)}`);
         const nextElem = document.getElementById(`${prefix}-${getStateName(next)}`);
 
-        // HTML内の空白や改行を取り除いた純粋なテキストを比較
         const currentText = currentElem.textContent.replace(/\s+/g, '');
         const nextText = nextElem.textContent.replace(/\s+/g, '');
 
-        // 現在と次のテキストが同一の場合、アニメーションを発生させずに裏で状態だけ切り替える
         if (currentText === nextText) {
             currentElem.classList.remove('active', 'enter-down', 'exit-down');
             nextElem.classList.add('active');
-            return; // ここで終了
+            adjustAllFittedTexts(); // 再調整
+            return; 
         }
 
-        // テキストが異なる場合は指定のアニメーションを実行
         if (isSlide) {
             slideText(currentElem, nextElem);
         } else {
             fadeText(currentElem, nextElem);
         }
+        adjustAllFittedTexts();
     }
 
-    // 上から下へのスライド切替関数
     function slideText(currentElem, nextElem) {
         currentElem.classList.remove('active', 'enter-down', 'exit-down');
         nextElem.classList.remove('active', 'enter-down', 'exit-down');
 
-        // 強制リフロー（アニメーション再実行のため）
         void currentElem.offsetWidth;
         void nextElem.offsetWidth;
 
@@ -67,9 +64,55 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 700); 
     }
 
-    // フェードインアウト切替関数
     function fadeText(currentElem, nextElem) {
         currentElem.classList.remove('active');
         nextElem.classList.add('active');
+    }
+
+    // === はみ出し対策の自動縮小計算（Scale適用） ===
+    function adjustAllFittedTexts() {
+        // 1. ヘッダー系（種別、行先、号車数字、次へ）の横方向押しつぶし
+        const horizontalFits = [
+            document.querySelectorAll('.train-type .inner'),
+            document.querySelectorAll('.destination .inner'),
+            document.querySelectorAll('.car-number .number'),
+            document.querySelectorAll('.next-label .inner'),
+            document.querySelectorAll('.station-name .inner')
+        ];
+
+        horizontalFits.forEach(nodeList => {
+            nodeList.forEach(inner => {
+                const parent = inner.parentElement;
+                // 一度スケールをリセットして正しい自然幅を計測
+                inner.style.transform = 'scaleX(1)';
+                const parentWidth = parent.clientWidth;
+                const innerWidth = inner.scrollWidth;
+
+                if (innerWidth > parentWidth && parentWidth > 0) {
+                    const ratio = parentWidth / innerWidth;
+                    inner.style.transform = `scaleX(${ratio})`;
+                } else {
+                    inner.style.transform = 'scaleX(1)';
+                }
+            });
+        });
+
+        // 2. 下部1〜8駅目の縦書き駅名（上下方向の縮小）
+        const vertNames = document.querySelectorAll('.st-name-vert');
+        vertNames.forEach(container => {
+            const inner = container.querySelector('.st-name-inner');
+            if (!inner) return;
+
+            inner.style.transform = 'scaleY(1)';
+            const maxHeight = 100; // 上部ライン等にかぶらない上限高さ
+            const currentHeight = inner.scrollHeight;
+
+            if (currentHeight > maxHeight) {
+                const ratio = maxHeight / currentHeight;
+                inner.style.transform = `scaleY(${ratio})`;
+            } else {
+                inner.style.transform = 'scaleY(1)';
+            }
+        });
     }
 });

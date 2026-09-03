@@ -8,81 +8,72 @@
 </head>
 <body>
     <div id="lcd-monitor">
-        <!-- 上部：共通ヘッダー -->
         <div class="top-color-bar"></div>
         <header class="header-info">
             
-            <!-- 種別（漢字・ひらがな・英語） -->
             <div class="train-type-wrapper">
-                <div class="train-type kanji active" id="type-kanji">各駅停車</div>
-                <div class="train-type kana" id="type-kana">かくえきていしゃ</div>
-                <div class="train-type en" id="type-en">Local</div>
+                <div class="train-type kanji active" id="type-kanji"><span class="inner">各駅停車</span></div>
+                <div class="train-type kana" id="type-kana"><span class="inner">かくえきていしゃ</span></div>
+                <div class="train-type en" id="type-en"><span class="inner">Local</span></div>
             </div>
 
-            <!-- 行き先（漢字・ひらがな・英語） -->
             <div class="destination-wrapper">
-                <div class="destination kanji active" id="dest-kanji">新宿 行</div>
-                <div class="destination kana" id="dest-kana">しんじゅく ゆき</div>
-                <div class="destination en" id="dest-en">for Shinjuku</div>
+                <div class="destination kanji active" id="dest-kanji"><span class="inner">新宿 行</span></div>
+                <div class="destination kana" id="dest-kana"><span class="inner">しんじゅく ゆき</span></div>
+                <div class="destination en" id="dest-en"><span class="inner">for Shinjuku</span></div>
             </div>
 
-            <!-- 号車表示（漢字・ひらがな・英語） -->
             <div class="car-number-wrapper">
                 <div class="car-number kanji active" id="car-kanji">
-                    <span class="number">1</span><span class="unit">号車</span>
+                    <span class="number-wrap"><span class="number">1</span></span><span class="unit">号車</span>
                 </div>
                 <div class="car-number kana" id="car-kana">
-                    <span class="number">1</span><span class="unit">ごうしゃ</span>
+                    <span class="number-wrap"><span class="number">1</span></span><span class="unit">ごうしゃ</span>
                 </div>
                 <div class="car-number en" id="car-en">
                     <div class="car-en-text">
                         <span>Car</span>
                         <span>No.</span>
                     </div>
-                    <span class="number">1</span>
+                    <span class="number-wrap"><span class="number">1</span></span>
                 </div>
             </div>
         </header>
 
-        <!-- 上部：次駅案内 -->
         <div class="next-station-area">
             
-            <!-- 「つぎは」（漢字とひらがなが同文字列のためスキップ判定されます） -->
             <div class="next-label-wrapper">
-                <div class="next-label kanji active" id="next-kanji">つぎは</div>
-                <div class="next-label kana" id="next-kana">つぎは</div>
-                <div class="next-label en" id="next-en">Next</div>
+                <div class="next-label kanji active" id="next-kanji"><span class="inner">つぎは</span></div>
+                <div class="next-label kana" id="next-kana"><span class="inner">つぎは</span></div>
+                <div class="next-label en" id="next-en"><span class="inner">Next</span></div>
             </div>
 
-            <!-- 駅ナンバリング（正方形） -->
             <div class="station-number-box">
                 <div class="line-code">JA</div>
                 <div class="st-num">01</div>
             </div>
             
-            <!-- 駅名（漢字・ひらがな・英語） -->
             <div class="station-name-wrapper" id="station-name-wrapper">
-                <div class="station-name kanji active" id="st-kanji">新宿</div>
-                <div class="station-name kana" id="st-kana">しんじゅく</div>
-                <div class="station-name en" id="st-en">S H I N J U K U</div>
+                <div class="station-name kanji active" id="st-kanji"><span class="inner">新宿</span></div>
+                <div class="station-name kana" id="st-kana"><span class="inner">しんじゅく</span></div>
+                <div class="station-name en" id="st-en"><span class="inner">SHINJUKU</span></div>
             </div>
         </div>
         
         <div class="separator-bar"></div>
         
-        <!-- 下部：停車駅と所要時間表示 -->
         <main class="main-content">
             <div class="route-map-grid">
                 
                 <div class="grid-item row-1"></div>
-                <div class="grid-item st-name-vert row-1">八駅目</div>
-                <div class="grid-item st-name-vert row-1">七駅目</div>
-                <div class="grid-item st-name-vert row-1">六駅目</div>
-                <div class="grid-item st-name-vert row-1">五駅目</div>
-                <div class="grid-item st-name-vert row-1">四駅目</div>
-                <div class="grid-item st-name-vert row-1">三駅目</div>
-                <div class="grid-item st-name-vert grey-text row-1">二駅目</div>
-                <div class="grid-item st-name-vert row-1">一駅目</div>
+                <div class="grid-item st-name-vert row-1"><div class="st-name-inner">八駅目</div></div>
+                <div class="grid-item st-name-vert row-1"><div class="st-name-inner">七駅目</div></div>
+                <div class="grid-item st-name-vert row-1"><div class="st-name-inner">六駅目</div></div>
+                <div class="grid-item st-name-vert row-1"><div class="st-name-inner">五駅目</div></div>
+                <div class="grid-item st-name-vert row-1"><div class="st-name-inner">四駅目</div></div>
+                <div class="grid-item st-name-vert row-1"><div class="st-name-inner">三駅目</div></div>
+                <div class="grid-item st-name-vert grey-text row-1"><div class="st-name-inner">二駅目</div></div>
+                <div class="grid-item st-name-vert row-1"><div class="st-name-inner">一駅目</div></div>
 
                 <div class="grid-item row-2"></div>
                 <div class="grid-item st-id row-2">JA-08</div>
