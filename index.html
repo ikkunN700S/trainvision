@@ -10,15 +10,27 @@
     <div id="lcd-monitor">
         <div class="top-color-bar"></div>
         <header class="header-info">
-            <div class="train-type">各駅停車</div>
-            <div class="destination">行き先 行</div>
+            <div class="train-type-wrapper">
+                <div class="train-type ja active" id="type-ja">各駅停車</div>
+                <div class="train-type en" id="type-en">Local</div>
+            </div>
+
+            <div class="destination-wrapper">
+                <div class="destination ja active" id="dest-ja">行き先 行</div>
+                <div class="destination en" id="dest-en">for Destination</div>
+            </div>
+
             <div class="car-number">
                 <span class="number">1</span><span class="unit">号車</span>
             </div>
         </header>
 
         <div class="next-station-area">
-            <div class="next-label">つぎは</div>
+            <div class="next-label-wrapper">
+                <div class="next-label ja active" id="next-ja">つぎは</div>
+                <div class="next-label en" id="next-en">Next</div>
+            </div>
+
             <div class="station-number-box">
                 <div class="line-code">JA</div>
                 <div class="st-num">01</div>
@@ -65,7 +77,12 @@
                 <div class="grid-item row-3"><div class="time-box">15</div></div>
                 <div class="grid-item row-3"><div class="time-box">10</div></div>
                 <div class="grid-item row-3"><div class="white-chevron"></div></div>
-                <div class="grid-item row-3"><div class="red-arrow"></div></div>
+                
+                <div class="grid-item row-3">
+                    <div class="time-box">
+                        <div class="red-chevron"></div>
+                    </div>
+                </div>
             </div>
 
             <div class="footer-note">

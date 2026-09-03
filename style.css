@@ -37,29 +37,66 @@ body {
     display: flex;
     align-items: center;
     height: 45px;
-    background: linear-gradient(to bottom, #ffffff 0%, #dcdcdc 100%);
+    /* 上がグレーで、下に向かって透明（下の白背景とスムーズに繋がる） */
+    background: linear-gradient(to bottom, #dcdcdc 0%, rgba(255,255,255,0) 100%);
     padding: 0 15px;
+    position: relative;
+}
+
+/* === 種別（背景固定・フェードアニメーション） === */
+.train-type-wrapper {
+    position: relative;
+    width: 130px; /* 固定幅 */
+    height: 45px; /* 行の高さと同じ */
+    background-color: #009b65; /* 背景色を枠側に持たせ、サイズを不変にする */
 }
 
 .train-type {
-    background-color: #009b65;
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%); /* 上下中央揃え */
+    text-align: center; /* 左右中央揃え */
     color: #ffffff;
     font-size: 22px;
     font-weight: bold;
-    padding: 4px 12px;
-    border-radius: 4px;
     letter-spacing: 2px;
+    opacity: 0;
+    transition: opacity 0.7s ease-in-out;
+    white-space: nowrap;
 }
 
-.destination {
-    font-size: 24px;
-    font-weight: bold;
-    color: #222;
+.train-type.active {
+    opacity: 1;
+}
+
+/* === 行先（フェードアニメーション） === */
+.destination-wrapper {
+    position: relative;
+    height: 45px; /* 行の高さと同じ */
     margin-left: 15px;
-    letter-spacing: 2px;
     flex-grow: 1;
 }
 
+.destination {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%); /* 上下中央揃え */
+    font-size: 24px;
+    font-weight: bold;
+    color: #222;
+    letter-spacing: 2px;
+    opacity: 0;
+    transition: opacity 0.7s ease-in-out;
+    white-space: nowrap;
+}
+
+.destination.active {
+    opacity: 1;
+}
+
+/* 号車表示 */
 .car-number {
     background-color: #555555;
     color: #ffffff;
@@ -73,6 +110,7 @@ body {
 .car-number .number { font-size: 28px; font-weight: bold; }
 .car-number .unit { font-size: 14px; margin-left: 4px; font-weight: bold; }
 
+/* --- 次駅案内エリア --- */
 .next-station-area {
     display: flex;
     align-items: center;
@@ -81,15 +119,33 @@ body {
     background-color: #ffffff;
 }
 
-.next-label {
-    font-size: 24px;
-    font-weight: bold;
-    color: #000;
+/* === 「つぎは / Next」（フェードアニメーション） === */
+.next-label-wrapper {
+    position: relative;
+    width: 90px;
+    height: 35px;
     margin-right: 20px;
     align-self: flex-end;
     margin-bottom: 25px;
 }
 
+.next-label {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #000;
+    opacity: 0;
+    transition: opacity 0.7s ease-in-out;
+    white-space: nowrap;
+}
+
+.next-label.active {
+    opacity: 1;
+}
+
+/* 駅ナンバリング */
 .station-number-box {
     border: 5px solid #009b65;
     border-radius: 8px;
@@ -105,15 +161,15 @@ body {
 .station-number-box .line-code { font-size: 16px; font-weight: bold; line-height: 1.1; color: #000; }
 .station-number-box .st-num { font-size: 32px; font-weight: bold; line-height: 1; color: #000; }
 
-/* === 駅名アニメーションエリア（行の高さ内に収める設定） === */
+/* === 駅名スライド表示エリア（0.7s） === */
 .station-name-wrapper {
     position: relative;
-    height: 85px; /* 行の高さに固定 */
+    height: 85px;
     display: flex;
     align-items: center;
     margin-left: 50px;
     flex-grow: 1;
-    overflow: hidden; /* 行の高さを超えるアニメーション要素をカット */
+    overflow: hidden;
 }
 
 .station-name {
@@ -126,58 +182,30 @@ body {
     pointer-events: none;
 }
 
-.station-name.ja {
-    font-size: 80px;
-    letter-spacing: 8px;
-}
+.station-name.ja { font-size: 80px; letter-spacing: 8px; }
+.station-name.en { font-size: 55px; letter-spacing: 4px; }
 
-.station-name.en {
-    font-size: 55px;
-    letter-spacing: 4px;
-}
-
-/* 通常静止状態 */
 .station-name.active {
     opacity: 1;
     transform: translateY(0) scaleY(1);
 }
 
-/* --- 上から下への一方通行キーフレームアニメーション --- */
-
-/* 退場：下に向かって潰れて消える */
 .station-name.exit-down {
     animation: animExitDown 0.7s ease-in forwards;
 }
 
-/* 登場：上から下へ広がりながら現れる */
 .station-name.enter-down {
     animation: animEnterDown 0.7s ease-out forwards;
 }
 
 @keyframes animExitDown {
-    0% {
-        transform: translateY(0) scaleY(1);
-        transform-origin: bottom;
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(5px) scaleY(0);
-        transform-origin: bottom;
-        opacity: 0;
-    }
+    0% { transform: translateY(0) scaleY(1); transform-origin: bottom; opacity: 1; }
+    100% { transform: translateY(5px) scaleY(0); transform-origin: bottom; opacity: 0; }
 }
 
 @keyframes animEnterDown {
-    0% {
-        transform: translateY(-15px) scaleY(0);
-        transform-origin: top;
-        opacity: 0;
-    }
-    100% {
-        transform: translateY(0) scaleY(1);
-        transform-origin: top;
-        opacity: 1;
-    }
+    0% { transform: translateY(-15px) scaleY(0); transform-origin: top; opacity: 0; }
+    100% { transform: translateY(0) scaleY(1); transform-origin: top; opacity: 1; }
 }
 
 /* セパレーター */
@@ -223,13 +251,42 @@ body {
     left: 0;
     width: 100%;
     height: 40px;
-    background: linear-gradient(to right, #009b65 0%, #009b65 89%, #888888 89%, #888888 100%);
+    background: linear-gradient(to right, #009b65 0%, #009b65 94%, #888888 94%, #888888 100%);
     clip-path: polygon(0 50%, 15px 0, 100% 0, 100% 100%, 15px 100%);
     z-index: 1;
 }
 
 .time-label { color: #fff; font-size: 18px; font-weight: bold; }
-.time-box { background-color: #dcdcdc; color: #000; width: 50px; height: 32px; display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: bold; font-family: 'Arial', sans-serif; border-radius: 2px; }
-.white-chevron { width: 16px; height: 16px; border-top: 6px solid #fff; border-right: 6px solid #fff; transform: rotate(-135deg); }
-.red-arrow { width: 0; height: 0; border-top: 20px solid transparent; border-bottom: 20px solid transparent; border-right: 30px solid #e60012; }
+
+.time-box {
+    background-color: #dcdcdc;
+    color: #000;
+    width: 50px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    font-family: 'Arial', sans-serif;
+    border-radius: 2px;
+}
+
+.white-chevron {
+    width: 16px;
+    height: 16px;
+    border-top: 6px solid #fff;
+    border-right: 6px solid #fff;
+    transform: rotate(-135deg);
+}
+
+.red-chevron {
+    width: 22px;
+    height: 22px;
+    border-top: 7px solid #e60012;
+    border-right: 7px solid #e60012;
+    transform: rotate(-135deg);
+    margin-left: 5px; 
+}
+
 .footer-note { position: absolute; bottom: 5px; right: 15px; font-size: 10px; color: #000; font-weight: bold; }
