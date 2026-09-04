@@ -46,8 +46,6 @@ body {
     width: 800px;
     height: 450px;
     background-color: #ffffff;
-    border: 12px solid #000;
-    border-radius: 8px;
     box-shadow: 0 5px 25px rgba(0,0,0,0.8);
     display: flex;
     flex-direction: column;
@@ -58,7 +56,7 @@ body {
 }
 
 .top-color-bar {
-    height: 10px;
+    height: 5px;
     background: 
         linear-gradient(to bottom, rgba(255,255,255,0.2), rgba(0,0,0,0.25)),
         linear-gradient(to right, rgba(0,0,0,0) 0%, var(--company-color) 15%, var(--company-color) 85%, rgba(0,0,0,0) 100%);
@@ -287,7 +285,7 @@ body {
 }
 
 .separator-bar {
-    height: 12px;
+    height: 5px;
     background: 
         linear-gradient(to bottom, rgba(255,255,255,0.2), rgba(0,0,0,0.25)),
         linear-gradient(to right, rgba(0,0,0,0) 0%, var(--separator-color) 15%, var(--separator-color) 85%, rgba(0,0,0,0) 100%);
@@ -535,3 +533,16 @@ footer .footer-link:hover {
     text-decoration: underline;
 }
 
+/* 画面幅に応じた全体縮小 */
+#app-wrapper {
+    width: 1080px; /* パネル等を含む基準幅 */
+    margin: 0 auto;
+    transform-origin: top center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+body {
+    overflow-x: hidden; /* 横スクロールバーを出さない */
+}

@@ -1,14 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     let stationData = [
-        { nameJa: "要町", nameEn: "Kanamecho", id: "F-08", time: "",  isPass: false },
-        { nameJa: "池袋", nameEn: "Ikebukuro", id: "F-09", time: "4", isPass: false  },
-        { nameJa: "雑司が谷", nameEn: "Zoshigaya", id: "F-10", time: "", isPass: true },
-        { nameJa: "西早稲田", nameEn: "Nishi-Waseda", id: "F-11", time: "", isPass: true },
-        { nameJa: "東新宿", nameEn: "Higashi-Shinjuku", id: "F-12", time: "", isPass: true },
-        { nameJa: "新宿三丁目", nameEn: "Shinjuku-Sanchome", id: "F-13", time: "10", isPass: false },
-        { nameJa: "北参道", nameEn: "Kita-Sando", id: "F-14", time: "", isPass: true },
-        { nameJa: "明治神宮前", nameEn: "Meiji-Jingumae", id: "F-15", time: "14", isPass: false }
+        { nameJa: "要町", nameEn: "Kanamecho", id: "F-08", time: "",  isPass: false, lowerShape: "circle", lowerColor: "#cc0000", isSync: true },
+        { nameJa: "池袋", nameEn: "Ikebukuro", id: "F-09", time: "4", isPass: false, lowerShape: "circle", lowerColor: "#cc0000", isSync: true  },
+        { nameJa: "雑司が谷", nameEn: "Zoshigaya", id: "F-10", time: "", isPass: true, lowerShape: "circle", lowerColor: "#cc0000", isSync: true },
+        { nameJa: "西早稲田", nameEn: "Nishi-Waseda", id: "F-11", time: "", isPass: true, lowerShape: "circle", lowerColor: "#cc0000", isSync: true },
+        { nameJa: "東新宿", nameEn: "Higashi-Shinjuku", id: "F-12", time: "", isPass: true, lowerShape: "circle", lowerColor: "#cc0000", isSync: true },
+        { nameJa: "新宿三丁目", nameEn: "Shinjuku-Sanchome", id: "F-13", time: "10", isPass: false, lowerShape: "circle", lowerColor: "#cc0000", isSync: true },
+        { nameJa: "北参道", nameEn: "Kita-Sando", id: "F-14", time: "", isPass: true, lowerShape: "circle", lowerColor: "#cc0000", isSync: true },
+        { nameJa: "明治神宮前", nameEn: "Meiji-Jingumae", id: "F-15", time: "14", isPass: false, lowerShape: "circle", lowerColor: "#cc0000", isSync: true }
     ];
 
     let currentState = 0;   
@@ -200,22 +200,29 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const idItem = document.getElementById(`route-st-id-${i}`);
+            const showLowerNum = document.getElementById('toggle-lower-numbering')?.checked ?? true;
+            const showLowerShape = document.getElementById('toggle-lower-shape')?.checked ?? true;
+
             if (idItem) {
                 idItem.className = `grid-item st-id row-2 ${st.isPass ? 'grey-text' : ''}`;
-                
-                if (!showNum) {
+                if (!showLowerNum) {
                     idItem.innerHTML = '';
                 } else {
                     const match = st.id.match(/^([A-Za-z]+)[-]([0-9A-Za-z]+)$/);
                     if (match && showLowerShape) {
+                        // 個別図形の半径を計算
+                        let r = '8px';
+                        if (st.lowerShape === 'square') r = '0px';
+                        if (st.lowerShape === 'circle') r = '50%';
+                        
                         idItem.innerHTML = `
-                            <div class="lower-number-box">
+                            <div class="lower-number-box" style="border-color: ${st.lowerColor}; border-radius: ${r};">
                                 <div class="lower-line-code">${match[1]}</div>
                                 <div class="lower-st-num">${match[2]}</div>
                             </div>
                         `;
+                        // 通過時はCSS（.grey-text）でグレーに上書き
                     } else {
-                        // 図形チェックが外れている場合、または正規表現に合わない場合は文字のみ表示
                         idItem.innerHTML = st.id;
                     }
                 }
@@ -350,30 +357,40 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('btn-sync-color')?.addEventListener('click', () => {
-        const baseColor = document.getElementById('input-company-color').value;
+        const baseTarget = document.getElementById('sync-base-target').value;
+        let baseColor = '';
+        if (baseTarget === 'company') baseColor = document.getElementById('input-company-color').value;
+        if (baseTarget === 'line') baseColor = document.getElementById('input-line-color').value;
+        if (baseTarget === 'separator') baseColor = document.getElementById('input-separator-color').value;
+        if (baseTarget === 'type') baseColor = document.getElementById('input-type-color').value;
         
-        if (document.getElementById('sync-separator').checked) {
+        if (document.getElementById('sync-company')?.checked && baseTarget !== 'company') {
+            document.getElementById('input-company-color').value = baseColor;
+            document.documentElement.style.setProperty('--company-color', baseColor);
+        }
+        if (document.getElementById('sync-separator')?.checked && baseTarget !== 'separator') {
             document.getElementById('input-separator-color').value = baseColor;
             document.documentElement.style.setProperty('--separator-color', baseColor);
         }
-        if (document.getElementById('sync-line').checked) {
+        if (document.getElementById('sync-line')?.checked && baseTarget !== 'line') {
             document.getElementById('input-line-color').value = baseColor;
             document.documentElement.style.setProperty('--line-color', baseColor);
         }
-        if (document.getElementById('sync-type').checked) {
+        if (document.getElementById('sync-type')?.checked && baseTarget !== 'type') {
             updateCustomTypeUI(null, null, baseColor, null, null);
         }
     });
 
-    // === 次駅ナンバリング＆図形表示トグル ===
+    // === 駅ナンバリング＆図形表示トグル ===
     document.getElementById('toggle-top-numbering')?.addEventListener('change', (e) => {
         const topNumberBox = document.getElementById('st-number-box');
-        if (topNumberBox) {
-            topNumberBox.style.display = e.target.checked ? 'flex' : 'none';
-        }
-        renderRouteMap();
+        if (topNumberBox) topNumberBox.style.display = e.target.checked ? 'flex' : 'none';
     });
 
+    document.getElementById('toggle-lower-numbering')?.addEventListener('change', () => {
+        renderRouteMap();
+    });
+    
     document.getElementById('toggle-lower-shape')?.addEventListener('change', () => {
         renderRouteMap();
     });
@@ -574,9 +591,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${idx + 1}</td>
-                <td><input type="text" value="${st.nameJa}" data-idx="${idx}" data-field="nameJa" style="width:90px;"></td>
-                <td><input type="text" value="${st.nameEn}" data-idx="${idx}" data-field="nameEn" style="width:90px;"></td>
-                <td><input type="text" value="${st.id}" data-idx="${idx}" data-field="id" style="width:70px;" placeholder="例: JA-01"></td>
+                <td><input type="text" value="${st.nameJa}" data-idx="${idx}" data-field="nameJa" style="width:70px;"></td>
+                <td><input type="text" value="${st.nameEn}" data-idx="${idx}" data-field="nameEn" style="width:70px;"></td>
+                <td><input type="text" value="${st.id}" data-idx="${idx}" data-field="id" style="width:55px;"></td>
+                <td>
+                    <select data-idx="${idx}" data-field="lowerShape" style="width:65px;">
+                        <option value="square" ${st.lowerShape === 'square' ? 'selected' : ''}>四角</option>
+                        <option value="rounded" ${st.lowerShape === 'rounded' ? 'selected' : ''}>角丸</option>
+                        <option value="circle" ${st.lowerShape === 'circle' ? 'selected' : ''}>丸</option>
+                    </select>
+                </td>
+                <td><input type="color" value="${st.lowerColor}" data-idx="${idx}" data-field="lowerColor" style="width:30px; height:24px; padding:0;"></td>
+                <td><input type="checkbox" ${st.isSync ? 'checked' : ''} data-idx="${idx}" data-field="isSync"></td>
                 <td><input type="text" value="${st.time}" data-idx="${idx}" data-field="time" style="width:40px;" ${idx === 0 ? 'disabled' : ''}></td>
                 <td><input type="checkbox" ${st.isPass ? 'checked' : ''} data-idx="${idx}" data-field="isPass" ${idx === 0 ? 'disabled' : ''}></td>
             `;
@@ -588,12 +614,60 @@ document.addEventListener('DOMContentLoaded', () => {
             const field = e.target.dataset.field;
             if (idx === undefined) return;
 
-            if (field === 'isPass') {
-                stationData[idx].isPass = e.target.checked;
+            if (field === 'isPass' || field === 'isSync') {
+                stationData[idx][field] = e.target.checked;
             } else {
                 stationData[idx][field] = e.target.value;
             }
             renderRouteMap();
         });
     }
+
+    // 【新規】個別の下部ナンバリングを一括同期するボタン処理
+    document.getElementById('btn-sync-lower-num')?.addEventListener('click', () => {
+        const mainColor = document.getElementById('input-line-color').value;
+        const mainShape = document.getElementById('select-shape').value;
+        stationData.forEach((st) => {
+            if (st.isSync) {
+                st.lowerColor = mainColor;
+                st.lowerShape = mainShape;
+            }
+        });
+        renderControlTable(); // パネルの表示を更新
+        renderRouteMap();     // モニターの表示を更新
+    });
+
+    // === 画面幅に合わせた全体自動縮小（レスポンシブ） ===
+    function adjustPageScale() {
+        const wrapper = document.getElementById('app-wrapper');
+        if (!wrapper) return;
+        const baseWidth = 1100; // パネル等を綺麗に収める基準幅
+        if (window.innerWidth < baseWidth) {
+            const scale = window.innerWidth / baseWidth;
+            wrapper.style.transform = `scale(${scale})`;
+        } else {
+            wrapper.style.transform = `scale(1)`;
+        }
+    }
+    window.addEventListener('resize', adjustPageScale);
+    adjustPageScale(); // 初期読み込み時にも実行
+
+    // === 画像ダウンロード機能 ===
+    document.getElementById('btn-download')?.addEventListener('click', () => {
+        const monitor = document.getElementById('lcd-monitor');
+        // scaleがかかっていると画像が切れるため一時的に1倍に戻す
+        const originalTransform = monitor.style.transform;
+        monitor.style.transform = 'scale(1)';
+        
+        // 少し待ってからキャプチャ（描画のズレ防止）
+        setTimeout(() => {
+            html2canvas(monitor, { scale: 2, backgroundColor: '#ffffff' }).then(canvas => {
+                monitor.style.transform = originalTransform || ''; // 元に戻す
+                const link = document.createElement('a');
+                link.download = 'train-vision.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }, 100);
+    });
 });

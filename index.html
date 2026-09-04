@@ -90,17 +90,30 @@
             <h2>トレインビジョン 設定パネル</h2>
             
             <div class="panel-section">
-                <h3>カラー設定・同期設定</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h3>カラー設定・同期設定</h3>
+                    <button type="button" id="btn-download" style="background-color:#0078d7;">📷 画像としてダウンロード</button>
+                </div>
+                
                 <div class="panel-row" style="margin-bottom: 8px;">
-                    <label>会社カラー (基準色): <input type="color" id="input-company-color" value="#cc0000"></label>
-                    <button type="button" id="btn-sync-color" style="margin-left: 20px;">✓チェックした箇所を会社カラーに同期</button>
+                    <label>同期の基準にする色: 
+                        <select id="sync-base-target">
+                            <option value="company">会社カラー</option>
+                            <option value="line">路線ライン・駅枠</option>
+                            <option value="separator">中央セパレーター</option>
+                            <option value="type">種別カラー</option>
+                        </select>
+                    </label>
+                    <button type="button" id="btn-sync-color" style="margin-left: 20px;">✓チェックした箇所へ一括同期</button>
                 </div>
                 <div class="panel-row" style="background: #333; padding: 8px; border-radius: 4px;">
-                    <label>中央セパレーター: <input type="color" id="input-separator-color" value="#cc0000"> <input type="checkbox" id="sync-separator" checked> 同期</label>
+                    <label>会社: <input type="color" id="input-company-color" value="#cc0000"> <input type="checkbox" id="sync-company"> 同期</label>
                     <span style="border-left: 1px solid #555; height: 20px;"></span>
-                    <label>路線ライン・駅枠: <input type="color" id="input-line-color" value="#cc0000"> <input type="checkbox" id="sync-line" checked> 同期</label>
+                    <label>セパレーター: <input type="color" id="input-separator-color" value="#cc0000"> <input type="checkbox" id="sync-separator" checked> 同期</label>
                     <span style="border-left: 1px solid #555; height: 20px;"></span>
-                    <label>種別カラー: <input type="color" id="input-type-color" value="#cc0000"> <input type="checkbox" id="sync-type"> 同期</label>
+                    <label>路線・駅: <input type="color" id="input-line-color" value="#cc0000"> <input type="checkbox" id="sync-line" checked> 同期</label>
+                    <span style="border-left: 1px solid #555; height: 20px;"></span>
+                    <label>種別: <input type="color" id="input-type-color" value="#cc0000"> <input type="checkbox" id="sync-type"> 同期</label>
                 </div>
             </div>
 
@@ -139,18 +152,15 @@
                     </div>
                     <div>
                         <h4>■ 次の駅名</h4>
-                        <label>漢字: <input type="text" id="input-st-kanji" value="池袋"></label>
-                        <label>ひらがな: <input type="text" id="input-st-kana" value="いけぶくろ"></label>
-                        <label>英語: <input type="text" id="input-st-en" value="Ikebukuro"></label>
-                        
                         <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #555;">
-                            <label><input type="checkbox" id="toggle-top-numbering" checked> 駅ナンバリングを表示 (上部・下部連動)</label>
-                            <div style="display:flex; gap:10px; margin-top: 4px; margin-bottom: 4px;">
-                                <label>記号: <input type="text" id="input-line-code" value="F" style="width:40px;"></label>
-                                <label>番号: <input type="text" id="input-st-num" value="09" style="width:40px;"></label>
-                            </div>
-                            <label><input type="checkbox" id="toggle-lower-shape"> 下部ナンバリングを図形で囲む (オフで文字のみ表示)</label>
+                        <label><input type="checkbox" id="toggle-top-numbering" checked> 上部: 駅ナンバリングを表示</label>
+                        <div style="display:flex; gap:10px; margin-top: 4px; margin-bottom: 4px;">
+                            <label>記号: <input type="text" id="input-line-code" value="F" style="width:40px;"></label>
+                            <label>番号: <input type="text" id="input-st-num" value="09" style="width:40px;"></label>
                         </div>
+                        <label><input type="checkbox" id="toggle-lower-numbering" checked> 下部: 駅ナンバリングを表示</label>
+                        <label><input type="checkbox" id="toggle-lower-shape" checked> └ 図形で囲む (オフで文字のみ)</label>
+                    </div>
                     </div>
                 </div>
                 
@@ -182,8 +192,11 @@
                                     <th>順</th>
                                     <th>漢字/かな</th>
                                     <th>英語</th>
-                                    <th>ナンバリング(ID-数字)</th>
-                                    <th>所要時間(分)</th>
+                                    <th>ナンバリングID</th>
+                                    <th>個別図形</th>
+                                    <th>個別色</th>
+                                    <th>同期</th>
+                                    <th>所要時間</th>
                                     <th>通過</th>
                                 </tr>
                             </thead>
@@ -202,16 +215,14 @@
             </div>
         </div>
 
-        <script src="./js/script.js"></script>
-
         <footer>
             <p class="copyright">&copy; 2026 ikkunN700S</p>
             <p id="site-version"></p>
             <a href="" id="share-link" class="footer-link">ページを共有する</a>
-
-            <script src="./js/version.js"></script>
-            <script src="./js/sharelink.js"></script>
         </footer>
     </div>
+    <script src="./js/script.js"></script>
+    <script src="./js/version.js"></script>
+    <script src="./js/sharelink.js"></script>
 </body>
 </html>
