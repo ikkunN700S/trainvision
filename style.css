@@ -386,7 +386,7 @@ body {
 .lower-number-box .lower-line-code { font-size: 10px; font-weight: bold; line-height: 1; color: #000; }
 .lower-number-box .lower-st-num { font-size: 16px; font-weight: bold; line-height: 1; color: #000; }
 
-.grey-text, .grey-text .st-name-inner, .gray-text .lower-line-code, .grey-text .lower-st-num { color: #999 !important; }
+.grey-text, .grey-text .st-name-inner, .grey-text .lower-line-code, .grey-text .lower-st-num { color: #999 !important; }
 .grey-text .lower-number-box { border-color: #999 !important; }
 
 .time-bar-bg {
@@ -502,3 +502,35 @@ button:hover { background-color: #00b878; }
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
 th, td { padding: 6px; text-align: center; border: 1px solid #444; }
 th { background-color: #333; color: #ddd; }
+
+/* フッター全体のコンテナ設定 */
+footer {
+    padding: 6px 10px;
+    font-size: 11px;
+    color: #999;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+footer p {
+    margin: 0;
+}
+
+footer #site-version {
+    color: #aaa;
+}
+
+/* リンク要素のデザイン */
+footer .footer-link {
+    color: #aaa;
+    text-decoration: none;
+}
+
+/* リンクにマウスを乗せた際の動き */
+footer .footer-link:hover {
+    color: #fff;
+    text-decoration: underline;
+}
