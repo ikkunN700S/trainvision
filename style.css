@@ -12,9 +12,12 @@
     --line-color: #009b65;
     --type-bg: #009b65;
     --type-text: #ffffff;
-    --type-border: none;
+    --type-text-shadow: none; /* 種別文字のアウトライン用 */
+    --car-bg-color: #202020;  /* 号車表示の背景色 */
     --numbering-radius: 8px;
-    --timebox-radius: 0px; /* 所要時間ボックス用追加 */
+    --timebox-width: 50px;    /* 所要時間ボックス用 */
+    --timebox-height: 32px;
+    --timebox-radius: 0px;
     --line-fill-percent: 94%;
 }
 
@@ -80,9 +83,8 @@ body {
         linear-gradient(var(--type-bg), var(--type-bg));
     background-color: var(--type-bg);
     border-radius: 0 0 6px 6px;
-    box-shadow: var(--type-border);
     overflow: hidden;
-    transition: background-image 0.3s, box-shadow 0.3s;
+    transition: background-image 0.3s;
 }
 
 .train-type {
@@ -95,6 +97,8 @@ body {
     align-items: center;
     justify-content: center;
     color: var(--type-text);
+    /* ここで文字自体に縁取りをつける */
+    text-shadow: var(--type-text-shadow);
     font-weight: bold;
     letter-spacing: 2px;
     opacity: 0;
@@ -133,17 +137,16 @@ body {
 .destination.en .inner { font-size: 20px; }
 .destination.active { opacity: 1; }
 
+/* === 号車表示の共通・切り替え設定 === */
 .car-number-wrapper {
     position: relative;
     width: 90px;
     height: 36px;
-    background-color: #202020;
     border-radius: 0 0 6px 6px;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
     overflow: hidden;
     flex-shrink: 0;
+    transition: background-color 0.3s, box-shadow 0.3s;
 }
-
 .car-number {
     position: absolute;
     width: 100%;
@@ -151,19 +154,46 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-right: 8px;
-    color: #ffffff;
     opacity: 0;
     transition: opacity 0.7s ease-in-out;
 }
-.car-number.en { padding-right: 0; }
 .car-number.active { opacity: 1; }
-.car-number .number-wrap { display: inline-flex; justify-content: center; align-items: center; width: 28px; }
+.car-number .number-wrap { display: inline-flex; justify-content: center; align-items: center; width: 28px; transition: background-color 0.3s; }
 .car-number .number { font-size: 24px; font-weight: bold; display: inline-block; transform-origin: center; }
 .car-number.kanji .unit, .car-number.kana .unit { font-size: 12px; margin-left: 1px; font-weight: bold; transform: translateY(3px); }
-.car-en-text { display: flex; flex-direction: column; font-size: 10px; font-weight: bold; line-height: 1.1; margin-right: 4px; text-align: left; }
+.car-en-text { display: flex; flex-direction: column; font-size: 10px; font-weight: bold; line-height: 1.1; text-align: left; }
 .car-number.en .number { font-size: 24px; font-weight: bold; }
 
+/* スタイル1：全体を塗る */
+.car-number-wrapper.style-full {
+    background-color: var(--car-bg-color);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+}
+.car-number-wrapper.style-full .car-number { padding-right: 8px; color: #ffffff; }
+.car-number-wrapper.style-full .car-number.en { padding-right: 0; }
+.car-number-wrapper.style-full .car-en-text { margin-right: 4px; }
+
+/* スタイル2：数字のみ塗り、その他は背景透過（黒文字） */
+.car-number-wrapper.style-number-only {
+    background-color: transparent;
+    box-shadow: none;
+}
+.car-number-wrapper.style-number-only .car-number { color: #222; }
+.car-number-wrapper.style-number-only .number-wrap {
+    background-color: var(--car-bg-color);
+    color: #fff; /* 背景がある数字部分は白文字 */
+    border-radius: 4px;
+    height: 28px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    margin-right: 4px;
+}
+.car-number-wrapper.style-number-only .car-number.en .number-wrap {
+    margin-right: 0;
+    margin-left: 6px; /* Car No. の横に少し隙間 */
+}
+
+
+/* 次駅案内エリア */
 .next-station-area {
     display: flex;
     align-items: center;
@@ -256,7 +286,6 @@ body {
     100% { transform: translateY(0) scaleY(1); transform-origin: top; opacity: 1; }
 }
 
-/* セパレーターカラーの適用 */
 .separator-bar {
     height: 12px;
     background: 
@@ -275,7 +304,6 @@ body {
 
 .route-map-grid {
     display: grid;
-    /* 駅全体を25px右へシフトするため、padding-leftを追加し、右端余白を調整 */
     padding-left: 25px;
     grid-template-columns: 48px repeat(8, 1fr) 55px;
     grid-template-rows: 120px 42px 40px; 
@@ -350,7 +378,6 @@ body {
 .grey-text, .grey-text .lower-line-code, .grey-text .lower-st-num { color: #999 !important; }
 .grey-text .lower-number-box { border-color: #999 !important; }
 
-/* 25pxの空白を作るために left と width を調整 */
 .time-bar-bg {
     position: absolute;
     bottom: 0;
@@ -374,12 +401,12 @@ body {
     margin-bottom: 2px;
 }
 
-/* 所要時間図形の変数を border-radius に適用 */
+/* 所要時間図形（幅と高さも変数で動的に制御） */
 .time-box {
     background: linear-gradient(to bottom, rgba(255,255,255,0.7) 0%, rgba(0,0,0,0.15) 100%), #ebebeb;
     color: #000;
-    width: 50px;
-    height: 32px;
+    width: var(--timebox-width);
+    height: var(--timebox-height);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -387,7 +414,7 @@ body {
     font-weight: bold;
     border-radius: var(--timebox-radius);
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    transition: border-radius 0.3s;
+    transition: width 0.3s, height 0.3s, border-radius 0.3s;
 }
 
 .white-chevron {
@@ -410,12 +437,12 @@ body {
 
 .time-box-bg {
     position: absolute;
-    width: 50px;
-    height: 32px;
+    width: var(--timebox-width);
+    height: var(--timebox-height);
     background: linear-gradient(to bottom, rgba(255,255,255,0.7) 0%, rgba(0,0,0,0.15) 100%), #ebebeb;
     border-radius: var(--timebox-radius);
     z-index: 1;
-    transition: border-radius 0.3s;
+    transition: width 0.3s, height 0.3s, border-radius 0.3s;
 }
 
 .red-chevron-large {

@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Train Vision Simulator</title>
-    <!-- Google Fonts: Noto Sans 読み込み -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -30,8 +29,8 @@
                 <div class="destination en" id="dest-en"><span class="inner">for Shinjuku</span></div>
             </div>
 
-            <!-- 号車表示 -->
-            <div class="car-number-wrapper">
+            <!-- 号車表示 (クラスでスタイルを切り替え) -->
+            <div class="car-number-wrapper style-full" id="car-wrapper">
                 <div class="car-number kanji active" id="car-kanji">
                     <span class="number-wrap"><span class="number" id="car-num-kanji">1</span></span><span class="unit">号車</span>
                 </div>
@@ -113,7 +112,7 @@
                         <label>英語: <input type="text" id="input-type-en" value="Local" style="width: 100%;"></label>
                         <div style="display: flex; gap: 10px; margin-top: 4px;">
                             <label>文字色: <input type="color" id="input-type-text" value="#ffffff"></label>
-                            <label><input type="checkbox" id="input-type-outline"> 文字色枠線</label>
+                            <label><input type="checkbox" id="input-type-outline"> 文字に縁取り(黒縁)</label>
                         </div>
                     </div>
                 </div>
@@ -123,8 +122,15 @@
                     <label>ひらがな: <input type="text" id="input-dest-kana" value="しんじゅく ゆき"></label>
                     <label>英語: <input type="text" id="input-dest-en" value="for Shinjuku"></label>
                     <br>
-                    <h4>■ その他の設定</h4>
-                    <label>号車番号: <input type="number" id="input-car-num" value="1" min="1" max="15" style="width:60px;"></label>
+                    <h4>■ 号車表示</h4>
+                    <label>番号: <input type="number" id="input-car-num" value="1" min="1" max="15" style="width:60px;"></label>
+                    <label>スタイル: 
+                        <select id="input-car-style">
+                            <option value="style-full">全体を背景色で塗る</option>
+                            <option value="style-number-only">数字のみ背景色で塗る</option>
+                        </select>
+                    </label>
+                    <label>背景色: <input type="color" id="input-car-bg" value="#202020"></label>
                 </div>
                 <div>
                     <h4>■ 次の駅名</h4>
@@ -133,7 +139,7 @@
                     <label>英語: <input type="text" id="input-st-en" value="SHINJUKU"></label>
                     
                     <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #555;">
-                        <label><input type="checkbox" id="toggle-top-numbering" checked> 次駅ナンバリングを表示</label>
+                        <label><input type="checkbox" id="toggle-top-numbering" checked> 駅ナンバリングを表示 (上部・下部連動)</label>
                         <div style="display:flex; gap:10px; margin-top: 4px;">
                             <label>記号: <input type="text" id="input-line-code" value="JA" style="width:40px;"></label>
                             <label>番号: <input type="text" id="input-st-num" value="01" style="width:40px;"></label>
@@ -154,7 +160,7 @@
                     <select id="select-timebox-shape">
                         <option value="square" selected>四角</option>
                         <option value="rounded">角丸</option>
-                        <option value="circle">丸</option>
+                        <option value="circle">丸(正円)</option>
                     </select>
                 </label>
             </div>
