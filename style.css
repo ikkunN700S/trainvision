@@ -7,13 +7,13 @@
 
 /* 基本設定 */
 :root {
-    --company-color: #009b65;
-    --separator-color: #009b65;
-    --line-color: #009b65;
-    --type-bg: #009b65;
+    --company-color: #cc0000;
+    --separator-color: #cc0000;
+    --line-color: #cc0000;
+    --type-bg: #cc0000;
     --type-text: #ffffff;
     --type-text-shadow: none; /* 種別文字のアウトライン用 */
-    --car-bg-color: #202020;  /* 号車表示の背景色 */
+    --car-bg-color: #383838;  /* 号車表示の背景色 */
     --numbering-radius: 8px;
     --timebox-width: 50px;    /* 所要時間ボックス用 */
     --timebox-height: 32px;
@@ -39,7 +39,7 @@ body {
 }
 
 .en, .en-st-name, .time-label, .time-box, .st-id, .line-code, .st-num, .car-en-text, .car-number .number, .lower-number-box {
-    font-family: 'Noto Sans', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+    font-family: sans-serif, 'Nimbus Sans', 'Meiryo';
 }
 
 #lcd-monitor {
@@ -375,7 +375,7 @@ body {
 .lower-number-box .lower-line-code { font-size: 10px; font-weight: bold; line-height: 1; color: #000; }
 .lower-number-box .lower-st-num { font-size: 16px; font-weight: bold; line-height: 1; color: #000; }
 
-.grey-text, .grey-text .lower-line-code, .grey-text .lower-st-num { color: #999 !important; }
+.grey-text, .grey-text .st-name-inner, .gray-text .lower-line-code, .grey-text .lower-st-num { color: #999 !important; }
 .grey-text .lower-number-box { border-color: #999 !important; }
 
 .time-bar-bg {

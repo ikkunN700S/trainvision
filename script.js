@@ -1,14 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     let stationData = [
-        { nameJa: "一駅目", nameEn: "STATION 1", id: "JA-01", time: "",  isPass: false },
-        { nameJa: "二駅目", nameEn: "STATION 2", id: "JA-02", time: "10", isPass: true  },
-        { nameJa: "三駅目", nameEn: "STATION 3", id: "JA-03", time: "10", isPass: false },
-        { nameJa: "四駅目", nameEn: "STATION 4", id: "JA-04", time: "15", isPass: false },
-        { nameJa: "五駅目", nameEn: "STATION 5", id: "JA-05", time: "20", isPass: false },
-        { nameJa: "六駅目", nameEn: "STATION 6", id: "JA-06", time: "25", isPass: false },
-        { nameJa: "七駅目", nameEn: "STATION 7", id: "JA-07", time: "30", isPass: false },
-        { nameJa: "八駅目", nameEn: "STATION 8", id: "JA-08", time: "35", isPass: false }
+        { nameJa: "要町", nameEn: "Kanamecho", id: "F-08", time: "",  isPass: false },
+        { nameJa: "池袋", nameEn: "Ikebukuro", id: "F-09", time: "4", isPass: false  },
+        { nameJa: "雑司が谷", nameEn: "Zoshigaya", id: "F-10", time: "", isPass: true },
+        { nameJa: "西早稲田", nameEn: "Nishi-Waseda", id: "F-11", time: "", isPass: true },
+        { nameJa: "東新宿", nameEn: "Higashi-Shinjuku", id: "F-12", time: "", isPass: true },
+        { nameJa: "新宿三丁目", nameEn: "Shinjuku-Sanchome", id: "F-13", time: "10", isPass: false },
+        { nameJa: "北参道", nameEn: "Kita-Sando", id: "F-14", time: "", isPass: true },
+        { nameJa: "明治神宮前", nameEn: "Meiji-Jingumae", id: "F-15", time: "14", isPass: false }
     ];
 
     let currentState = 0;   
@@ -382,6 +382,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (shape === 'circle') radius = '50%';
             document.documentElement.style.setProperty('--numbering-radius', radius);
         });
+        // 初期読み込み時に反映
+        selectShape.dispatchEvent(new Event('change'));
     }
 
     const selectTimeboxShape = document.getElementById('select-timebox-shape');
@@ -402,6 +404,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.documentElement.style.setProperty('--timebox-radius', '50%');
             }
         });
+        // 初期読み込み時に反映
+        selectTimeboxShape.dispatchEvent(new Event('change'));
     }
 
 
@@ -500,11 +504,15 @@ document.addEventListener('DOMContentLoaded', () => {
         carStyleSelect.addEventListener('change', (e) => {
             carWrapper.className = `car-number-wrapper ${e.target.value}`;
         });
+        // 初期読み込み時に反映
+        carStyleSelect.dispatchEvent(new Event('change'));
     }
     if (carBgInput) {
         carBgInput.addEventListener('input', (e) => {
             document.documentElement.style.setProperty('--car-bg-color', e.target.value);
         });
+        // 初期読み込み時に反映
+        carBgInput.dispatchEvent(new Event('input'));
     }
 
     // === その他のUI連動設定 ===
