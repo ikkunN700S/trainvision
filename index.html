@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=1100">
     <link rel="icon" href="./img/favicon/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="./img/favicon/apple-touch-icon-180x180.png">
     <link rel="icon" type="image/png" sizes="256x256" href="./img/favicon/android-chrome-256x256.png">
@@ -92,15 +92,15 @@
             <div class="panel-section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                     <h3>カラー設定・同期設定</h3>
-                    <button type="button" id="btn-download" style="background-color:#0078d7;">📷 画像としてダウンロード</button>
+                    <button type="button" id="btn-download" style="background-color:#0078d7;">画像としてダウンロード</button>
                 </div>
                 
                 <div class="panel-row" style="margin-bottom: 8px;">
                     <label>同期の基準にする色: 
                         <select id="sync-base-target">
                             <option value="company">会社カラー</option>
-                            <option value="line">路線ライン・駅枠</option>
                             <option value="separator">中央セパレーター</option>
+                            <option value="line">路線ライン・駅枠</option>
                             <option value="type">種別カラー</option>
                         </select>
                     </label>
@@ -159,7 +159,7 @@
                             <label>番号: <input type="text" id="input-st-num" value="09" style="width:40px;"></label>
                         </div>
                         <label><input type="checkbox" id="toggle-lower-numbering" checked> 下部: 駅ナンバリングを表示</label>
-                        <label><input type="checkbox" id="toggle-lower-shape" checked> └ 図形で囲む (オフで文字のみ)</label>
+                        <label><input type="checkbox" id="toggle-lower-shape"> └ 図形で囲む (オフで文字のみ)</label>
                     </div>
                     </div>
                 </div>

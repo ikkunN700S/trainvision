@@ -637,21 +637,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderRouteMap();     // モニターの表示を更新
     });
 
-    // === 画面幅に合わせた全体自動縮小（レスポンシブ） ===
-    function adjustPageScale() {
-        const wrapper = document.getElementById('app-wrapper');
-        if (!wrapper) return;
-        const baseWidth = 1100; // パネル等を綺麗に収める基準幅
-        if (window.innerWidth < baseWidth) {
-            const scale = window.innerWidth / baseWidth;
-            wrapper.style.transform = `scale(${scale})`;
-        } else {
-            wrapper.style.transform = `scale(1)`;
-        }
-    }
-    window.addEventListener('resize', adjustPageScale);
-    adjustPageScale(); // 初期読み込み時にも実行
-
     // === 画像ダウンロード機能 ===
     document.getElementById('btn-download')?.addEventListener('click', () => {
         const monitor = document.getElementById('lcd-monitor');
