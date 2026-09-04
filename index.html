@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./img/favicon/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="./img/favicon/apple-touch-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="256x256" href="./img/favicon/android-chrome-256x256.png">
     <title>Train Vision Simulator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -144,7 +147,7 @@
                             <label>記号: <input type="text" id="input-line-code" value="F" style="width:40px;"></label>
                             <label>番号: <input type="text" id="input-st-num" value="09" style="width:40px;"></label>
                         </div>
-                        <label><input type="checkbox" id="toggle-lower-shape" checked> 下部ナンバリングを図形で囲む (オフで文字のみ表示)</label>
+                        <label><input type="checkbox" id="toggle-lower-shape"> 下部ナンバリングを図形で囲む (オフで文字のみ表示)</label>
                     </div>
                 </div>
             </div>
@@ -197,6 +200,15 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="./js/script.js"></script>
+
+    <footer>
+        <p class="copyright">&copy; 2026 ikkunN700S</p>
+        <p id="site-version"></p>
+        <a href="" id="share-link" class="footer-link">ページを共有する</a>
+
+        <script src="./js/version.js"></script>
+        <script src="./js/sharelink.js"></script>
+    </footer>
 </body>
 </html>

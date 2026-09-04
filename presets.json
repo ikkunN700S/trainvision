@@ -200,7 +200,7 @@
         "outline": false
       },
       {
-        "ja": "区急",
+        "ja": "区間急行",
         "en": "Sub-Exp.",
         "bg": "#32cd32",
         "text": "#ffffff",
@@ -214,7 +214,7 @@
         "outline": false
       },
       {
-        "ja": "快急",
+        "ja": "快速急行",
         "en": "Rapid-Exp.",
         "bg": "#cf31ff",
         "text": "#ffffff",
