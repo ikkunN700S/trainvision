@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Train Vision Simulator</title>
+    <!-- Google Fonts: Noto Sans 読み込み -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -11,22 +12,22 @@
 </head>
 <body>
     <div id="lcd-monitor">
-        <!-- 会社カラーライン（独立） -->
+        <!-- 会社カラーライン -->
         <div class="top-color-bar"></div>
         <header class="header-info">
             
             <!-- 種別 -->
             <div class="train-type-wrapper">
-                <div class="train-type kanji active" id="type-kanji"><span class="inner">普通</span></div>
-                <div class="train-type kana" id="type-kana"><span class="inner">普通</span></div>
+                <div class="train-type kanji active" id="type-kanji"><span class="inner">各駅停車</span></div>
+                <div class="train-type kana" id="type-kana"><span class="inner">各駅停車</span></div>
                 <div class="train-type en" id="type-en"><span class="inner">Local</span></div>
             </div>
 
             <!-- 行き先 -->
             <div class="destination-wrapper">
-                <div class="destination kanji active" id="dest-kanji"><span class="inner">浜松 行</span></div>
-                <div class="destination kana" id="dest-kana"><span class="inner">はままつ ゆき</span></div>
-                <div class="destination en" id="dest-en"><span class="inner">for Hamamatsu</span></div>
+                <div class="destination kanji active" id="dest-kanji"><span class="inner">新宿 行</span></div>
+                <div class="destination kana" id="dest-kana"><span class="inner">しんじゅく ゆき</span></div>
+                <div class="destination en" id="dest-en"><span class="inner">for Shinjuku</span></div>
             </div>
 
             <!-- 号車表示 -->
@@ -50,20 +51,20 @@
         <!-- 次駅案内 -->
         <div class="next-station-area">
             <div class="next-label-wrapper">
-                <div class="next-label kanji active" id="next-kanji"><span class="inner">次は</span></div>
+                <div class="next-label kanji active" id="next-kanji"><span class="inner">つぎは</span></div>
                 <div class="next-label kana" id="next-kana"><span class="inner">つぎは</span></div>
                 <div class="next-label en" id="next-en"><span class="inner">Next</span></div>
             </div>
 
             <div class="station-number-box" id="st-number-box">
-                <div class="line-code" id="st-line-code">CA</div>
-                <div class="st-num" id="st-num-val">41</div>
+                <div class="line-code" id="st-line-code">JA</div>
+                <div class="st-num" id="st-num-val">01</div>
             </div>
             
             <div class="station-name-wrapper" id="station-name-wrapper">
-                <div class="station-name kanji active" id="st-kanji"><span class="inner">二川</span></div>
-                <div class="station-name kana" id="st-kana"><span class="inner">ふたがわ</span></div>
-                <div class="station-name en" id="st-en"><span class="inner">Futagawa</span></div>
+                <div class="station-name kanji active" id="st-kanji"><span class="inner">新宿</span></div>
+                <div class="station-name kana" id="st-kana"><span class="inner">しんじゅく</span></div>
+                <div class="station-name en" id="st-en"><span class="inner">SHINJUKU</span></div>
             </div>
         </div>
         
@@ -74,8 +75,8 @@
             <div class="route-map-grid" id="route-map-grid">
                 <!-- JavaScriptで動的生成 -->
             </div>
-            <div class="footer-note">
-                運転状況により、多少時間は異なります。
+            <div class="footer-note" id="footer-note-display">
+                <!-- 案内テキスト -->
             </div>
         </main>
     </div>
@@ -85,50 +86,74 @@
         <h2>トレインビジョン 設定パネル</h2>
         
         <div class="panel-section">
-            <h3>カラー設定</h3>
-            <div class="panel-row">
-                <label>会社カラー: <input type="color" id="input-company-color" value="#ed6d00"></label>
-                <label>路線カラー: <input type="color" id="input-line-color" value="#ed6d00"></label>
-                <button type="button" id="btn-sync-color">全ての色を同期</button>
+            <h3>カラー設定・同期設定</h3>
+            <div class="panel-row" style="margin-bottom: 8px;">
+                <label>会社カラー (基準色): <input type="color" id="input-company-color" value="#009b65"></label>
+                <button type="button" id="btn-sync-color" style="margin-left: 20px;">✓チェックした箇所を会社カラーに同期</button>
+            </div>
+            <div class="panel-row" style="background: #333; padding: 8px; border-radius: 4px;">
+                <label>中央セパレーター: <input type="color" id="input-separator-color" value="#009b65"> <input type="checkbox" id="sync-separator" checked> 同期</label>
+                <span style="border-left: 1px solid #555; height: 20px;"></span>
+                <label>路線ライン・駅枠: <input type="color" id="input-line-color" value="#009b65"> <input type="checkbox" id="sync-line" checked> 同期</label>
+                <span style="border-left: 1px solid #555; height: 20px;"></span>
+                <label>種別カラー: <input type="color" id="input-type-color" value="#009b65"> <input type="checkbox" id="sync-type"> 同期</label>
             </div>
         </div>
 
         <div class="panel-section">
-            <h3>表示テキスト設定</h3>
+            <h3>基本テキスト設定</h3>
             <div class="panel-grid-3">
-                <div class="custom-type-panel">
-                    <h4>種別設定 (プリセット or カスタム)</h4>
-                    <div style="margin-bottom:8px;">
-                        <select id="preset-select" style="width:100%; margin-bottom:4px;">
-                            <option value="">プリセットを読み込み中...</option>
-                        </select>
-                        <select id="type-select" style="width:100%;">
-                            <option value="">-</option>
-                        </select>
+                <div class="custom-type-panel" style="background: #111; padding: 10px; border-radius: 6px;">
+                    <h4>■ 種別設定 (プリセット or カスタム)</h4>
+                    <select id="preset-select" style="width:100%; margin-bottom:4px;"><option value="">読込中...</option></select>
+                    <select id="type-select" style="width:100%; margin-bottom:10px;"><option value="">-</option></select>
+                    
+                    <div id="custom-type-inputs" style="display: flex; flex-direction: column; gap: 4px;">
+                        <label>漢字(かな): <input type="text" id="input-type-kanji" value="各駅停車" style="width: 100%;"></label>
+                        <label>英語: <input type="text" id="input-type-en" value="Local" style="width: 100%;"></label>
+                        <div style="display: flex; gap: 10px; margin-top: 4px;">
+                            <label>文字色: <input type="color" id="input-type-text" value="#ffffff"></label>
+                            <label><input type="checkbox" id="input-type-outline"> 文字色枠線</label>
+                        </div>
                     </div>
-                    <button type="button" id="btn-custom-type" style="width:100%;">手動でカスタム設定する</button>
                 </div>
                 <div>
-                    <h4>行先</h4>
-                    <label>漢字: <input type="text" id="input-dest-kanji" value="浜松 行"></label>
-                    <label>ひらがな: <input type="text" id="input-dest-kana" value="はままつ ゆき"></label>
-                    <label>英語: <input type="text" id="input-dest-en" value="for Hamamatsu"></label>
+                    <h4>■ 行先</h4>
+                    <label>漢字: <input type="text" id="input-dest-kanji" value="新宿 行"></label>
+                    <label>ひらがな: <input type="text" id="input-dest-kana" value="しんじゅく ゆき"></label>
+                    <label>英語: <input type="text" id="input-dest-en" value="for Shinjuku"></label>
+                    <br>
+                    <h4>■ その他の設定</h4>
+                    <label>号車番号: <input type="number" id="input-car-num" value="1" min="1" max="15" style="width:60px;"></label>
                 </div>
                 <div>
-                    <h4>次の駅名</h4>
-                    <label>漢字: <input type="text" id="input-st-kanji" value="二川"></label>
-                    <label>ひらがな: <input type="text" id="input-st-kana" value="ふたがわ"></label>
-                    <label>英語: <input type="text" id="input-st-en" value="Futagawa"></label>
+                    <h4>■ 次の駅名</h4>
+                    <label>漢字: <input type="text" id="input-st-kanji" value="新宿"></label>
+                    <label>ひらがな: <input type="text" id="input-st-kana" value="しんじゅく"></label>
+                    <label>英語: <input type="text" id="input-st-en" value="SHINJUKU"></label>
+                    
+                    <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #555;">
+                        <label><input type="checkbox" id="toggle-top-numbering" checked> 次駅ナンバリングを表示</label>
+                        <div style="display:flex; gap:10px; margin-top: 4px;">
+                            <label>記号: <input type="text" id="input-line-code" value="JA" style="width:40px;"></label>
+                            <label>番号: <input type="text" id="input-st-num" value="01" style="width:40px;"></label>
+                        </div>
+                    </div>
                 </div>
             </div>
+            
             <div class="panel-row" style="margin-top:10px;">
-                <label>号車番号: <input type="number" id="input-car-num" value="1" min="1" max="15" style="width:60px;"></label>
-                <label>駅記号: <input type="text" id="input-line-code" value="JA" style="width:60px;"></label>
-                <label>駅番号: <input type="text" id="input-st-num" value="01" style="width:60px;"></label>
-                <label>ナンバリング図形: 
+                <label>駅ナンバリング図形: 
                     <select id="select-shape">
                         <option value="square">正方形</option>
                         <option value="rounded" selected>角丸正方形</option>
+                        <option value="circle">丸</option>
+                    </select>
+                </label>
+                <label style="margin-left:20px;">所要時間ボックス図形: 
+                    <select id="select-timebox-shape">
+                        <option value="square" selected>四角</option>
+                        <option value="rounded">角丸</option>
                         <option value="circle">丸</option>
                     </select>
                 </label>
@@ -136,43 +161,31 @@
         </div>
 
         <div class="panel-section">
-            <h3>1〜8駅目の停車駅・所要時間設定</h3>
-            <div class="table-scroll">
-                <table id="stations-table">
-                    <thead>
-                        <tr>
-                            <th>順</th>
-                            <th>漢字/かな</th>
-                            <th>英語</th>
-                            <th>ナンバリング</th>
-                            <th>所要時間(分)</th>
-                            <th>通過</th>
-                        </tr>
-                    </thead>
-                    <tbody id="stations-table-body">
-                        <!-- JSで動的生成 -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- 種別カスタム用ポップアップ(モーダル) -->
-    <div id="type-modal" class="modal">
-        <div class="modal-content">
-            <h3>種別 カスタム設定</h3>
-            <div class="modal-body">
-                <label>漢字 (かな共通): <input type="text" id="modal-type-kanji" style="width:100%;"></label>
-                <label>英語: <input type="text" id="modal-type-en" style="width:100%;"></label>
-                <div style="display:flex; gap:10px; margin-top:10px;">
-                    <label>背景色: <input type="color" id="modal-type-bg"></label>
-                    <label>文字色: <input type="color" id="modal-type-text"></label>
+            <h3>1〜8駅目の停車駅・右下案内テキスト設定</h3>
+            <div style="display: flex; gap: 20px;">
+                <div class="table-scroll" style="flex: 2;">
+                    <table id="stations-table">
+                        <thead>
+                            <tr>
+                                <th>順</th>
+                                <th>漢字/かな</th>
+                                <th>英語</th>
+                                <th>ナンバリング(ID-数字)</th>
+                                <th>所要時間(分)</th>
+                                <th>通過</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stations-table-body">
+                            <!-- JSで動的生成 -->
+                        </tbody>
+                    </table>
                 </div>
-                <label style="margin-top:10px;"><input type="checkbox" id="modal-type-outline"> 枠線を付ける (文字色と同色)</label>
-            </div>
-            <div class="modal-footer">
-                <button type="button" id="modal-save">保存</button>
-                <button type="button" id="modal-close" style="background-color:#777;">キャンセル</button>
+                <div style="flex: 1;">
+                    <h4>右下案内テキスト (改行で複数行入力)</h4>
+                    <p style="font-size:10px; color:#aaa; margin-bottom:4px;">※2行ずつ、5秒間隔で切り替わります</p>
+                    <textarea id="input-footer-note" rows="8" style="width: 100%; background: #333; color: #fff; border: 1px solid #555; padding: 6px; font-size: 12px; resize: vertical;">のりかえ、待ち合わせ時間は含まれません。
+電車により多少時間は異なります。</textarea>
+                </div>
             </div>
         </div>
     </div>
