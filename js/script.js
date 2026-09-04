@@ -658,8 +658,58 @@ document.addEventListener('DOMContentLoaded', () => {
     // === 画像ダウンロード機能 ===
     document.getElementById('btn-download')?.addEventListener('click', () => {
         const monitor = document.getElementById('lcd-monitor');
-        // scale操作を削除し、そのままキャプチャさせる
-        html2canvas(monitor, { scale: 2, backgroundColor: '#ffffff' }).then(canvas => {
+
+        html2canvas(monitor, { 
+            scale: 2, 
+            backgroundColor: '#ffffff',
+            onclone: (clonedDoc) => {
+                // ① 見切れ対策：裏画面だけ全体の縮小を解除
+                const clonedMonitor = clonedDoc.getElementById('lcd-monitor');
+                if (clonedMonitor) clonedMonitor.style.transform = 'none';
+
+                // ② 縦書きズレ＆はみ出し対策：
+                // 元の画面で計算された縮小率を読み取り、裏画面の文字サイズに直接適用する
+                const originalMonitor = document.getElementById('lcd-monitor');
+                const originalJaNames = originalMonitor.querySelectorAll('.st-name-inner.ja-st-name');
+                const clonedJaNames = clonedDoc.querySelectorAll('.st-name-inner.ja-st-name');
+
+                clonedJaNames.forEach((el, index) => {
+                    const origEl = originalJaNames[index];
+                    
+                    // 元の要素に適用されている縮小率(scaleY)を取得
+                    const transformStr = origEl.style.transform || '';
+                    let scaleY = 1;
+                    const match = transformStr.match(/scaleY\(([0-9.]+)\)/);
+                    if (match) scaleY = parseFloat(match[1]);
+
+                    // html2canvasのバグを避けるため、縦書き設定と変形を解除
+                    el.style.writingMode = 'horizontal-tb';
+                    el.style.transform = 'none'; 
+                    el.style.textAlign = 'center';
+                    el.style.lineHeight = '1';
+
+                    // 縮小率をフォントサイズと文字間隔に掛け算する
+                    const newFontSize = 26 * scaleY;
+                    const newSpacing = 4 * scaleY;
+
+                    // 文字を1文字ずつのブロック(div)にして縦に積む
+                    const text = origEl.textContent;
+                    el.innerHTML = '';
+                    for (const char of text) {
+                        const span = clonedDoc.createElement('div');
+                        span.textContent = char;
+                        span.style.fontSize = `${newFontSize}px`;
+                        span.style.marginBottom = `${newSpacing}px`;
+                        
+                        // 長音符（ー）だけは縦向きに回転させる
+                        if (char === 'ー') {
+                            span.style.transform = 'rotate(90deg)';
+                        }
+                        el.appendChild(span);
+                    }
+                });
+            }
+        }).then(canvas => {
             const link = document.createElement('a');
             link.download = 'train-vision.png';
             link.href = canvas.toDataURL('image/png');
