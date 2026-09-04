@@ -126,15 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const grid = document.getElementById('route-map-grid');
         if (!grid) return;
 
-        const showNum = document.getElementById('toggle-top-numbering')?.checked ?? true;
-        const showLowerShape = document.getElementById('toggle-lower-shape')?.checked ?? true;
-
-        if (showNum) {
-            grid.classList.remove('hide-numbering');
-        } else {
-            grid.classList.add('hide-numbering');
-        }
-
         if (!isRouteMapInitialized) {
             grid.innerHTML = '';
             const bg = document.createElement('div');
@@ -188,6 +179,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const timeLabel = document.getElementById('route-time-label');
         if (timeLabel) timeLabel.textContent = isRouteEn ? 'min' : '分';
 
+        // ナンバリングの表示・非表示フラグを取得
+        const showNum = document.getElementById('toggle-top-numbering')?.checked ?? true;
+
         for (let i = 7; i >= 0; i--) {
             const st = stationData[i];
             
@@ -204,10 +198,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 idItem.className = `grid-item st-id row-2 ${st.isPass ? 'grey-text' : ''}`;
                 
                 if (!showNum) {
+                    // チェックが外れている時は下部ナンバリングも非表示にする
                     idItem.innerHTML = '';
                 } else {
                     const match = st.id.match(/^([A-Za-z]+)[-]([0-9A-Za-z]+)$/);
-                    if (match && showLowerShape) {
+                    if (match) {
                         idItem.innerHTML = `
                             <div class="lower-number-box">
                                 <div class="lower-line-code">${match[1]}</div>
@@ -215,7 +210,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             </div>
                         `;
                     } else {
-                        // 図形チェックが外れている場合、または正規表現に合わない場合は文字のみ表示
                         idItem.innerHTML = st.id;
                     }
                 }
@@ -237,6 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (redChevronElem) {
             setTimeout(() => {
                 const lineStartOffset = 25; 
+                // 【改良】赤矢印セルの中央座標を計算し、そこを基準に手前（右）をグレー化する
                 const centerPos = redChevronElem.offsetLeft + (redChevronElem.offsetWidth / 2) - lineStartOffset;
                 const lineWidth = grid.offsetWidth - lineStartOffset;
                 const pct = (centerPos / lineWidth) * 100;
@@ -294,6 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function adjustAllFittedTexts() {
+        // 【改良】種別表示(train-type)のみ、左右の余白を多め(24px)に確保して早めに縮小させる
         const horizontalFits = [
             { nodes: document.querySelectorAll('.train-type .inner'), margin: 24 }, 
             { nodes: document.querySelectorAll('.destination .inner'), margin: 0 },
@@ -308,6 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!parent) return;
                 inner.style.transform = 'scaleX(1)';
                 const parentWidth = parent.clientWidth;
+                // 余白分を引いたサイズを許可最大幅とする
                 const allowedWidth = parentWidth - fit.margin;
                 const innerWidth = inner.scrollWidth;
                 
@@ -365,16 +362,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // === 次駅ナンバリング＆図形表示トグル ===
+    // === 次駅ナンバリング表示トグル ===
     document.getElementById('toggle-top-numbering')?.addEventListener('change', (e) => {
         const topNumberBox = document.getElementById('st-number-box');
         if (topNumberBox) {
             topNumberBox.style.display = e.target.checked ? 'flex' : 'none';
         }
-        renderRouteMap();
-    });
-
-    document.getElementById('toggle-lower-shape')?.addEventListener('change', () => {
+        // チェック切り替え時に下部路線図も再レンダリングして反映
         renderRouteMap();
     });
 
@@ -388,6 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (shape === 'circle') radius = '50%';
             document.documentElement.style.setProperty('--numbering-radius', radius);
         });
+        // 初期読み込み時に反映
         selectShape.dispatchEvent(new Event('change'));
     }
 
@@ -409,6 +404,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.documentElement.style.setProperty('--timebox-radius', '50%');
             }
         });
+        // 初期読み込み時に反映
         selectTimeboxShape.dispatchEvent(new Event('change'));
     }
 
@@ -508,12 +504,14 @@ document.addEventListener('DOMContentLoaded', () => {
         carStyleSelect.addEventListener('change', (e) => {
             carWrapper.className = `car-number-wrapper ${e.target.value}`;
         });
+        // 初期読み込み時に反映
         carStyleSelect.dispatchEvent(new Event('change'));
     }
     if (carBgInput) {
         carBgInput.addEventListener('input', (e) => {
             document.documentElement.style.setProperty('--car-bg-color', e.target.value);
         });
+        // 初期読み込み時に反映
         carBgInput.dispatchEvent(new Event('input'));
     }
 
