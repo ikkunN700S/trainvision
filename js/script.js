@@ -684,7 +684,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // html2canvasのバグを避けるため、縦書き設定と変形を解除
                     el.style.writingMode = 'horizontal-tb';
-                    el.style.transform = 'none'; 
+                    el.style.position = 'absolute';
+                    el.style.bottom = '2px';
+                    el.style.left = '50%';
+                    el.style.transform = 'translateX(-50%)';
                     el.style.textAlign = 'center';
                     el.style.lineHeight = '1';
 
