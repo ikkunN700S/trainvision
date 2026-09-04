@@ -61,8 +61,8 @@
                 </div>
 
                 <div class="station-number-box" id="st-number-box">
-                    <div class="line-code" id="st-line-code">F</div>
-                    <div class="st-num" id="st-num-val">09</div>
+                    <div class="line-code" id="st-line-code"><span class="inner">F</span></div>
+                    <div class="st-num" id="st-num-val"><span class="inner">09</span></div>
                 </div>
                 
                 <div class="station-name-wrapper" id="station-name-wrapper">
@@ -188,6 +188,21 @@
 
             <div class="panel-section">
                 <h3>1〜8駅目の停車駅・右下案内テキスト設定</h3>
+                <div style="margin-bottom: 5px; display: flex; gap: 10px; align-items: center;">
+                    <label>基準駅: 
+                        <select id="sync-lower-base-idx">
+                            <option value="0">1駅目</option>
+                            <option value="1">2駅目</option>
+                            <option value="2">3駅目</option>
+                            <option value="3">4駅目</option>
+                            <option value="4">5駅目</option>
+                            <option value="5">6駅目</option>
+                            <option value="6">7駅目</option>
+                            <option value="7">8駅目</option>
+                        </select>
+                    </label>
+                    <button type="button" id="btn-sync-lower-num" style="background-color:#e68a00;">✓ 基準駅の図形・色を同期チェック項目へ反映</button>
+                </div>
                 <div style="display: flex; gap: 20px;">
                     <div class="table-scroll" style="flex: 2;">
                         <table id="stations-table">

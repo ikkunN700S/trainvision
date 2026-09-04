@@ -126,10 +126,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const grid = document.getElementById('route-map-grid');
         if (!grid) return;
 
-        const showNum = document.getElementById('toggle-top-numbering')?.checked ?? true;
+        const showLowerNum = document.getElementById('toggle-lower-numbering')?.checked ?? true;
         const showLowerShape = document.getElementById('toggle-lower-shape')?.checked ?? true;
 
-        if (showNum) {
+        if (showLowerNum) {
             grid.classList.remove('hide-numbering');
         } else {
             grid.classList.add('hide-numbering');
@@ -139,6 +139,11 @@ document.addEventListener('DOMContentLoaded', () => {
             grid.innerHTML = '';
             const bg = document.createElement('div');
             bg.className = 'time-bar-bg';
+            bg.innerHTML = `
+                <div class="time-bar-fill"></div>
+                <div class="time-bar-mask-top"></div>
+                <div class="time-bar-mask-bottom"></div>
+            `;
             grid.appendChild(bg);
 
             const emptyRow1 = document.createElement('div');
@@ -217,13 +222,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         
                         idItem.innerHTML = `
                             <div class="lower-number-box" style="border-color: ${st.lowerColor}; border-radius: ${r};">
-                                <div class="lower-line-code">${match[1]}</div>
-                                <div class="lower-st-num">${match[2]}</div>
+                                <div class="lower-line-code"><span class="inner">${match[1]}</span></div>
+                                <div class="lower-st-num"><span class="inner">${match[2]}</span></div>
                             </div>
                         `;
-                        // 通過時はCSS（.grey-text）でグレーに上書き
                     } else {
-                        idItem.innerHTML = st.id;
+                        idItem.innerHTML = `<span class="inner">${st.id}</span>`;
                     }
                 }
             }
@@ -234,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (st.isPass) {
                         timeItem.innerHTML = `<div class="white-chevron"></div>`;
                     } else {
-                        timeItem.innerHTML = `<div class="time-box">${st.time}</div>`;
+                        timeItem.innerHTML = `<div class="time-box"><span class="inner">${st.time}</span></div>`;
                     }
                 }
             }
@@ -306,7 +310,13 @@ document.addEventListener('DOMContentLoaded', () => {
             { nodes: document.querySelectorAll('.destination .inner'), margin: 0 },
             { nodes: document.querySelectorAll('.car-number .number'), margin: 0 },
             { nodes: document.querySelectorAll('.next-label .inner'), margin: 0 },
-            { nodes: document.querySelectorAll('.station-name .inner'), margin: 0 }
+            { nodes: document.querySelectorAll('.station-name .inner'), margin: 0 },
+            { nodes: document.querySelectorAll('.station-number-box .line-code .inner'), margin: 4 },
+            { nodes: document.querySelectorAll('.station-number-box .st-num .inner'), margin: 4 },
+            { nodes: document.querySelectorAll('.lower-number-box .lower-line-code .inner'), margin: 4 },
+            { nodes: document.querySelectorAll('.lower-number-box .lower-st-num .inner'), margin: 4 },
+            { nodes: document.querySelectorAll('.st-id .inner'), margin: 4 },
+            { nodes: document.querySelectorAll('.time-box .inner'), margin: 4 }
         ];
 
         horizontalFits.forEach(fit => {
@@ -557,14 +567,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const lineCodeInput = document.getElementById('input-line-code');
     if (lineCodeInput) {
         lineCodeInput.addEventListener('input', (e) => {
-            if (document.getElementById('st-line-code')) document.getElementById('st-line-code').textContent = e.target.value;
+            const target = document.querySelector('#st-line-code .inner');
+            if (target) target.textContent = e.target.value;
+            adjustAllFittedTexts(); // 入力時に即座に縮小判定を行う
         });
     }
 
     const stNumInput = document.getElementById('input-st-num');
     if (stNumInput) {
         stNumInput.addEventListener('input', (e) => {
-            if (document.getElementById('st-num-val')) document.getElementById('st-num-val').textContent = e.target.value;
+            const target = document.querySelector('#st-num-val .inner');
+            if (target) target.textContent = e.target.value;
+            adjustAllFittedTexts();
         });
     }
 
@@ -623,10 +637,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 【新規】個別の下部ナンバリングを一括同期するボタン処理
+    // === 個別の下部ナンバリングを一括同期するボタン処理 (修正版) ===
     document.getElementById('btn-sync-lower-num')?.addEventListener('click', () => {
-        const mainColor = document.getElementById('input-line-color').value;
-        const mainShape = document.getElementById('select-shape').value;
+        // ドロップダウンで選択された基準駅（0〜7）を取得
+        const baseIdx = document.getElementById('sync-lower-base-idx').value;
+        const baseStation = stationData[baseIdx];
+        const mainColor = baseStation.lowerColor;
+        const mainShape = baseStation.lowerShape;
+        
         stationData.forEach((st) => {
             if (st.isSync) {
                 st.lowerColor = mainColor;
@@ -640,19 +658,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // === 画像ダウンロード機能 ===
     document.getElementById('btn-download')?.addEventListener('click', () => {
         const monitor = document.getElementById('lcd-monitor');
-        // scaleがかかっていると画像が切れるため一時的に1倍に戻す
-        const originalTransform = monitor.style.transform;
-        monitor.style.transform = 'scale(1)';
-        
-        // 少し待ってからキャプチャ（描画のズレ防止）
-        setTimeout(() => {
-            html2canvas(monitor, { scale: 2, backgroundColor: '#ffffff' }).then(canvas => {
-                monitor.style.transform = originalTransform || ''; // 元に戻す
-                const link = document.createElement('a');
-                link.download = 'train-vision.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            });
-        }, 100);
+        // scale操作を削除し、そのままキャプチャさせる
+        html2canvas(monitor, { scale: 2, backgroundColor: '#ffffff' }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'train-vision.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
     });
 });
