@@ -314,6 +314,17 @@ body {
     position: relative;
 }
 
+/* === ナンバリング非表示時、駅名を下へ詰めるための調整 === */
+.route-map-grid.hide-numbering {
+    grid-template-rows: 162px 0px 40px;
+}
+.route-map-grid.hide-numbering .st-name-vert {
+    height: 162px;
+}
+.route-map-grid.hide-numbering .st-id {
+    display: none;
+}
+
 .grid-item { position: relative; z-index: 2; }
 .row-1 { grid-row: 1; align-self: flex-end; }
 .row-2 { grid-row: 2; align-self: center; } 
