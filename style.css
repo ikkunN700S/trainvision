@@ -67,7 +67,7 @@ body {
     display: flex;
     align-items: center;
     height: 36px;
-    background: linear-gradient(to bottom, #b5b5b5 0%, rgba(255,255,255,0) 100%);
+    background: linear-gradient(to bottom, #b5b5b5 0%, #ffffff 100%);
     padding: 0 15px;
     position: relative;
 }
@@ -387,6 +387,7 @@ body {
 .grey-text, .grey-text .st-name-inner, .grey-text .lower-line-code, .grey-text .lower-st-num { color: #999 !important; }
 .grey-text .lower-number-box { border-color: #999 !important; }
 
+/*
 .time-bar-bg {
     position: absolute;
     bottom: 0;
@@ -398,6 +399,53 @@ body {
         linear-gradient(to right, var(--line-color) 0%, var(--line-color) var(--line-fill-percent), #888888 var(--line-fill-percent), #888888 100%);
     clip-path: polygon(0 50%, 15px 0, 100% 0, 100% 100%, 15px 100%);
     z-index: 1;
+}
+*/
+
+/* ベースとなるグレーライン */
+.time-bar-bg {
+    position: absolute;
+    bottom: 0;
+    left: 25px;
+    width: calc(100% - 25px);
+    height: 40px;
+    background-color: #888888;
+    background-image: linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, rgba(0,0,0,0.25) 100%);
+    z-index: 1;
+}
+
+/* 伸び縮みするカラーライン */
+.time-bar-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--line-fill-percent);
+    height: 100%;
+    background-color: var(--line-color);
+    background-image: linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, rgba(0,0,0,0.25) 100%);
+    transition: width 0.3s;
+}
+
+/* 先端の鋭角を作るための白い三角形マスク(上と下) */
+.time-bar-mask-top {
+    position: absolute;
+    top: -1px; /* 上にはみ出させる */
+    left: -0.5px;
+    width: 0;
+    height: 0;
+    border-top: 21px solid #ffffff; /* 20pxから21pxに拡大 */
+    border-right: 16px solid transparent; /* 15pxから16pxに拡大 */
+    z-index: 2;
+}
+.time-bar-mask-bottom {
+    position: absolute;
+    bottom: -1px; /* 下にはみ出させる */
+    left: -0.5px;
+    width: 0;
+    height: 0;
+    border-bottom: 21px solid #ffffff;
+    border-right: 16px solid transparent;
+    z-index: 2;
 }
 
 .time-label { 
@@ -545,4 +593,12 @@ footer .footer-link:hover {
 
 body {
     overflow-x: hidden; /* 横スクロールバーを出さない */
+}
+
+/* 文字はみ出し処理縮小時に中央配置 */
+.line-code, .st-num, .lower-line-code, .lower-st-num, .st-id {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 }
