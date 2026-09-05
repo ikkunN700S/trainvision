@@ -659,35 +659,55 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-download')?.addEventListener('click', () => {
         const monitor = document.getElementById('lcd-monitor');
 
+        const animSelectors = '.train-type, .destination, .car-number, .next-label, .station-name';
+        const originalAnimElements = monitor.querySelectorAll(animSelectors);
+        const currentStyles = Array.from(originalAnimElements).map(el => {
+            const style = window.getComputedStyle(el);
+            return {
+                opacity: style.opacity,
+                transform: style.transform,
+                // ▼ここを追加：アニメーション途中の変形基準点も取得する▼
+                transformOrigin: style.transformOrigin 
+            };
+        });
+
         html2canvas(monitor, { 
             scale: 2, 
             backgroundColor: '#ffffff',
             onclone: (clonedDoc) => {
-                // ① 見切れ対策：裏画面だけ全体の縮小を解除
                 const clonedMonitor = clonedDoc.getElementById('lcd-monitor');
                 if (clonedMonitor) clonedMonitor.style.transform = 'none';
 
-                // ② 縦書きズレ＆はみ出し対策：
-                // 元の画面で計算された縮小率を読み取り、裏画面の文字サイズに直接適用する
-                const originalMonitor = document.getElementById('lcd-monitor');
-                const originalJaNames = originalMonitor.querySelectorAll('.st-name-inner.ja-st-name');
+                const clonedAnimElements = clonedMonitor.querySelectorAll(animSelectors);
+                clonedAnimElements.forEach((el, index) => {
+                    if (currentStyles[index]) {
+                        el.style.animation = 'none';
+                        el.style.transition = 'none';
+                        el.style.opacity = currentStyles[index].opacity;
+                        el.style.transform = currentStyles[index].transform;
+                        // ▼ここを追加：基準点を裏画面にも適用する▼
+                        el.style.transformOrigin = currentStyles[index].transformOrigin; 
+                    }
+                });
+
+                // 縦書きズレ＆はみ出し対策：
+                const originalJaNames = monitor.querySelectorAll('.st-name-inner.ja-st-name');
                 const clonedJaNames = clonedDoc.querySelectorAll('.st-name-inner.ja-st-name');
 
                 clonedJaNames.forEach((el, index) => {
                     const origEl = originalJaNames[index];
                     
-                    // 元の要素に適用されている縮小率(scaleY)を取得
                     const transformStr = origEl.style.transform || '';
                     let scaleY = 1;
                     const match = transformStr.match(/scaleY\(([0-9.]+)\)/);
                     if (match) scaleY = parseFloat(match[1]);
 
-                    // html2canvasのバグを避けるため、縦書き設定と変形を解除
+                    // 裏画面だけ絶対配置でセルの中央に強制固定する
                     el.style.writingMode = 'horizontal-tb';
                     el.style.position = 'absolute';
                     el.style.bottom = '2px';
                     el.style.left = '50%';
-                    el.style.transform = 'translateX(-50%)';
+                    el.style.transform = 'translateX(-50%)'; 
                     el.style.textAlign = 'center';
                     el.style.lineHeight = '1';
 
