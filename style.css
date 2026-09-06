@@ -53,6 +53,8 @@ body {
     transform: scale(1.3);
     transform-origin: top center;
     margin-bottom: 220px;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .top-color-bar {
