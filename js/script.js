@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         isRouteEn = !isRouteEn;
         renderRouteMap();
         cycleFooterNote();
-    }, 5000);
+    }, 8000);
 
     function getStateName(state) {
         if (state === 0) return 'kanji';
@@ -566,7 +566,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         selectNextLabel.dispatchEvent(new Event('change')); // 初期読み込み時にも適用
     }
-    
+
     setupInputSync('input-dest-kanji', 'dest-kanji');
     setupInputSync('input-dest-kana',  'dest-kana');
     setupInputSync('input-dest-en',    'dest-en');
