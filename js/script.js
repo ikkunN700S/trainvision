@@ -545,6 +545,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // === その他のUI連動設定 ===
+    const selectNextLabel = document.getElementById('select-next-label');
+    if (selectNextLabel) {
+        selectNextLabel.addEventListener('change', (e) => {
+            const val = e.target.value;
+            const nextKanji = document.querySelector('#next-kanji .inner');
+            const nextKana = document.querySelector('#next-kana .inner');
+            const nextEn = document.querySelector('#next-en .inner');
+            
+            if (val === 'now') {
+                if (nextKanji) nextKanji.textContent = 'ただいま';
+                if (nextKana) nextKana.textContent = 'ただいま';
+                if (nextEn) nextEn.textContent = 'This is';
+            } else {
+                if (nextKanji) nextKanji.textContent = '次は'; 
+                if (nextKana) nextKana.textContent = 'つぎは';
+                if (nextEn) nextEn.textContent = 'Next';
+            }
+            adjustAllFittedTexts();
+        });
+        selectNextLabel.dispatchEvent(new Event('change')); // 初期読み込み時にも適用
+    }
+    
     setupInputSync('input-dest-kanji', 'dest-kanji');
     setupInputSync('input-dest-kana',  'dest-kana');
     setupInputSync('input-dest-en',    'dest-en');
