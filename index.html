@@ -55,9 +55,9 @@
             <!-- 次駅案内 -->
             <div class="next-station-area">
                 <div class="next-label-wrapper">
-                    <div class="next-label kanji active" id="next-kanji"><span class="inner">次は</span></div>
-                    <div class="next-label kana" id="next-kana"><span class="inner">つぎは</span></div>
-                    <div class="next-label en" id="next-en"><span class="inner">Next</span></div>
+                    <div class="next-label kanji active" id="next-kanji"><span class="inner">ただいま</span></div>
+                    <div class="next-label kana" id="next-kana"><span class="inner">ただいま</span></div>
+                    <div class="next-label en" id="next-en"><span class="inner">This is</span></div>
                 </div>
 
                 <div class="station-number-box" id="st-number-box">
@@ -167,7 +167,7 @@
                         <label>案内表示: 
                             <select id="select-next-label">
                                 <option value="next">次は (Next)</option>
-                                <option value="now">ただいま (This is)</option>
+                                <option value="now" selected>ただいま (This is)</option>
                             </select>
                         </label>
                         <label>漢字: <input type="text" id="input-st-kanji" value="池袋"></label>
@@ -199,6 +199,12 @@
                             <option value="square" selected>四角</option>
                             <option value="rounded">角丸</option>
                             <option value="circle">丸</option>
+                        </select>
+                    </label>
+                    <label style="margin-left:20px;">現在地矢印の色: 
+                        <select id="select-chevron-color">
+                            <option value="red" selected>赤色</option>
+                            <option value="blue">青色</option>
                         </select>
                     </label>
                 </div>
