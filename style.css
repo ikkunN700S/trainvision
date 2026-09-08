@@ -250,7 +250,7 @@ body {
     height: 85px;
     display: flex;
     align-items: center;
-    margin-left: 50px;
+    margin-left: 15px;
     margin-right: 20px;
     flex-grow: 1;
     overflow: hidden;
@@ -345,7 +345,7 @@ body {
     text-orientation: upright; 
     font-size: 26px; 
     font-weight: bold; 
-    letter-spacing: 4px; 
+    letter-spacing: 1px; 
     color: #000;
     white-space: nowrap;
     transform-origin: center bottom;
