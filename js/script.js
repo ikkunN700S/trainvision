@@ -129,10 +129,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const showLowerNum = document.getElementById('toggle-lower-numbering')?.checked ?? true;
         const showLowerShape = document.getElementById('toggle-lower-shape')?.checked ?? true;
         
-        // ▼ 追加: 状態の取得
         const labelMode = document.getElementById('select-next-label')?.value || 'next';
         const chevronColor = document.getElementById('select-chevron-color')?.value || 'red';
-        const isNextMode = (labelMode === 'next'); // 「次は」モードかどうかの判定
+        const isNextMode = (labelMode === 'next'); 
 
         if (showLowerNum) {
             grid.classList.remove('hide-numbering');
@@ -142,6 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!isRouteMapInitialized) {
             grid.innerHTML = '';
+            grid.style.position = 'relative'; 
+
             const bg = document.createElement('div');
             bg.className = 'time-bar-bg';
             bg.innerHTML = `
@@ -182,35 +183,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 const item = document.createElement('div');
                 item.className = 'grid-item row-3';
                 item.id = `route-time-box-${i}`;
-
-                if (i === 0) {
-                    // セル自体を relative にし、中央配置のフレックスコンテナにする
-                    item.style.position = 'relative';
-                    item.innerHTML = `
-                        <!-- 背景の図形（グレー） -->
-                        <div class="time-box-bg" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 1;"></div>
-                        <!-- 矢印本体（スライドさせる対象） -->
-                        <div class="chevron-large" id="current-chevron-arrow" style="position: relative; z-index: 2;"></div>
-                    `;
-                }
                 grid.appendChild(item);
             }
 
-            // 1駅目から2駅目をまたぐ広いトリミング用レイヤーをグリッドに追加
+            // ▼ 矢印用レイヤー（幅を広くし、絶対に中心がズレない構造に変更）
             const chevronLayer = document.createElement('div');
             chevronLayer.id = 'global-chevron-layer';
-            chevronLayer.style.cssText = `
-                position: absolute;
-                pointer-events: none;
-                z-index: 5;
-                display: none;
-            `;
+            chevronLayer.style.position = 'absolute';
+            chevronLayer.style.left = '0';
+            chevronLayer.style.width = '100%';
+            chevronLayer.style.pointerEvents = 'none';
+            chevronLayer.style.zIndex = '5';
             chevronLayer.innerHTML = `
-                <div style="width: 50px; height: 40px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                    <div class="chevron-large" id="current-chevron-arrow" style="position: relative; margin-left: 15px; transform: rotate(-135deg);"></div>
+                <!-- クリッパーの幅を36pxに拡大（縮小されず綺麗な形を保ちます） -->
+                <div id="chevron-clipper" style="position: absolute; top: 50%; margin-top: -20px; height: 40px; width: 36px; overflow: hidden;">
+                    <!-- 矢印本体を translate(-50%, -50%) で絶対にド真ん中から動かないようロック -->
+                    <div class="chevron-large" id="current-chevron-arrow" style="position: absolute; top: 50%; left: 50%; margin: 0; transform: translate(-50%, -50%) rotate(-135deg);"></div>
                 </div>
             `;
-            grid.style.position = 'relative';
             grid.appendChild(chevronLayer);
 
             isRouteMapInitialized = true;
@@ -221,8 +211,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         for (let i = 7; i >= 0; i--) {
             const st = stationData[i];
-            
-            // ▼ 追加: 1駅目かつ「次は」モードなら強制グレー化
             const isGrey = st.isPass || (i === 0 && isNextMode);
 
             const nameItem = document.getElementById(`route-st-name-${i}`);
@@ -236,7 +224,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const idItem = document.getElementById(`route-st-id-${i}`);
             if (idItem) {
                 idItem.className = `grid-item st-id row-2 ${isGrey ? 'grey-text' : ''}`;
-                
                 if (!showLowerNum) {
                     idItem.innerHTML = '';
                 } else {
@@ -257,66 +244,55 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            if (i !== 0) {
-                const timeItem = document.getElementById(`route-time-box-${i}`);
-                if (timeItem) {
-                    if (st.isPass) {
-                        timeItem.innerHTML = `<div class="white-chevron"></div>`;
-                    } else {
-                        timeItem.innerHTML = `<div class="time-box"><span class="inner">${st.time}</span></div>`;
-                    }
+            const timeItem = document.getElementById(`route-time-box-${i}`);
+            if (timeItem) {
+                if (st.isPass) {
+                    timeItem.innerHTML = `<div class="white-chevron"></div>`;
+                } else {
+                    timeItem.innerHTML = `<div class="time-box"><span class="inner">${st.time}</span></div>`;
                 }
             }
         }
 
         // ▼ 矢印の位置計算とカラーライン長の調整 ▼
         const chevronWrap = document.getElementById('route-time-box-0');
-        const chevronArrowInCell = document.querySelector('#route-time-box-0 #current-chevron-arrow');
-        const globalChevronLayer = document.getElementById('global-chevron-layer');
-        const chevronArrowGlobal = document.querySelector('#global-chevron-layer #current-chevron-arrow');
+        const globalLayer = document.getElementById('global-chevron-layer');
+        const clipper = document.getElementById('chevron-clipper');
+        const chevronArrow = document.getElementById('current-chevron-arrow');
         const box1 = document.getElementById('route-time-box-1');
 
-        if (chevronWrap && box1) {
+        if (chevronWrap && globalLayer && clipper && chevronArrow && box1) {
+            chevronArrow.classList.remove('chevron-color-red', 'chevron-color-blue');
+            void chevronArrow.offsetWidth; 
+            chevronArrow.classList.add(`chevron-color-${chevronColor}`);
+            
+            globalLayer.style.top = chevronWrap.offsetTop + 'px';
+            globalLayer.style.height = chevronWrap.offsetHeight + 'px';
+
             let shiftX = 0;
-            const box0Center = chevronWrap.offsetLeft + (chevronWrap.offsetWidth / 2);
-
             if (isNextMode) {
-                // 「次は」モード：セルから出し、広いレイヤーを使って1・2駅目の中間に配置する
-                if (chevronArrowInCell) chevronArrowInCell.style.display = 'none'; // セル内の矢印は隠す
-                if (globalChevronLayer && chevronArrowGlobal) {
-                    globalChevronLayer.style.display = 'block';
-                    
-                    // 点滅アニメーションと色の適用
-                    chevronArrowGlobal.classList.remove('chevron-color-red', 'chevron-color-blue');
-                    void chevronArrowGlobal.offsetWidth; 
-                    chevronArrowGlobal.classList.add(`chevron-color-${chevronColor}`);
-
-                    const box1Center = box1.offsetLeft + (box1.offsetWidth / 2);
-                    shiftX = (box1Center - box0Center) / 2;
-
-                    // 1駅目の中心から中間地点までの座標にレイヤーを移動
-                    const leftPos = box0Center + shiftX - 25; // 50px幅の中央合わせ
-                    const topPos = chevronWrap.offsetTop;
-                    globalChevronLayer.style.left = `${leftPos}px`;
-                    globalChevronLayer.style.top = `${topPos}px`;
-                    chevronArrowGlobal.style.transform = `rotate(-135deg)`;
-                }
-            } else {
-                // 「ただいま」モード：セル内の通常表示に戻す
-                if (globalChevronLayer) globalChevronLayer.style.display = 'none';
-                if (chevronArrowInCell) {
-                    chevronArrowInCell.style.display = 'block';
-                    chevronArrowInCell.classList.remove('chevron-color-red', 'chevron-color-blue');
-                    void chevronArrowInCell.offsetWidth; 
-                    chevronArrowInCell.classList.add(`chevron-color-${chevronColor}`);
-                    chevronArrowInCell.style.transform = `rotate(-135deg)`;
-                }
+                const dist = box1.offsetLeft - chevronWrap.offsetLeft; 
+                shiftX = dist / 2; 
             }
 
-            // カラーラインの長さを調整
+            // グリッド全体の左端からの「絶対座標」を正確に計算（ズレの完全解消）
+            const cellAbsoluteLeft = chevronWrap.offsetLeft;
+            const arrowAbsoluteCenterX = cellAbsoluteLeft + (chevronWrap.offsetWidth / 2) + shiftX;
+            
+            const clipperWidth = 36; // 拡大した幅
+            const halfWidth = clipperWidth / 2;
+
+            // クリッパーを絶対座標に合わせて配置
+            clipper.style.left = (arrowAbsoluteCenterX - halfWidth) + 'px';
+            // 矢印はCSSでド真ん中にロックしてあるので、JSでは回転させるだけ
+            chevronArrow.style.transform = 'translate(-50%, -50%) rotate(-135deg)';
+
             setTimeout(() => {
                 const lineStartOffset = 25; 
-                const centerPos = box0Center + (isNextMode ? shiftX : 0) - lineStartOffset;
+                // ▼ 切り替わり位置を「クリッパーの右端」にピッタリ合わせる
+                const colorLineStop = arrowAbsoluteCenterX + halfWidth; 
+                
+                const centerPos = colorLineStop - lineStartOffset;
                 const lineWidth = grid.offsetWidth - lineStartOffset;
                 const pct = (centerPos / lineWidth) * 100;
                 document.documentElement.style.setProperty('--line-fill-percent', pct + '%');
