@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 grid.appendChild(item);
             }
 
-            // ▼ 矢印用レイヤー（幅を広くし、絶対に中心がズレない構造に変更）
+            // ▼ 矢印用レイヤー
             const chevronLayer = document.createElement('div');
             chevronLayer.id = 'global-chevron-layer';
             chevronLayer.style.position = 'absolute';
@@ -195,10 +195,9 @@ document.addEventListener('DOMContentLoaded', () => {
             chevronLayer.style.pointerEvents = 'none';
             chevronLayer.style.zIndex = '5';
             chevronLayer.innerHTML = `
-                <!-- クリッパーの幅を36pxに拡大（縮小されず綺麗な形を保ちます） -->
                 <div id="chevron-clipper" style="position: absolute; top: 50%; margin-top: -20px; height: 40px; width: 36px; overflow: hidden;">
-                    <!-- 矢印本体を translate(-50%, -50%) で絶対にド真ん中から動かないようロック -->
-                    <div class="chevron-large" id="current-chevron-arrow" style="position: absolute; top: 50%; left: 50%; margin: 0; transform: translate(-50%, -50%) rotate(-135deg);"></div>
+                    <!-- ▼ 矢印本体を left: 80% に固定 ▼ -->
+                    <div class="chevron-large" id="current-chevron-arrow" style="position: absolute; top: 50%; left: 80%; margin: 0; transform: translate(-50%, -50%) rotate(-135deg);"></div>
                 </div>
             `;
             grid.appendChild(chevronLayer);
@@ -275,22 +274,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 shiftX = dist / 2; 
             }
 
-            // グリッド全体の左端からの「絶対座標」を正確に計算（ズレの完全解消）
             const cellAbsoluteLeft = chevronWrap.offsetLeft;
             const arrowAbsoluteCenterX = cellAbsoluteLeft + (chevronWrap.offsetWidth / 2) + shiftX;
             
-            const clipperWidth = 36; // 拡大した幅
+            const clipperWidth = 36; 
             const halfWidth = clipperWidth / 2;
 
-            // クリッパーを絶対座標に合わせて配置
             clipper.style.left = (arrowAbsoluteCenterX - halfWidth) + 'px';
-            // 矢印はCSSでド真ん中にロックしてあるので、JSでは回転させるだけ
+            
+            // ▼ left: 80% をJavaScript側でも念のため明示的に指定してロック
+            chevronArrow.style.left = '80%';
             chevronArrow.style.transform = 'translate(-50%, -50%) rotate(-135deg)';
 
             setTimeout(() => {
                 const lineStartOffset = 25; 
-                // ▼ 切り替わり位置を「クリッパーの右端」にピッタリ合わせる
-                const colorLineStop = arrowAbsoluteCenterX + halfWidth; 
+                
+                // ▼ 切り替わり位置をクリッパーの右端ではなく「中間（中心）」に合わせる ▼
+                const colorLineStop = arrowAbsoluteCenterX; 
                 
                 const centerPos = colorLineStop - lineStartOffset;
                 const lineWidth = grid.offsetWidth - lineStartOffset;
