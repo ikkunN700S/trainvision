@@ -305,8 +305,9 @@ body {
 .route-map-grid {
     display: grid;
     padding-left: 25px;
-    grid-template-columns: 48px repeat(8, 1fr) 55px;
+    grid-template-columns: 48px repeat(8, 1fr) 10px;
     grid-template-rows: 120px 42px 40px; 
+    column-gap: 8px;
     align-items: center;
     justify-items: center;
     width: 100%;
