@@ -55,9 +55,9 @@
             <!-- 次駅案内 -->
             <div class="next-station-area">
                 <div class="next-label-wrapper">
-                    <div class="next-label kanji active" id="next-kanji"><span class="inner">ただいま</span></div>
-                    <div class="next-label kana" id="next-kana"><span class="inner">ただいま</span></div>
-                    <div class="next-label en" id="next-en"><span class="inner">This is</span></div>
+                    <div class="next-label kanji active" id="next-kanji"><span class="inner">次は</span></div>
+                    <div class="next-label kana" id="next-kana"><span class="inner">つぎは</span></div>
+                    <div class="next-label en" id="next-en"><span class="inner">Next</span></div>
                 </div>
 
                 <div class="station-number-box" id="st-number-box">
@@ -99,8 +99,8 @@
                     <label>同期の基準にする色: 
                         <select id="sync-base-target">
                             <option value="company">会社カラー</option>
-                            <option value="separator">中央セパレーター</option>
-                            <option value="line">路線ライン・駅枠</option>
+                            <option value="separator">セパレータカラー</option>
+                            <option value="line">路線・駅カラー</option>
                             <option value="type">種別カラー</option>
                         </select>
                     </label>
@@ -166,8 +166,8 @@
                         <h4>■ 次の駅名</h4>
                         <label>案内表示: 
                             <select id="select-next-label">
-                                <option value="next">次は (Next)</option>
-                                <option value="now" selected>ただいま (This is)</option>
+                                <option value="next" selected>次は (Next)</option>
+                                <option value="now">ただいま (This is)</option>
                             </select>
                         </label>
                         <label>漢字: <input type="text" id="input-st-kanji" value="池袋"></label>
