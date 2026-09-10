@@ -195,8 +195,8 @@ document.addEventListener('DOMContentLoaded', () => {
             chevronLayer.style.pointerEvents = 'none';
             chevronLayer.style.zIndex = '5';
             chevronLayer.innerHTML = `
-                <div id="chevron-clipper" style="position: absolute; top: 50%; margin-top: -20px; height: 40px; width: 36px; overflow: hidden;">
-                    <div class="chevron-large" id="current-chevron-arrow" style="position: absolute; top: 50%; left: 80%; margin: 0; transform: translate(-50%, -50%) rotate(-135deg);"></div>
+                <div id="chevron-clipper" style="position: absolute; top: 50%; margin-top: -20px; height: 40px; width: 38px; overflow: hidden;">
+                    <div class="chevron-large" id="current-chevron-arrow" style="position: absolute; top: 50%; left: 75%; margin: 0; transform: translate(-50%, -50%) rotate(-135deg);"></div>
                 </div>
             `;
             grid.appendChild(chevronLayer);
@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             clipper.style.left = (arrowAbsoluteCenterX - halfWidth) + 'px';
             
-            chevronArrow.style.left = '80%';
+            chevronArrow.style.left = '75%';
             chevronArrow.style.transform = 'translate(-50%, -50%) rotate(-135deg)';
 
             setTimeout(() => {
