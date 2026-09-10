@@ -196,7 +196,6 @@ document.addEventListener('DOMContentLoaded', () => {
             chevronLayer.style.zIndex = '5';
             chevronLayer.innerHTML = `
                 <div id="chevron-clipper" style="position: absolute; top: 50%; margin-top: -20px; height: 40px; width: 36px; overflow: hidden;">
-                    <!-- ▼ 矢印本体を left: 80% に固定 ▼ -->
                     <div class="chevron-large" id="current-chevron-arrow" style="position: absolute; top: 50%; left: 80%; margin: 0; transform: translate(-50%, -50%) rotate(-135deg);"></div>
                 </div>
             `;
@@ -246,7 +245,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const timeItem = document.getElementById(`route-time-box-${i}`);
             if (timeItem) {
                 if (st.isPass) {
-                    timeItem.innerHTML = `<div class="white-chevron"></div>`;
+                    // 通過時でも透明なtime-boxを配置
+                    timeItem.innerHTML = `
+                        <div style="position: relative; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;">
+                            <div class="time-box" style="visibility: hidden; pointer-events: none;"><span class="inner">${st.time}</span></div>
+                            <div class="white-chevron" style="position: absolute;"></div>
+                        </div>
+                    `;
                 } else {
                     timeItem.innerHTML = `<div class="time-box"><span class="inner">${st.time}</span></div>`;
                 }
@@ -268,28 +273,26 @@ document.addEventListener('DOMContentLoaded', () => {
             globalLayer.style.top = chevronWrap.offsetTop + 'px';
             globalLayer.style.height = chevronWrap.offsetHeight + 'px';
 
-            let shiftX = 0;
+            // 1駅目の中心座標
+            const box0Center = chevronWrap.offsetLeft + (chevronWrap.offsetWidth / 2);
+            let arrowAbsoluteCenterX = box0Center;
+
             if (isNextMode) {
-                const dist = box1.offsetLeft - chevronWrap.offsetLeft; 
-                shiftX = dist / 2; 
+                // 2駅目の中心座標を取得し真ん中を厳密に計算
+                const box1Center = box1.offsetLeft + (box1.offsetWidth / 2);
+                arrowAbsoluteCenterX = (box0Center + box1Center) / 2;
             }
 
-            const cellAbsoluteLeft = chevronWrap.offsetLeft;
-            const arrowAbsoluteCenterX = cellAbsoluteLeft + (chevronWrap.offsetWidth / 2) + shiftX;
-            
             const clipperWidth = 36; 
             const halfWidth = clipperWidth / 2;
 
             clipper.style.left = (arrowAbsoluteCenterX - halfWidth) + 'px';
             
-            // ▼ left: 80% をJavaScript側でも念のため明示的に指定してロック
             chevronArrow.style.left = '80%';
             chevronArrow.style.transform = 'translate(-50%, -50%) rotate(-135deg)';
 
             setTimeout(() => {
                 const lineStartOffset = 25; 
-                
-                // ▼ 切り替わり位置をクリッパーの右端ではなく「中間（中心）」に合わせる ▼
                 const colorLineStop = arrowAbsoluteCenterX; 
                 
                 const centerPos = colorLineStop - lineStartOffset;
