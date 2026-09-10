@@ -99,8 +99,8 @@
                     <label>同期の基準にする色: 
                         <select id="sync-base-target">
                             <option value="company">会社カラー</option>
-                            <option value="separator">中央セパレーター</option>
-                            <option value="line">路線ライン・駅枠</option>
+                            <option value="separator">セパレータカラー</option>
+                            <option value="line">路線・駅カラー</option>
                             <option value="type">種別カラー</option>
                         </select>
                     </label>
@@ -166,7 +166,7 @@
                         <h4>■ 次の駅名</h4>
                         <label>案内表示: 
                             <select id="select-next-label">
-                                <option value="next">次は (Next)</option>
+                                <option value="next" selected>次は (Next)</option>
                                 <option value="now">ただいま (This is)</option>
                             </select>
                         </label>
@@ -201,12 +201,18 @@
                             <option value="circle">丸</option>
                         </select>
                     </label>
+                    <label style="margin-left:20px;">矢印色1: 
+                        <input type="color" id="chevron-color-1" value="#e60012">
+                    </label>
+                    <label style="margin-left:10px;">矢印色2: 
+                        <input type="color" id="chevron-color-2" value="#0066cc">
+                    </label>
                 </div>
             </div>
 
             <div class="panel-section">
                 <h3>1〜8駅目の停車駅・右下案内テキスト設定</h3>
-                <div style="margin-bottom: 5px; display: flex; gap: 10px; align-items: center;">
+                <div class="panel-row" style="margin-bottom: 8px; display: flex; gap: 10px; align-items: center;">
                     <label>基準駅: 
                         <select id="sync-lower-base-idx">
                             <option value="0">1駅目</option>

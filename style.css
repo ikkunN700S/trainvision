@@ -19,6 +19,8 @@
     --timebox-height: 32px;
     --timebox-radius: 0px;
     --line-fill-percent: 94%;
+    --chevron-color-1: #e60012;
+    --chevron-color-2: #0066cc;
 }
 
 * {
@@ -305,8 +307,9 @@ body {
 .route-map-grid {
     display: grid;
     padding-left: 25px;
-    grid-template-columns: 48px repeat(8, 1fr) 55px;
+    grid-template-columns: 48px repeat(8, 1fr) 10px;
     grid-template-rows: 120px 42px 40px; 
+    column-gap: 8px;
     align-items: center;
     justify-items: center;
     width: 100%;
@@ -389,21 +392,6 @@ body {
 .grey-text, .grey-text .st-name-inner, .grey-text .lower-line-code, .grey-text .lower-st-num { color: #999 !important; }
 .grey-text .lower-number-box { border-color: #999 !important; }
 
-/*
-.time-bar-bg {
-    position: absolute;
-    bottom: 0;
-    left: 25px;
-    width: calc(100% - 25px);
-    height: 40px;
-    background: 
-        linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, rgba(0,0,0,0.25) 100%),
-        linear-gradient(to right, var(--line-color) 0%, var(--line-color) var(--line-fill-percent), #888888 var(--line-fill-percent), #888888 100%);
-    clip-path: polygon(0 50%, 15px 0, 100% 0, 100% 100%, 15px 100%);
-    z-index: 1;
-}
-*/
-
 /* ベースとなるグレーライン */
 .time-bar-bg {
     position: absolute;
@@ -425,7 +413,6 @@ body {
     height: 100%;
     background-color: var(--line-color);
     background-image: linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, rgba(0,0,0,0.25) 100%);
-    transition: width 0.3s;
 }
 
 /* 先端の鋭角を作るための白い三角形マスク(上と下) */
@@ -484,16 +471,6 @@ body {
     transform: rotate(-135deg);
 }
 
-.red-chevron-container {
-    position: relative;
-    width: 50px;
-    height: 40px; 
-    overflow: hidden; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 .time-box-bg {
     position: absolute;
     width: var(--timebox-width);
@@ -504,21 +481,36 @@ body {
     transition: width 0.3s, height 0.3s, border-radius 0.3s;
 }
 
-.red-chevron-large {
+/* === 現在地矢印 (赤・青) とコンテナ === */
+.current-chevron-container {
+    position: relative;
+    width: 50px;
+    height: 40px; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chevron-large {
     position: relative;
     z-index: 2;
     width: 40px;
     height: 40px;
-    border-top: 12px solid #e60012;
-    border-right: 12px solid #e60012;
+    border-top: 12px solid var(--chevron-color-1, #e60012);
+    border-right: 12px solid var(--chevron-color-1, #e60012);
     transform: rotate(-135deg);
     margin-left: 15px;
-    animation: blinkChevron 2s infinite;
+    filter: drop-shadow(1px 0px 0px #fff) drop-shadow(-1px 0px 0px #fff) drop-shadow(0px 1px 0px #fff) drop-shadow(0px -1px 0px #fff);
 }
 
-@keyframes blinkChevron {
-    0%, 49.9% { border-color: #e60012; }
-    50%, 100% { border-color: #999999; }
+.chevron-blink {
+    animation: blinkChevronCustom 2s infinite;
+}
+
+/* 2つの変数の色を交互に切り替える */
+@keyframes blinkChevronCustom {
+    0%, 49.9% { border-color: var(--chevron-color-1); }
+    50%, 100% { border-color: var(--chevron-color-2); }
 }
 
 .footer-note { 
