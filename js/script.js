@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const showLowerShape = document.getElementById('toggle-lower-shape')?.checked ?? true;
         
         const labelMode = document.getElementById('select-next-label')?.value || 'next';
-        const chevronColor = document.getElementById('select-chevron-color')?.value || 'red';
+        // const chevronColor = document.getElementById('select-chevron-color')?.value || 'red';
         const isNextMode = (labelMode === 'next'); 
 
         if (showLowerNum) {
@@ -266,9 +266,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const box1 = document.getElementById('route-time-box-1');
 
         if (chevronWrap && globalLayer && clipper && chevronArrow && box1) {
-            chevronArrow.classList.remove('chevron-color-red', 'chevron-color-blue');
+            chevronArrow.classList.remove('chevron-blink');
             void chevronArrow.offsetWidth; 
-            chevronArrow.classList.add(`chevron-color-${chevronColor}`);
+            chevronArrow.classList.add(`chevron-blink`);
             
             globalLayer.style.top = chevronWrap.offsetTop + 'px';
             globalLayer.style.height = chevronWrap.offsetHeight + 'px';
@@ -615,13 +615,22 @@ document.addEventListener('DOMContentLoaded', () => {
         selectNextLabel.dispatchEvent(new Event('change')); // 初期読み込み時にも適用
     }
 
-    // 矢印の色変更
-    const selectChevronColor = document.getElementById('select-chevron-color');
-    if (selectChevronColor) {
-        selectChevronColor.addEventListener('change', () => {
-            renderRouteMap();
-        });
+    // ▼ 矢印のカラーピッカーと変数の同期設定
+    const color1Input = document.getElementById('chevron-color-1');
+    const color2Input = document.getElementById('chevron-color-2');
+
+    // 色をCSS変数に反映する関数
+    function updateChevronColors() {
+        if (color1Input) document.documentElement.style.setProperty('--chevron-color-1', color1Input.value);
+        if (color2Input) document.documentElement.style.setProperty('--chevron-color-2', color2Input.value);
     }
+
+    // ページ読み込み時に実行して、初期値を確実にセットする
+    updateChevronColors();
+
+    // カラーピッカーが変更されたらリアルタイムに色を反映する
+    if (color1Input) color1Input.addEventListener('input', updateChevronColors);
+    if (color2Input) color2Input.addEventListener('input', updateChevronColors);
 
     setupInputSync('input-dest-kanji', 'dest-kanji');
     setupInputSync('input-dest-kana',  'dest-kana');
