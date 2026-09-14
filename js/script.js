@@ -725,7 +725,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const idx = e.target.dataset.idx;
             const field = e.target.dataset.field;
             if (idx === undefined) return;
-            
             const numIdx = parseInt(idx, 10);
 
             if (field === 'isPass' || field === 'isSync') {
@@ -915,16 +914,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ▼ 対象駅のデータを、上部コントロールパネル（入力欄）に流し込む関数
     function syncTopHeaderPanel(station, isNext) {
-        const kanjiInput = document.getElementById('input-st-kanji');
-        const kanaInput = document.getElementById('input-st-kana');
-        const enInput = document.getElementById('input-st-en');
-        const idInput = document.getElementById('input-top-st-id');
-        
-        if (kanjiInput) kanjiInput.value = station.nameJa || "";
-        if (kanaInput) kanaInput.value = station.nameKana || "";
-        if (enInput) enInput.value = station.nameEn || "";
-        if (idInput) idInput.value = station.id || "";
+        setAndTrigger('input-st-kanji', station.nameJa || "");
+        setAndTrigger('input-st-kana', station.nameKana || ""); // ひらがな
+        setAndTrigger('input-st-en', station.nameEn || "");
+        setAndTrigger('input-top-st-id', station.id || ""); // 統合したナンバリング
 
+        // 値をセットし終わったら、大画面のヘッダー表示を更新する
         updateBigHeaderDisplay(isNext);
     }
 
