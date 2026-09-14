@@ -1,9 +1,56 @@
 {
   "presets": [
     {
+      "presetName": "東横線直通 急行",
+      "trainType": { "nameJa": "急行", "nameEn": "Express", "bgColor": "#cc0000", "textColor": "#ffffff" },
+      "destination": {
+        "nameJa": "東急東横線・みなとみらい線直通 元町・中華街 行",
+        "nameKana": "東急東横線・みなとみらい線直通 もとまち・ちゅうかがい ゆき",
+        "nameEn": "for Motomachi-Chukagai (via Tokyu Toyoko Line, Minatomirai Line)"
+      },
+      "carSettings": {
+        "carNum": "1",
+        "style": "style-number-only",
+        "bgColor": "#383838"
+      },
+      "uiColors": {
+        "company": "#cc0000",
+        "separator": "#cc0000",
+        "line": "#cc0000"
+      },
+      "routeSettings": { "chevronColor1": "#e60012", "chevronColor2": "#0066cc", "showLowerNumbering": true, "showLowerShape": false },
+      "footerNote": "のりかえ、待ち合わせ時間は含まれません。\n電車により多少時間は異なります。",
+      "stations": [
+            { "nameJa": "要町", "nameKana": "かなめちょう", "nameEn": "Kanamecho", "id": "F-08", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#cc0000"},
+            { "nameJa": "池袋", "nameKana": "いけぶくろ", "nameEn": "Ikebukuro", "id": "F-09", "time": "", "isPass": false, "lowerShape": "circle", "lowerColor": "#cc0000"},
+            { "nameJa": "雑司が谷", "nameKana": "ぞしがや", "nameEn": "Zoshigaya", "id": "F-10", "time": "", "isPass": true, "lowerShape": "circle", "lowerColor": "#cc0000"},
+            { "nameJa": "西早稲田", "nameKana": "にしわせだ", "nameEn": "Nishi-Waseda", "id": "F-11", "time": "", "isPass": true, "lowerShape": "circle", "lowerColor": "#cc0000"},
+            { "nameJa": "東新宿", "nameKana": "ひがししんじゅく", "nameEn": "Higashi-Shinjuku", "id": "F-12", "time": "", "isPass": true, "lowerShape": "circle", "lowerColor": "#cc0000"},
+            { "nameJa": "新宿三丁目", "nameKana": "しんじゅくさんちょうめ", "nameEn": "Shinjuku-Sanchome", "id": "F-13", "time": "", "isPass": false, "lowerShape": "circle", "lowerColor": "#cc0000"},
+            { "nameJa": "北参道", "nameKana": "きたさんどう", "nameEn": "Kita-Sando", "id": "F-14", "time": "", "isPass": true, "lowerShape": "circle", "lowerColor": "#cc0000"},
+            { "nameJa": "明治神宮前", "nameKana": "めいじじんぐうまえ", "nameEn": "Meiji-Jingumae", "id": "F-15", "time": "", "isPass": false, "lowerShape": "circle", "lowerColor": "#cc0000"}
+        ]
+    },
+    {
       "presetName": "副都心線 各駅停車",
       "trainType": { "nameJa": "各駅停車", "nameEn": "Local", "bgColor": "#0099cc", "textColor": "#ffffff" },
+      "destination": {
+        "nameJa": "東急東横線・みなとみらい線直通 元町・中華街 行",
+        "nameKana": "東急東横線・みなとみらい線直通 もとまち・ちゅうかがい ゆき",
+        "nameEn": "for Motomachi-Chukagai (via Tokyu Toyoko Line, Minatomirai Line)"
+      },
+      "carSettings": {
+        "carNum": "1",
+        "style": "style-number-only",
+        "bgColor": "#383838"
+      },
+      "uiColors": {
+        "company": "#996633",
+        "separator": "#996633",
+        "line": "#996633"
+      },
       "routeSettings": { "chevronColor1": "#e60012", "chevronColor2": "#0066cc", "showLowerNumbering": true, "showLowerShape": true },
+      "footerNote": "のりかえ、待ち合わせ時間は含まれません。\n電車により多少時間は異なります。",
       "stations": [
         { "nameJa": "池袋", "nameKana": "いけぶくろ", "nameEn": "Ikebukuro", "id": "F-09", "time": "", "isPass": false, "lowerShape": "circle", "lowerColor": "#666666" },
         { "nameJa": "要町", "nameKana": "かなめちょう", "nameEn": "Kanamecho", "id": "F-08", "time": "", "isPass": false, "lowerShape": "circle", "lowerColor": "#666666" },
@@ -19,7 +66,23 @@
     {
       "presetName": "東横線 特急",
       "trainType": { "nameJa": "特急", "nameEn": "Express", "bgColor": "#cc0000", "textColor": "#ffffff" },
+      "destination": {
+        "nameJa": "東急東横線・みなとみらい線直通 元町・中華街 行",
+        "nameKana": "東急東横線・みなとみらい線直通 もとまち・ちゅうかがい ゆき",
+        "nameEn": "for Motomachi-Chukagai (via Tokyu Toyoko Line, Minatomirai Line)"
+      },
+      "carSettings": {
+        "carNum": "1",
+        "style": "style-number-only",
+        "bgColor": "#383838"
+      },
+      "uiColors": {
+        "company": "#cc0000",
+        "separator": "#cc0000",
+        "line": "#cc0000"
+      },
       "routeSettings": { "chevronColor1": "#e60012", "chevronColor2": "#0066cc", "showLowerNumbering": true, "showLowerShape": false },
+      "footerNote": "のりかえ、待ち合わせ時間は含まれません。\n電車により多少時間は異なります。",
       "stations": [
         { "nameJa": "渋谷", "nameKana": "しぶや", "nameEn": "Shibuya", "id": "TY-01", "time": "", "isPass": false, "lowerShape": "square", "lowerColor": "#cc0000" },
         { "nameJa": "中目黒", "nameKana": "なかめぐろ", "nameEn": "Naka-meguro", "id": "TY-03", "time": "", "isPass": false, "lowerShape": "square", "lowerColor": "#cc0000" },
@@ -30,21 +93,6 @@
         { "nameJa": "みなとみらい", "nameKana": "みなとみらい", "nameEn": "Minatomirai", "id": "MM-03", "time": "", "isPass": false, "lowerShape": "square", "lowerColor": "#000066" },
         { "nameJa": "元町・中華街", "nameKana": "もとまちちゅうかがい", "nameEn": "Motomachi-Chukagai", "id": "MM-06", "time": "", "isPass": false, "lowerShape": "square", "lowerColor": "#000066" }
       ]
-    },
-    {
-      "presetName": "東横線直通 急行",
-      "trainType": { "nameJa": "急行", "nameEn": "Express", "bgColor": "#cc0000", "textColor": "#ffffff" },
-      "routeSettings": { "chevronColor1": "#e60012", "chevronColor2": "#0066cc", "showLowerNumbering": true, "showLowerShape": false },
-      "stations": [
-            { "nameJa": "要町", "nameKana": "かなめちょう", "nameEn": "Kanamecho", "id": "F-08", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#cc0000"},
-            { "nameJa": "池袋", "nameKana": "いけぶくろ", "nameEn": "Ikebukuro", "id": "F-09", "time": "", "isPass": false, "lowerShape": "circle", "lowerColor": "#cc0000"},
-            { "nameJa": "雑司が谷", "nameKana": "ぞしがや", "nameEn": "Zoshigaya", "id": "F-10", "time": "", "isPass": true, "lowerShape": "circle", "lowerColor": "#cc0000"},
-            { "nameJa": "西早稲田", "nameKana": "にしわせだ", "nameEn": "Nishi-Waseda", "id": "F-11", "time": "", "isPass": true, "lowerShape": "circle", "lowerColor": "#cc0000"},
-            { "nameJa": "東新宿", "nameKana": "ひがししんじゅく", "nameEn": "Higashi-Shinjuku", "id": "F-12", "time": "", "isPass": true, "lowerShape": "circle", "lowerColor": "#cc0000"},
-            { "nameJa": "新宿三丁目", "nameKana": "しんじゅくさんちょうめ", "nameEn": "Shinjuku-Sanchome", "id": "F-13", "time": "", "isPass": false, "lowerShape": "circle", "lowerColor": "#cc0000"},
-            { "nameJa": "北参道", "nameKana": "きたさんどう", "nameEn": "Kita-Sando", "id": "F-14", "time": "", "isPass": true, "lowerShape": "circle", "lowerColor": "#cc0000"},
-            { "nameJa": "明治神宮前", "nameKana": "めいじじんぐうまえ", "nameEn": "Meiji-Jingumae", "id": "F-15", "time": "", "isPass": false, "lowerShape": "circle", "lowerColor": "#cc0000"}
-        ]
     }
   ]
 }

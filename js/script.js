@@ -1055,10 +1055,11 @@ document.addEventListener('DOMContentLoaded', () => {
         el.dispatchEvent(new Event('change', { bubbles: true }));
     }
 
-    // ▼ コントロールパネルの「種別・路線設定」を同期する関数
+    // ▼ コントロールパネルの「種別・路線設定など」を同期する関数
     function syncRouteSettingsPanel(preset) {
         if (!preset) return;
 
+        // 1. 種別設定
         if (preset.trainType) {
             setAndTrigger('input-type-kanji', preset.trainType.nameJa || "");
             setAndTrigger('input-type-en', preset.trainType.nameEn || "");
@@ -1066,6 +1067,33 @@ document.addEventListener('DOMContentLoaded', () => {
             setAndTrigger('input-type-text', preset.trainType.textColor || "#ffffff");
         }
 
+        // 2. 行先設定 (NEW)
+        if (preset.destination) {
+            setAndTrigger('input-dest-kanji', preset.destination.nameJa || "");
+            setAndTrigger('input-dest-kana', preset.destination.nameKana || "");
+            setAndTrigger('input-dest-en', preset.destination.nameEn || "");
+        }
+
+        // 3. 号車設定 (NEW)
+        if (preset.carSettings) {
+            setAndTrigger('input-car-num', preset.carSettings.carNum || "1");
+            setAndTrigger('input-car-style', preset.carSettings.style || "style-number-only");
+            setAndTrigger('input-car-bg', preset.carSettings.bgColor || "#383838");
+        }
+
+        // 4. カラー設定 (NEW)
+        if (preset.uiColors) {
+            setAndTrigger('input-company-color', preset.uiColors.company || "#cc0000");
+            setAndTrigger('input-separator-color', preset.uiColors.separator || "#cc0000");
+            setAndTrigger('input-line-color', preset.uiColors.line || "#cc0000");
+        }
+
+        // 5. 右下案内テキスト (NEW)
+        if (preset.footerNote !== undefined) {
+            setAndTrigger('input-footer-note', preset.footerNote);
+        }
+
+        // 6. 路線・矢印設定
         if (preset.routeSettings) {
             setAndTrigger('chevron-color-1', preset.routeSettings.chevronColor1 || "#e60012");
             setAndTrigger('chevron-color-2', preset.routeSettings.chevronColor2 || "#0066cc");
