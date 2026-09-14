@@ -11,9 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { nameJa: "明治神宮前", nameEn: "Meiji-Jingumae", id: "F-15", time: "14", isPass: false, lowerShape: "circle", lowerColor: "#cc0000", isSync: true }
     ];
 
-    // 全駅データを保持するマスター配列（初期値はこれまでの8駅を入れておいてもOKです）
     let masterStationData = []; 
-    // 現在、左端（1駅目）に表示している駅のマスター配列内でのインデックス
     let currentDisplayStartIndex = 0;
 
     let currentState = 0;   
@@ -729,7 +727,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // === 個別の下部ナンバリングを一括同期するボタン処理 (修正版) ===
+    // 個別の下部ナンバリングを一括同期するボタン処理
     document.getElementById('btn-sync-lower-num')?.addEventListener('click', () => {
         // ドロップダウンで選択された基準駅（0〜7）を取得
         const baseIdx = document.getElementById('sync-lower-base-idx').value;
@@ -747,7 +745,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderRouteMap();     // モニターの表示を更新
     });
 
-    // === 画像ダウンロード機能 ===
+    // 画像ダウンロード機能
     document.getElementById('btn-download')?.addEventListener('click', () => {
         const monitor = document.getElementById('lcd-monitor');
 
@@ -758,7 +756,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return {
                 opacity: style.opacity,
                 transform: style.transform,
-                // ▼ここを追加：アニメーション途中の変形基準点も取得する▼
+                // アニメーション途中の変形基準点も取得する
                 transformOrigin: style.transformOrigin 
             };
         });
@@ -777,7 +775,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         el.style.transition = 'none';
                         el.style.opacity = currentStyles[index].opacity;
                         el.style.transform = currentStyles[index].transform;
-                        // ▼ここを追加：基準点を裏画面にも適用する▼
+                        // 基準点を裏画面にも適用する
                         el.style.transformOrigin = currentStyles[index].transformOrigin; 
                     }
                 });
@@ -832,35 +830,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ▼ 現在の stationData をコントロールパネル（下画面の入力欄）に反映する関数
-    function syncControlPanel() {
-        for (let i = 0; i < 8; i++) {
-            const st = stationData[i];
-            if (!st) continue;
-
-            const nameJaInput = document.getElementById(`st-name-ja-${i}`);
-            if (nameJaInput) nameJaInput.value = st.nameJa || "";
-
-            const nameEnInput = document.getElementById(`st-name-en-${i}`);
-            if (nameEnInput) nameEnInput.value = st.nameEn || "";
-
-            const idInput = document.getElementById(`st-id-${i}`);
-            if (idInput) idInput.value = st.id || "";
-
-            const timeInput = document.getElementById(`st-time-${i}`);
-            if (timeInput) timeInput.value = st.time || "";
-
-            const passCheck = document.getElementById(`st-pass-${i}`);
-            if (passCheck) passCheck.checked = st.isPass || false;
-
-            const shapeSelect = document.getElementById(`st-lower-shape-${i}`);
-            if (shapeSelect) shapeSelect.value = st.lowerShape || "square";
-
-            const colorInput = document.getElementById(`st-lower-color-${i}`);
-            if (colorInput) colorInput.value = st.lowerColor || "#666666";
-        }
-    }
-
     // ▼ マスターデータから8駅を切り出して、既存の stationData を上書きする関数
     function updateActiveStations() {
         stationData = masterStationData.slice(currentDisplayStartIndex, currentDisplayStartIndex + 8);
@@ -871,14 +840,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         const labelSelect = document.getElementById('select-next-label');
-        const modeText = (labelSelect && labelSelect.value === 'next') ? '次は' : 'ただいま';
-        const stName = stationData[0].nameJa;
+        const isNext = (labelSelect && labelSelect.value === 'next');
+
+        const modeText = isNext? '次は' : 'ただいま';
+
+        const targetIndex = isNext ? 1 : 0;
+        const stName = stationData[targetIndex].nameJa;
         
         const displaySpan = document.getElementById('current-state-display');
         if (displaySpan) displaySpan.textContent = `${modeText} ${stName}`;
         
-        syncControlPanel();
-        
+        if (typeof renderControlTable === 'function') {
+            renderControlTable();
+        }
+
         renderRouteMap();
     }
 
@@ -962,4 +937,106 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         reader.readAsText(file);
     });
+
+    // ▼ グローバル変数の拡張
+    let presetDataList = []; // 読み込んだ複数路線のリストを保持
+
+    // ▼ 値をセットしつつ、強制的に input/change イベントを発火させる関数
+    function setAndTrigger(id, value, isCheckbox = false) {
+        const el = document.getElementById(id);
+        if (!el) return; // IDが見つからない場合はスキップ
+        
+        if (isCheckbox) {
+            el.checked = value;
+        } else {
+            el.value = value;
+        }
+        // 手打ち入力したのと同じようにイベントを発生させる
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    // ▼ コントロールパネルの「種別・路線設定」を同期する関数
+    function syncRouteSettingsPanel(preset) {
+        if (!preset) return;
+
+        if (preset.trainType) {
+            setAndTrigger('input-type-kanji', preset.trainType.nameJa || "");
+            setAndTrigger('input-type-en', preset.trainType.nameEn || "");
+            setAndTrigger('input-type-color', preset.trainType.bgColor || "#000000");
+            setAndTrigger('input-type-text', preset.trainType.textColor || "#ffffff");
+        }
+
+        if (preset.routeSettings) {
+            setAndTrigger('chevron-color-1', preset.routeSettings.chevronColor1 || "#e60012");
+            setAndTrigger('chevron-color-2', preset.routeSettings.chevronColor2 || "#0066cc");
+            
+            if (typeof updateChevronColors === 'function') updateChevronColors();
+
+            setAndTrigger('toggle-lower-numbering', preset.routeSettings.showLowerNumbering !== false, true);
+            setAndTrigger('toggle-lower-shape', preset.routeSettings.showLowerShape !== false, true);
+        }
+    }
+
+    // ▼ 指定したインデックスの路線を画面にロードする関数
+    function loadPresetRoute(index) {
+        const preset = presetDataList[index];
+        if (!preset) return;
+
+        // マスターデータを上書き
+        masterStationData = preset.stations || [];
+        currentDisplayStartIndex = 0; // 最初の駅に戻す
+        
+        const labelSelect = document.getElementById('select-next-label');
+        if (labelSelect) labelSelect.value = 'now';
+
+        // コントロールパネル（種別・路線設定）の同期
+        syncRouteSettingsPanel(preset);
+
+        // コントロールパネル（駅データ）の同期 ＆ 画面更新
+        updateActiveStations();
+    }
+
+    // JSONファイルの読み込み処理（複数路線対応）
+    async function loadPresetsFromFile() {
+        try {
+            // 同じ階層にある presets.json を取得
+            const response = await fetch('stationpreset.json');
+            if (!response.ok) {
+                throw new Error('ネットワークエラー: ' + response.status);
+            }
+            
+            const data = await response.json();
+            
+            if (data.presets && Array.isArray(data.presets)) {
+                presetDataList = data.presets;
+                
+                const selector = document.getElementById('preset-route-selector');
+                if (selector) {
+                    selector.innerHTML = ''; 
+                    presetDataList.forEach((preset, index) => {
+                        const opt = document.createElement('option');
+                        opt.value = index;
+                        opt.textContent = preset.presetName;
+                        selector.appendChild(opt);
+                    });
+                }
+                
+                // 最初の路線を自動でロード
+                loadPresetRoute(0);
+            }
+        } catch (error) {
+            console.error("プリセットの読み込みに失敗しました:", error);
+            alert("プリセットの読み込みに失敗しました。ローカルサーバー環境で実行しているか確認してください。");
+        }
+    }
+
+    // ▼ 2. ドロップダウンで路線を切り替えたときの処理
+    document.getElementById('preset-route-selector')?.addEventListener('change', (event) => {
+        const selectedIndex = parseInt(event.target.value, 10);
+        loadPresetRoute(selectedIndex);
+    });
+
+    // ▼ 3. ページ読み込み時に自動実行
+    loadPresetsFromFile();
 });
