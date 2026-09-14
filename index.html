@@ -55,9 +55,9 @@
             <!-- 次駅案内 -->
             <div class="next-station-area">
                 <div class="next-label-wrapper">
-                    <div class="next-label kanji active" id="next-kanji"><span class="inner">次は</span></div>
-                    <div class="next-label kana" id="next-kana"><span class="inner">つぎは</span></div>
-                    <div class="next-label en" id="next-en"><span class="inner">Next</span></div>
+                    <div class="next-label kanji active" id="next-kanji"><span class="inner">ただいま</span></div>
+                    <div class="next-label kana" id="next-kana"><span class="inner">ただいま</span></div>
+                    <div class="next-label en" id="next-en"><span class="inner">This is</span></div>
                 </div>
 
                 <div class="station-number-box" id="st-number-box">
@@ -66,9 +66,9 @@
                 </div>
                 
                 <div class="station-name-wrapper" id="station-name-wrapper">
-                    <div class="station-name kanji active" id="st-kanji"><span class="inner">池袋</span></div>
-                    <div class="station-name kana" id="st-kana"><span class="inner">いけぶくろ</span></div>
-                    <div class="station-name en" id="st-en"><span class="inner">Ikebukuro</span></div>
+                    <div class="station-name kanji active" id="st-kanji"><span class="inner">要町</span></div>
+                    <div class="station-name kana" id="st-kana"><span class="inner">かなめちょう</span></div>
+                    <div class="station-name en" id="st-en"><span class="inner">Kanamecho</span></div>
                 </div>
             </div>
             
@@ -85,10 +85,26 @@
             </main>
         </div>
 
+        <!-- ▼ 進行管理ボタン ▼ -->
+        <div style="margin-bottom: 15px; padding: 10px; background: #0e0e0e; border-radius: 5px; text-align: center;">
+            <button id="btn-prev-state" style="padding: 5px 15px;">◀ 前へ</button>
+            <button id="btn-next-state" style="padding: 5px 15px;">次へ ▶</button>
+            <br>
+            <span id="current-state-display" style="font-weight: bold;"></span>
+        </div>
         <!-- 設定コントロールパネル -->
         <div id="control-panel">
-            <h2>トレインビジョン 設定パネル</h2>
-            
+            <h2>トレインビジョン 設定パネル</h2>    
+
+            <!-- ▼ プリセット読み込み ▼ -->
+             <div class="panel-section">
+                <div style="padding: 10px; border-radius: 5px;">
+                    <label>路線・種別選択: 
+                        <select id="preset-route-selector"></select>
+                    </label>
+                </div>
+            </div>
+
             <div class="panel-section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                     <h3>カラー設定・同期設定</h3>
@@ -166,19 +182,18 @@
                         <h4>■ 次の駅名</h4>
                         <label>案内表示: 
                             <select id="select-next-label">
-                                <option value="next" selected>次は (Next)</option>
-                                <option value="now">ただいま (This is)</option>
+                                <option value="next">次は (Next)</option>
+                                <option value="now" selected>ただいま (This is)</option>
                             </select>
                         </label>
-                        <label>漢字: <input type="text" id="input-st-kanji" value="池袋"></label>
-                        <label>ひらがな: <input type="text" id="input-st-kana" value="いけぶくろ"></label>
-                        <label>英語: <input type="text" id="input-st-en" value="Ikebukuro"></label>
-                        
+                        <label>漢字: <input type="text" id="input-st-kanji" value="要町"></label>
+                        <label>ひらがな: <input type="text" id="input-st-kana" value="かなめちょう"></label>
+                        <label>英語: <input type="text" id="input-st-en" value="Kanamecho"></label>
+
                         <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #555;">
                         <label><input type="checkbox" id="toggle-top-numbering" checked> 上部: 駅ナンバリングを表示</label>
                         <div style="display:flex; gap:10px; margin-top: 4px; margin-bottom: 4px;">
-                            <label>記号: <input type="text" id="input-line-code" value="F" style="width:40px;"></label>
-                            <label>番号: <input type="text" id="input-st-num" value="09" style="width:40px;"></label>
+                            <label>駅ナンバリング: <input type="text" id="input-top-st-id" value="F-09" style="width:80px;"></label>
                         </div>
                         <label><input type="checkbox" id="toggle-lower-numbering" checked> 下部: 駅ナンバリングを表示</label>
                         <label><input type="checkbox" id="toggle-lower-shape"> └ 図形で囲む (オフで文字のみ)</label>
@@ -233,7 +248,8 @@
                             <thead>
                                 <tr>
                                     <th>順</th>
-                                    <th>漢字/かな</th>
+                                    <th>漢字</th>
+                                    <th>かな</th>
                                     <th>英語</th>
                                     <th>ナンバリングID</th>
                                     <th>個別図形</th>

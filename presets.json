@@ -3,7 +3,7 @@
     "name": "JR東海風種別表示",
     "types": [
       {
-        "ja": "普　通",
+        "ja": "普通",
         "en": "Local",
         "bg": "#858585",
         "text": "#ffffff",
