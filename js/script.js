@@ -914,49 +914,80 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ▼ 対象駅のデータを、上部コントロールパネル（入力欄）に流し込む関数
     function syncTopHeaderPanel(station, isNext) {
-        setAndTrigger('input-st-kanji', station.nameJa || "");
-        setAndTrigger('input-st-kana', station.nameKana || ""); // ひらがな
-        setAndTrigger('input-st-en', station.nameEn || "");
-        setAndTrigger('input-top-st-id', station.id || ""); // 統合したナンバリング
+        // 1. コントロール部の入力欄の値を変更（イベントは強制発火しません）
+        const kanjiInput = document.getElementById('input-st-kanji');
+        const kanaInput = document.getElementById('input-st-kana');
+        const enInput = document.getElementById('input-st-en');
+        const idInput = document.getElementById('input-top-st-id');
+        
+        if (kanjiInput) kanjiInput.value = station.nameJa || "";
+        if (kanaInput) kanaInput.value = station.nameKana || "";
+        if (enInput) enInput.value = station.nameEn || "";
+        if (idInput) idInput.value = station.id || "";
 
-        // 値をセットし終わったら、大画面のヘッダー表示を更新する
+        // ドロップダウンも現在の状態に合わせる
+        const labelSelect = document.getElementById('select-next-label');
+        if (labelSelect) labelSelect.value = isNext ? 'next' : 'now';
+
+        // 2. 変更が終わったら、そのまま大画面更新関数を呼び出す
         updateBigHeaderDisplay(isNext);
     }
 
     // ▼ 上部コントロールパネルの入力値をもとに、大画面ヘッダーを描画する関数
     function updateBigHeaderDisplay(isNext) {
-        // 案内テキストの取得（"次は (Next)" の "次は" の部分だけを抽出）
-        const labelSelect = document.getElementById('select-next-label');
-        const stateText = labelSelect && labelSelect.options[labelSelect.selectedIndex]
-                        ? labelSelect.options[labelSelect.selectedIndex].text.split(' ')[0] 
-                        : (isNext ? '次は' : 'ただいま');
+        // 1. コントロール部から最新の値を取得
+        const kanji = document.getElementById('input-st-kanji')?.value || '';
+        const kana = document.getElementById('input-st-kana')?.value || '';
+        const en = document.getElementById('input-st-en')?.value || '';
+        const idVal = document.getElementById('input-top-st-id')?.value || '';
 
-        // ※ 注意：以下の 'header-xxx' の部分は、ご自身の「大画面用HTML」の実際のIDに合わせてください！
-        const headerState = document.getElementById('header-state-text');
-        if (headerState) headerState.textContent = stateText; // 「次は」等が復活します！
+        // 2. 次駅案内テキストの更新（.inner を狙い撃ちしてアニメーション構造を維持）
+        const nextKanji = document.querySelector('#next-kanji .inner');
+        if (nextKanji) nextKanji.textContent = isNext ? '次は' : 'ただいま';
 
-        const headerNameJa = document.getElementById('header-st-name-ja');
-        if (headerNameJa) headerNameJa.textContent = document.getElementById('input-st-kanji')?.value || '';
+        const nextKana = document.querySelector('#next-kana .inner');
+        if (nextKana) nextKana.textContent = isNext ? 'つぎは' : 'ただいま';
 
-        const headerNameKana = document.getElementById('header-st-kana');
-        if (headerNameKana) headerNameKana.textContent = document.getElementById('input-st-kana')?.value || '';
+        const nextEn = document.querySelector('#next-en .inner');
+        if (nextEn) nextEn.textContent = isNext ? 'Next' : 'This is';
 
-        const headerNameEn = document.getElementById('header-st-en');
-        if (headerNameEn) headerNameEn.textContent = document.getElementById('input-st-en')?.value || '';
+        // 3. 駅名の更新
+        const stKanji = document.querySelector('#st-kanji .inner');
+        if (stKanji) stKanji.textContent = kanji;
 
-        // 上部ナンバリングの表示/非表示制御
-        const headerId = document.getElementById('header-st-id');
+        const stKana = document.querySelector('#st-kana .inner');
+        if (stKana) stKana.textContent = kana;
+
+        const stEn = document.querySelector('#st-en .inner');
+        if (stEn) stEn.textContent = en;
+
+        // 4. ナンバリングの更新
+        const topNumberBox = document.getElementById('st-number-box');
         const showNum = document.getElementById('toggle-top-numbering')?.checked ?? true;
-        if (headerId) {
-            if (showNum) {
-                const idVal = document.getElementById('input-top-st-id')?.value || '';
-                // F-09 などの場合、丸の中には "09" (数字部分) だけを出したい場合の処理
+        
+        if (topNumberBox) {
+            if (showNum && idVal) {
+                topNumberBox.style.display = 'flex'; // コンテナを表示
+                // "F-09" などの形式から、記号部分と数字部分を分割
                 const match = idVal.match(/^([A-Za-z]+)[-]([0-9A-Za-z]+)$/);
-                headerId.textContent = match ? match[2] : idVal; 
-                headerId.style.display = ''; // 表示
+                const lineCode = document.querySelector('#st-line-code .inner');
+                const stNumVal = document.querySelector('#st-num-val .inner');
+                
+                if (match) {
+                    if (lineCode) lineCode.textContent = match[1];
+                    if (stNumVal) stNumVal.textContent = match[2];
+                } else {
+                    if (lineCode) lineCode.textContent = '';
+                    if (stNumVal) stNumVal.textContent = idVal;
+                }
             } else {
-                headerId.style.display = 'none'; // 非表示
+                topNumberBox.style.display = 'none'; // コンテナを非表示
             }
+        }
+
+        // 5. テキストを流し込んだ後、文字幅の自動縮小関数を呼ぶ
+        if (typeof adjustAllFittedTexts === 'function') {
+            adjustAllFittedTexts();
         }
     }
     
