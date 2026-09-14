@@ -990,52 +990,6 @@ document.addEventListener('DOMContentLoaded', () => {
             adjustAllFittedTexts();
         }
     }
-    
-    // ▼ JSONファイルの読み込み処理
-    document.getElementById('preset-loader')?.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            try {
-                const preset = JSON.parse(e.target.result);
-                
-                // 1. マスターデータの上書き
-                if (preset.stations && preset.stations.length > 0) {
-                    masterStationData = preset.stations;
-                    currentDisplayStartIndex = 0; // 読み込み時は最初に戻す
-                    document.getElementById('select-next-label').value = 'now';
-                }
-
-                // 2. 設定の反映 (チェックボックスやカラーピッカーをJSONに合わせて更新)
-                if (preset.routeSettings) {
-                    const color1 = document.getElementById('chevron-color-1');
-                    const color2 = document.getElementById('chevron-color-2');
-                    if (color1) color1.value = preset.routeSettings.chevronColor1 || "#e60012";
-                    if (color2) color2.value = preset.routeSettings.chevronColor2 || "#0066cc";
-                    updateChevronColors(); // CSS変数に反映する既存の関数を呼ぶ
-
-                    const toggleNum = document.getElementById('toggle-lower-numbering');
-                    if (toggleNum) toggleNum.checked = preset.routeSettings.showLowerNumbering !== false;
-
-                    const toggleShape = document.getElementById('toggle-lower-shape');
-                    if (toggleShape) toggleShape.checked = preset.routeSettings.showLowerShape !== false;
-                }
-                
-                // 3. コントロールパネルの入力欄（HTML）も必要に応じて再生成する処理をここに書く
-                // ... (既存の input 欄の値を masterStationData[0~7] で上書きするなど)
-
-                // 4. 画面更新
-                updateActiveStations();
-                
-            } catch (error) {
-                alert("プリセットの読み込みに失敗しました。JSONの形式を確認してください。");
-                console.error(error);
-            }
-        };
-        reader.readAsText(file);
-    });
 
     // ▼ グローバル変数の拡張
     let presetDataList = []; // 読み込んだ複数路線のリストを保持
@@ -1152,7 +1106,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error("プリセットの読み込みに失敗しました:", error);
-            alert("プリセットの読み込みに失敗しました。ローカルサーバー環境で実行しているか確認してください。");
+            alert("プリセットの読み込みに失敗しました。");
         }
     }
 
