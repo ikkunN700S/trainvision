@@ -86,7 +86,7 @@
         </div>
 
         <!-- ▼ 進行管理ボタン ▼ -->
-        <div style="margin-bottom: 15px; padding: 10px; background: #e0e0e0; border-radius: 5px;">
+        <div style="margin-bottom: 15px; padding: 10px; background: #0e0e0e; border-radius: 5px;">
             <button id="btn-prev-state" style="padding: 5px 15px;">◀ 前へ</button>
             <button id="btn-next-state" style="padding: 5px 15px;">次へ ▶</button>
             <span id="current-state-display" style="margin-left: 15px; font-weight: bold;"></span>
@@ -96,10 +96,12 @@
             <h2>トレインビジョン 設定パネル</h2>    
 
             <!-- ▼ プリセット読み込み ▼ -->
-            <div style="margin-bottom: 15px; padding: 10px; background: #f5f5f5; border-radius: 5px;">
-                <label>路線・種別選択: 
-                    <select id="preset-route-selector"></select>
-                </label>
+             <div class="panel-section">
+                <div style="padding: 10px; border-radius: 5px;">
+                    <label>路線・種別選択: 
+                        <select id="preset-route-selector"></select>
+                    </label>
+                </div>
             </div>
 
             <div class="panel-section">
@@ -186,12 +188,11 @@
                         <label>漢字: <input type="text" id="input-st-kanji" value="要町"></label>
                         <label>ひらがな: <input type="text" id="input-st-kana" value="かなめちょう"></label>
                         <label>英語: <input type="text" id="input-st-en" value="Kanamecho"></label>
-                        
+
                         <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #555;">
                         <label><input type="checkbox" id="toggle-top-numbering" checked> 上部: 駅ナンバリングを表示</label>
                         <div style="display:flex; gap:10px; margin-top: 4px; margin-bottom: 4px;">
-                            <label>記号: <input type="text" id="input-line-code" value="F" style="width:40px;"></label>
-                            <label>番号: <input type="text" id="input-st-num" value="09" style="width:40px;"></label>
+                            <label>駅ナンバリング: <input type="text" id="input-top-st-id" value="F-09" style="width:80px;"></label>
                         </div>
                         <label><input type="checkbox" id="toggle-lower-numbering" checked> 下部: 駅ナンバリングを表示</label>
                         <label><input type="checkbox" id="toggle-lower-shape"> └ 図形で囲む (オフで文字のみ)</label>
@@ -246,7 +247,8 @@
                             <thead>
                                 <tr>
                                     <th>順</th>
-                                    <th>漢字/かな</th>
+                                    <th>漢字</th>
+                                    <th>かな</th>
                                     <th>英語</th>
                                     <th>ナンバリングID</th>
                                     <th>個別図形</th>

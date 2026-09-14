@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let masterStationData = []; 
     let currentDisplayStartIndex = 0;
+    let currentGlobalIndex = 0; // 全体の中で現在どの駅にいるか
+    let currentArrowIndex = 0;  // 画面上の8マスのうち、どこに矢印を置くか
 
     let currentState = 0;   
     let isRouteEn = false;  
@@ -126,187 +128,192 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderRouteMap() {
-        const grid = document.getElementById('route-map-grid');
-        if (!grid) return;
+    const grid = document.getElementById('route-map-grid');
+    if (!grid) return;
 
-        const showLowerNum = document.getElementById('toggle-lower-numbering')?.checked ?? true;
-        const showLowerShape = document.getElementById('toggle-lower-shape')?.checked ?? true;
-        
-        const labelMode = document.getElementById('select-next-label')?.value || 'next';
-        // const chevronColor = document.getElementById('select-chevron-color')?.value || 'red';
-        const isNextMode = (labelMode === 'next'); 
+    const showLowerNum = document.getElementById('toggle-lower-numbering')?.checked ?? true;
+    const showLowerShape = document.getElementById('toggle-lower-shape')?.checked ?? true;
+    
+    const labelMode = document.getElementById('select-next-label')?.value || 'next';
+    const chevronColor = document.getElementById('select-chevron-color')?.value || 'red';
+    const isNextMode = (labelMode === 'next'); 
 
-        if (showLowerNum) {
-            grid.classList.remove('hide-numbering');
-        } else {
-            grid.classList.add('hide-numbering');
-        }
+    if (showLowerNum) {
+        grid.classList.remove('hide-numbering');
+    } else {
+        grid.classList.add('hide-numbering');
+    }
 
-        if (!isRouteMapInitialized) {
-            grid.innerHTML = '';
-            grid.style.position = 'relative'; 
+    if (!isRouteMapInitialized) {
+        grid.innerHTML = '';
+        grid.style.position = 'relative'; 
 
-            const bg = document.createElement('div');
-            bg.className = 'time-bar-bg';
-            bg.innerHTML = `
-                <div class="time-bar-fill"></div>
-                <div class="time-bar-mask-top"></div>
-                <div class="time-bar-mask-bottom"></div>
-            `;
-            grid.appendChild(bg);
+        const bg = document.createElement('div');
+        bg.className = 'time-bar-bg';
+        bg.innerHTML = `
+            <div class="time-bar-fill"></div>
+            <div class="time-bar-mask-top"></div>
+            <div class="time-bar-mask-bottom"></div>
+        `;
+        grid.appendChild(bg);
 
-            const emptyRow1 = document.createElement('div');
-            emptyRow1.className = 'grid-item row-1';
-            grid.appendChild(emptyRow1);
-
-            for (let i = 7; i >= 0; i--) {
-                const item = document.createElement('div');
-                item.className = 'grid-item st-name-vert row-1';
-                item.id = `route-st-name-${i}`;
-                grid.appendChild(item);
-            }
-
-            const emptyRow2 = document.createElement('div');
-            emptyRow2.className = 'grid-item row-2';
-            grid.appendChild(emptyRow2);
-
-            for (let i = 7; i >= 0; i--) {
-                const item = document.createElement('div');
-                item.className = 'grid-item st-id row-2';
-                item.id = `route-st-id-${i}`;
-                grid.appendChild(item);
-            }
-
-            const labelItem = document.createElement('div');
-            labelItem.className = 'grid-item time-label row-3';
-            labelItem.id = 'route-time-label';
-            grid.appendChild(labelItem);
-
-            for (let i = 7; i >= 0; i--) {
-                const item = document.createElement('div');
-                item.className = 'grid-item row-3';
-                item.id = `route-time-box-${i}`;
-                grid.appendChild(item);
-            }
-
-            // ▼ 矢印用レイヤー
-            const chevronLayer = document.createElement('div');
-            chevronLayer.id = 'global-chevron-layer';
-            chevronLayer.style.position = 'absolute';
-            chevronLayer.style.left = '0';
-            chevronLayer.style.width = '100%';
-            chevronLayer.style.pointerEvents = 'none';
-            chevronLayer.style.zIndex = '5';
-            chevronLayer.innerHTML = `
-                <div id="chevron-clipper" style="position: absolute; top: 50%; margin-top: -20px; height: 40px; width: 38px; overflow: hidden;">
-                    <div class="chevron-large" id="current-chevron-arrow" style="position: absolute; top: 50%; left: 75%; margin: 0; transform: translate(-50%, -50%) rotate(-135deg);"></div>
-                </div>
-            `;
-            grid.appendChild(chevronLayer);
-
-            isRouteMapInitialized = true;
-        }
-
-        const timeLabel = document.getElementById('route-time-label');
-        if (timeLabel) timeLabel.textContent = isRouteEn ? 'min' : '分';
+        const emptyRow1 = document.createElement('div');
+        emptyRow1.className = 'grid-item row-1';
+        grid.appendChild(emptyRow1);
 
         for (let i = 7; i >= 0; i--) {
-            const st = stationData[i];
-            const isGrey = st.isPass || (i === 0 && isNextMode);
+            const item = document.createElement('div');
+            item.className = 'grid-item st-name-vert row-1';
+            item.id = `route-st-name-${i}`;
+            grid.appendChild(item);
+        }
 
-            const nameItem = document.getElementById(`route-st-name-${i}`);
-            if (nameItem) {
-                nameItem.className = `grid-item st-name-vert row-1 ${isGrey ? 'grey-text' : ''}`;
-                const nameText = isRouteEn ? st.nameEn : st.nameJa;
-                const langClass = isRouteEn ? 'en-st-name' : 'ja-st-name';
-                nameItem.innerHTML = `<div class="st-name-inner ${langClass}">${nameText}</div>`;
-            }
+        const emptyRow2 = document.createElement('div');
+        emptyRow2.className = 'grid-item row-2';
+        grid.appendChild(emptyRow2);
 
-            const idItem = document.getElementById(`route-st-id-${i}`);
-            if (idItem) {
-                idItem.className = `grid-item st-id row-2 ${isGrey ? 'grey-text' : ''}`;
-                if (!showLowerNum) {
-                    idItem.innerHTML = '';
-                } else {
-                    const match = st.id.match(/^([A-Za-z]+)[-]([0-9A-Za-z]+)$/);
-                    if (match && showLowerShape) {
-                        let r = '8px';
-                        if (st.lowerShape === 'square') r = '0px';
-                        if (st.lowerShape === 'circle') r = '50%';
-                        idItem.innerHTML = `
-                            <div class="lower-number-box" style="border-color: ${st.lowerColor}; border-radius: ${r};">
-                                <div class="lower-line-code"><span class="inner">${match[1]}</span></div>
-                                <div class="lower-st-num"><span class="inner">${match[2]}</span></div>
-                            </div>
-                        `;
-                    } else {
-                        idItem.innerHTML = `<span class="inner">${st.id}</span>`;
-                    }
-                }
-            }
+        for (let i = 7; i >= 0; i--) {
+            const item = document.createElement('div');
+            item.className = 'grid-item st-id row-2';
+            item.id = `route-st-id-${i}`;
+            grid.appendChild(item);
+        }
 
-            const timeItem = document.getElementById(`route-time-box-${i}`);
-            if (timeItem) {
-                if (st.isPass) {
-                    // 通過時でも透明なtime-boxを配置
-                    timeItem.innerHTML = `
-                        <div style="position: relative; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;">
-                            <div class="time-box" style="visibility: hidden; pointer-events: none;"><span class="inner">${st.time}</span></div>
-                            <div class="white-chevron" style="position: absolute;"></div>
+        const labelItem = document.createElement('div');
+        labelItem.className = 'grid-item time-label row-3';
+        labelItem.id = 'route-time-label';
+        grid.appendChild(labelItem);
+
+        for (let i = 7; i >= 0; i--) {
+            const item = document.createElement('div');
+            item.className = 'grid-item row-3';
+            item.id = `route-time-box-${i}`;
+            grid.appendChild(item);
+        }
+
+        const chevronLayer = document.createElement('div');
+        chevronLayer.id = 'global-chevron-layer';
+        chevronLayer.style.position = 'absolute';
+        chevronLayer.style.left = '0';
+        chevronLayer.style.width = '100%';
+        chevronLayer.style.pointerEvents = 'none';
+        chevronLayer.style.zIndex = '5';
+        chevronLayer.innerHTML = `
+            <div id="chevron-clipper" style="position: absolute; top: 50%; margin-top: -20px; height: 40px; width: 36px; overflow: hidden;">
+                <div class="chevron-large" id="current-chevron-arrow" style="position: absolute; top: 50%; left: 80%; margin: 0; transform: translate(-50%, -50%) rotate(-135deg);"></div>
+            </div>
+        `;
+        grid.appendChild(chevronLayer);
+
+        isRouteMapInitialized = true;
+    }
+
+    // `isRouteEn` が未定義の場合は日本語をデフォルトにする安全対策
+    const enMode = typeof isRouteEn !== 'undefined' ? isRouteEn : false;
+    const timeLabel = document.getElementById('route-time-label');
+    if (timeLabel) timeLabel.textContent = enMode ? 'min' : '分';
+
+    for (let i = 7; i >= 0; i--) {
+        const st = stationData[i];
+        
+        // ▼ 修正点：現在矢印がある位置（currentArrowIndex）より前の駅はグレーアウトさせる
+        const isPassedStation = (i < currentArrowIndex) || (i === currentArrowIndex && isNextMode);
+        const isGrey = st.isPass || isPassedStation;
+
+        const nameItem = document.getElementById(`route-st-name-${i}`);
+        if (nameItem) {
+            nameItem.className = `grid-item st-name-vert row-1 ${isGrey ? 'grey-text' : ''}`;
+            const nameText = enMode ? st.nameEn : st.nameJa;
+            const langClass = enMode ? 'en-st-name' : 'ja-st-name';
+            nameItem.innerHTML = `<div class="st-name-inner ${langClass}">${nameText}</div>`;
+        }
+
+        const idItem = document.getElementById(`route-st-id-${i}`);
+        if (idItem) {
+            idItem.className = `grid-item st-id row-2 ${isGrey ? 'grey-text' : ''}`;
+            if (!showLowerNum) {
+                idItem.innerHTML = '';
+            } else {
+                const match = (st.id || "").match(/^([A-Za-z]+)[-]([0-9A-Za-z]+)$/);
+                if (match && showLowerShape) {
+                    let r = '8px';
+                    if (st.lowerShape === 'square') r = '0px';
+                    if (st.lowerShape === 'circle') r = '50%';
+                    idItem.innerHTML = `
+                        <div class="lower-number-box" style="border-color: ${st.lowerColor}; border-radius: ${r};">
+                            <div class="lower-line-code"><span class="inner">${match[1]}</span></div>
+                            <div class="lower-st-num"><span class="inner">${match[2]}</span></div>
                         </div>
                     `;
                 } else {
-                    timeItem.innerHTML = `<div class="time-box"><span class="inner">${st.time}</span></div>`;
+                    idItem.innerHTML = `<span class="inner">${st.id || ""}</span>`;
                 }
             }
         }
 
-        // ▼ 矢印の位置計算とカラーライン長の調整 ▼
-        const chevronWrap = document.getElementById('route-time-box-0');
-        const globalLayer = document.getElementById('global-chevron-layer');
-        const clipper = document.getElementById('chevron-clipper');
-        const chevronArrow = document.getElementById('current-chevron-arrow');
-        const box1 = document.getElementById('route-time-box-1');
-
-        if (chevronWrap && globalLayer && clipper && chevronArrow && box1) {
-            chevronArrow.classList.remove('chevron-blink');
-            void chevronArrow.offsetWidth; 
-            chevronArrow.classList.add(`chevron-blink`);
-            
-            globalLayer.style.top = chevronWrap.offsetTop + 'px';
-            globalLayer.style.height = chevronWrap.offsetHeight + 'px';
-
-            // 1駅目の中心座標
-            const box0Center = chevronWrap.offsetLeft + (chevronWrap.offsetWidth / 2);
-            let arrowAbsoluteCenterX = box0Center;
-
-            if (isNextMode) {
-                // 2駅目の中心座標を取得し真ん中を厳密に計算
-                const box1Center = box1.offsetLeft + (box1.offsetWidth / 2);
-                arrowAbsoluteCenterX = (box0Center + box1Center) / 2;
+        const timeItem = document.getElementById(`route-time-box-${i}`);
+        if (timeItem) {
+            if (st.isPass) {
+                timeItem.innerHTML = `
+                    <div style="position: relative; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;">
+                        <div class="time-box" style="visibility: hidden; pointer-events: none;"><span class="inner">${st.time}</span></div>
+                        <div class="white-chevron" style="position: absolute;"></div>
+                    </div>
+                `;
+            } else {
+                timeItem.innerHTML = `<div class="time-box"><span class="inner">${st.time}</span></div>`;
             }
+        }
+    }
 
-            const clipperWidth = 36; 
-            const halfWidth = clipperWidth / 2;
+    // ▼ 矢印の位置計算（0,1固定ではなく currentArrowIndex を基準にする）
+    const chevronWrap = document.getElementById(`route-time-box-${currentArrowIndex}`);
+    const globalLayer = document.getElementById('global-chevron-layer');
+    const clipper = document.getElementById('chevron-clipper');
+    const chevronArrow = document.getElementById('current-chevron-arrow');
+    const box1 = document.getElementById(`route-time-box-${currentArrowIndex + 1}`);
 
-            clipper.style.left = (arrowAbsoluteCenterX - halfWidth) + 'px';
-            
-            chevronArrow.style.left = '75%';
-            chevronArrow.style.transform = 'translate(-50%, -50%) rotate(-135deg)';
+    if (chevronWrap && globalLayer && clipper && chevronArrow) {
+        chevronArrow.classList.remove('chevron-blink');
+        void chevronArrow.offsetWidth; 
+        chevronArrow.classList.add('chevron-blink');
+        
+        globalLayer.style.top = chevronWrap.offsetTop + 'px';
+        globalLayer.style.height = chevronWrap.offsetHeight + 'px';
 
-            setTimeout(() => {
-                const lineStartOffset = 25; 
-                const colorLineStop = arrowAbsoluteCenterX; 
-                
-                const centerPos = colorLineStop - lineStartOffset;
-                const lineWidth = grid.offsetWidth - lineStartOffset;
-                const pct = (centerPos / lineWidth) * 100;
-                document.documentElement.style.setProperty('--line-fill-percent', pct + '%');
-            }, 0);
+        const box0Center = chevronWrap.offsetLeft + (chevronWrap.offsetWidth / 2);
+        let arrowAbsoluteCenterX = box0Center;
+
+        if (isNextMode && box1) {
+            const box1Center = box1.offsetLeft + (box1.offsetWidth / 2);
+            arrowAbsoluteCenterX = (box0Center + box1Center) / 2;
+        } else if (isNextMode && !box1) {
+            // データ終端で「次へ」の箱が存在しない場合の安全処理
+            arrowAbsoluteCenterX = chevronWrap.offsetLeft + chevronWrap.offsetWidth;
         }
 
+        const clipperWidth = 36; 
+        const halfWidth = clipperWidth / 2;
+
+        clipper.style.left = (arrowAbsoluteCenterX - halfWidth) + 'px';
+        chevronArrow.style.left = '80%';
+        chevronArrow.style.transform = 'translate(-50%, -50%) rotate(-135deg)';
+
+        setTimeout(() => {
+            const lineStartOffset = 25; 
+            const colorLineStop = arrowAbsoluteCenterX; 
+            
+            const centerPos = colorLineStop - lineStartOffset;
+            const lineWidth = grid.offsetWidth - lineStartOffset;
+            const pct = (centerPos / lineWidth) * 100;
+            document.documentElement.style.setProperty('--line-fill-percent', pct + '%');
+        }, 0);
+    }
+
+    if (typeof adjustAllFittedTexts === 'function') {
         adjustAllFittedTexts();
     }
+}
 
     function updateFooterNoteArray() {
         const footerInputElem = document.getElementById('input-footer-note');
@@ -696,6 +703,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tr.innerHTML = `
                 <td>${idx + 1}</td>
                 <td><input type="text" value="${st.nameJa}" data-idx="${idx}" data-field="nameJa" style="width:70px;"></td>
+                <td><input type="text" value="${st.nameKana || ''}" data-idx="${idx}" data-field="nameKana" style="width:70px;"></td>
                 <td><input type="text" value="${st.nameEn}" data-idx="${idx}" data-field="nameEn" style="width:70px;"></td>
                 <td><input type="text" value="${st.id}" data-idx="${idx}" data-field="id" style="width:55px;"></td>
                 <td>
@@ -717,11 +725,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const idx = e.target.dataset.idx;
             const field = e.target.dataset.field;
             if (idx === undefined) return;
+            
+            const numIdx = parseInt(idx, 10);
 
             if (field === 'isPass' || field === 'isSync') {
                 stationData[idx][field] = e.target.checked;
             } else {
                 stationData[idx][field] = e.target.value;
+            }
+
+            // マスターデータにも上書き保存
+            if (masterStationData && masterStationData[currentDisplayStartIndex + numIdx]) {
+                masterStationData[currentDisplayStartIndex + numIdx][field] = stationData[numIdx][field];
+            }
+
+            // テーブルを編集した際に、上部の大きなディスプレイにも即座に反映させる
+            if (numIdx === (document.getElementById('select-next-label')?.value === 'next' ? 1 : 0)) {
+                syncTopHeaderPanel(stationData[numIdx], document.getElementById('select-next-label')?.value === 'next');
             }
             renderRouteMap();
         });
@@ -830,47 +850,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ▼ マスターデータから8駅を切り出して、既存の stationData を上書きする関数
-    function updateActiveStations() {
-        stationData = masterStationData.slice(currentDisplayStartIndex, currentDisplayStartIndex + 8);
-        
-        // 足りない場合は空データで埋める
-        while(stationData.length < 8) {
-            stationData.push({ nameJa: "", nameEn: "", id: "", time: "", isPass: true, lowerShape: "square", lowerColor: "transparent" });
-        }
-        
-        const labelSelect = document.getElementById('select-next-label');
-        const isNext = (labelSelect && labelSelect.value === 'next');
-
-        const modeText = isNext? '次は' : 'ただいま';
-
-        const targetIndex = isNext ? 1 : 0;
-        const stName = stationData[targetIndex].nameJa;
-        
-        const displaySpan = document.getElementById('current-state-display');
-        if (displaySpan) displaySpan.textContent = `${modeText} ${stName}`;
-        
-        if (typeof renderControlTable === 'function') {
-            renderControlTable();
-        }
-
-        renderRouteMap();
-    }
-
     // ▼ 「次へ」ボタンの処理
     document.getElementById('btn-next-state')?.addEventListener('click', () => {
         const labelSelect = document.getElementById('select-next-label');
-        
         if (labelSelect.value === 'now') {
-            // 「ただいま」状態なら「次は」状態に変更（駅はスライドしない）
-            labelSelect.value = 'next';
-        } else {
-            // 「次は」状態なら「ただいま」状態に戻し、駅を1つ進める（スライドする）
-            labelSelect.value = 'now';
-            // 残りの駅数が8駅以上ある場合のみインデックスを進める
-            if (currentDisplayStartIndex + 8 < masterStationData.length) {
-                currentDisplayStartIndex++;
+            // 終点でなければ「次は」へ進む
+            if (currentGlobalIndex < masterStationData.length - 1) {
+                labelSelect.value = 'next';
             }
+        } else {
+            // 次の駅の「ただいま」へ進む
+            labelSelect.value = 'now';
+            currentGlobalIndex++;
         }
         updateActiveStations();
     });
@@ -878,20 +869,102 @@ document.addEventListener('DOMContentLoaded', () => {
     // ▼ 「前へ」ボタンの処理
     document.getElementById('btn-prev-state')?.addEventListener('click', () => {
         const labelSelect = document.getElementById('select-next-label');
-        
         if (labelSelect.value === 'next') {
-            // 「次は」状態なら「ただいま」状態に戻す（駅はスライドしない）
             labelSelect.value = 'now';
         } else {
-            // 「ただいま」状態なら「次は」状態に変更し、駅を1つ戻す（スライドする）
-            if (currentDisplayStartIndex > 0) {
-                currentDisplayStartIndex--;
+            if (currentGlobalIndex > 0) {
+                currentGlobalIndex--;
                 labelSelect.value = 'next';
             }
         }
         updateActiveStations();
     });
 
+    function updateActiveStations() {
+        const maxStartIndex = Math.max(0, masterStationData.length - 8);
+        currentDisplayStartIndex = Math.min(currentGlobalIndex, maxStartIndex);
+        currentArrowIndex = currentGlobalIndex - currentDisplayStartIndex;
+
+        stationData = masterStationData.slice(currentDisplayStartIndex, currentDisplayStartIndex + 8);
+        
+        // 足りない場合は空データで埋める（nameKana を追加しました）
+        while(stationData.length < 8) {
+            stationData.push({ nameJa: "", nameKana: "", nameEn: "", id: "", time: "", isPass: true, lowerShape: "square", lowerColor: "transparent", isSync: false });
+        }
+        
+        const labelSelect = document.getElementById('select-next-label');
+        const isNext = (labelSelect && labelSelect.value === 'next');
+        
+        // 次へ向かっているなら次の駅、ただいまなら今の駅を取得
+        const targetGlobalIndex = isNext ? Math.min(currentGlobalIndex + 1, masterStationData.length - 1) : currentGlobalIndex;
+        const targetStation = masterStationData[targetGlobalIndex] || {};
+        
+        const modeText = isNext ? '次は' : 'ただいま';
+        const displaySpan = document.getElementById('current-state-display');
+        if (displaySpan) displaySpan.textContent = `${modeText} ${targetStation.nameJa || ""}`;
+        
+        // ▼ ここで上部パネルの入力欄を同期し、大画面ヘッダーも更新させる
+        syncTopHeaderPanel(targetStation, isNext);
+        
+        if (typeof renderControlTable === 'function') {
+            renderControlTable();
+        }
+        
+        renderRouteMap();
+    }
+
+    // ▼ 対象駅のデータを、上部コントロールパネル（入力欄）に流し込む関数
+    function syncTopHeaderPanel(station, isNext) {
+        const kanjiInput = document.getElementById('input-st-kanji');
+        const kanaInput = document.getElementById('input-st-kana');
+        const enInput = document.getElementById('input-st-en');
+        const idInput = document.getElementById('input-top-st-id');
+        
+        if (kanjiInput) kanjiInput.value = station.nameJa || "";
+        if (kanaInput) kanaInput.value = station.nameKana || "";
+        if (enInput) enInput.value = station.nameEn || "";
+        if (idInput) idInput.value = station.id || "";
+
+        updateBigHeaderDisplay(isNext);
+    }
+
+    // ▼ 上部コントロールパネルの入力値をもとに、大画面ヘッダーを描画する関数
+    function updateBigHeaderDisplay(isNext) {
+        // 案内テキストの取得（"次は (Next)" の "次は" の部分だけを抽出）
+        const labelSelect = document.getElementById('select-next-label');
+        const stateText = labelSelect && labelSelect.options[labelSelect.selectedIndex]
+                        ? labelSelect.options[labelSelect.selectedIndex].text.split(' ')[0] 
+                        : (isNext ? '次は' : 'ただいま');
+
+        // ※ 注意：以下の 'header-xxx' の部分は、ご自身の「大画面用HTML」の実際のIDに合わせてください！
+        const headerState = document.getElementById('header-state-text');
+        if (headerState) headerState.textContent = stateText; // 「次は」等が復活します！
+
+        const headerNameJa = document.getElementById('header-st-name-ja');
+        if (headerNameJa) headerNameJa.textContent = document.getElementById('input-st-kanji')?.value || '';
+
+        const headerNameKana = document.getElementById('header-st-kana');
+        if (headerNameKana) headerNameKana.textContent = document.getElementById('input-st-kana')?.value || '';
+
+        const headerNameEn = document.getElementById('header-st-en');
+        if (headerNameEn) headerNameEn.textContent = document.getElementById('input-st-en')?.value || '';
+
+        // 上部ナンバリングの表示/非表示制御
+        const headerId = document.getElementById('header-st-id');
+        const showNum = document.getElementById('toggle-top-numbering')?.checked ?? true;
+        if (headerId) {
+            if (showNum) {
+                const idVal = document.getElementById('input-top-st-id')?.value || '';
+                // F-09 などの場合、丸の中には "09" (数字部分) だけを出したい場合の処理
+                const match = idVal.match(/^([A-Za-z]+)[-]([0-9A-Za-z]+)$/);
+                headerId.textContent = match ? match[2] : idVal; 
+                headerId.style.display = ''; // 表示
+            } else {
+                headerId.style.display = 'none'; // 非表示
+            }
+        }
+    }
+    
     // ▼ JSONファイルの読み込み処理
     document.getElementById('preset-loader')?.addEventListener('change', (event) => {
         const file = event.target.files[0];
@@ -983,17 +1056,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const preset = presetDataList[index];
         if (!preset) return;
 
-        // マスターデータを上書き
         masterStationData = preset.stations || [];
-        currentDisplayStartIndex = 0; // 最初の駅に戻す
+        currentGlobalIndex = 0; // ★ リセット
+        currentDisplayStartIndex = 0;
+        currentArrowIndex = 0;
         
         const labelSelect = document.getElementById('select-next-label');
         if (labelSelect) labelSelect.value = 'now';
 
-        // コントロールパネル（種別・路線設定）の同期
         syncRouteSettingsPanel(preset);
-
-        // コントロールパネル（駅データ）の同期 ＆ 画面更新
         updateActiveStations();
     }
 
@@ -1039,4 +1110,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ▼ 3. ページ読み込み時に自動実行
     loadPresetsFromFile();
+
+    // ▼ 上部コントロール部（駅名・ナンバリング）を手入力したときの処理
+    ['input-st-kanji', 'input-st-kana', 'input-st-en', 'input-top-st-id'].forEach(id => {
+        document.getElementById(id)?.addEventListener('input', (e) => {
+            const labelSelect = document.getElementById('select-next-label');
+            const isNext = (labelSelect && labelSelect.value === 'next');
+            const targetGlobalIndex = isNext ? Math.min(currentGlobalIndex + 1, masterStationData.length - 1) : currentGlobalIndex;
+
+            // マスターデータの該当駅を上書き保存
+            if (masterStationData[targetGlobalIndex]) {
+                if (id === 'input-st-kanji') masterStationData[targetGlobalIndex].nameJa = e.target.value;
+                if (id === 'input-st-kana') masterStationData[targetGlobalIndex].nameKana = e.target.value;
+                if (id === 'input-st-en') masterStationData[targetGlobalIndex].nameEn = e.target.value;
+                if (id === 'input-top-st-id') masterStationData[targetGlobalIndex].id = e.target.value;
+            }
+
+            updateBigHeaderDisplay(isNext); // 大画面を更新
+            if (typeof renderControlTable === 'function') renderControlTable(); // 下部テーブルも更新
+            renderRouteMap(); // 路線図を更新
+        });
+    });
+
+    // ▼ 「案内表示（次は/ただいま）」のドロップダウンを手動で変えたときの処理
+    document.getElementById('select-next-label')?.addEventListener('change', () => {
+        updateActiveStations();
+    });
+
+    // ▼ 上部ナンバリング表示/非表示のチェックボックス処理
+    document.getElementById('toggle-top-numbering')?.addEventListener('change', () => {
+        const labelSelect = document.getElementById('select-next-label');
+        updateBigHeaderDisplay(labelSelect && labelSelect.value === 'next');
+    });
 });
