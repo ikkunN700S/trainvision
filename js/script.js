@@ -11,6 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
         { nameJa: "明治神宮前", nameEn: "Meiji-Jingumae", id: "F-15", time: "14", isPass: false, lowerShape: "circle", lowerColor: "#cc0000", isSync: true }
     ];
 
+    // 全駅データを保持するマスター配列（初期値はこれまでの8駅を入れておいてもOKです）
+    let masterStationData = []; 
+    // 現在、左端（1駅目）に表示している駅のマスター配列内でのインデックス
+    let currentDisplayStartIndex = 0;
+
     let currentState = 0;   
     let isRouteEn = false;  
     let presetsCache = {};
@@ -825,5 +830,136 @@ document.addEventListener('DOMContentLoaded', () => {
             link.href = canvas.toDataURL('image/png');
             link.click();
         });
+    });
+
+    // ▼ 現在の stationData をコントロールパネル（下画面の入力欄）に反映する関数
+    function syncControlPanel() {
+        for (let i = 0; i < 8; i++) {
+            const st = stationData[i];
+            if (!st) continue;
+
+            const nameJaInput = document.getElementById(`st-name-ja-${i}`);
+            if (nameJaInput) nameJaInput.value = st.nameJa || "";
+
+            const nameEnInput = document.getElementById(`st-name-en-${i}`);
+            if (nameEnInput) nameEnInput.value = st.nameEn || "";
+
+            const idInput = document.getElementById(`st-id-${i}`);
+            if (idInput) idInput.value = st.id || "";
+
+            const timeInput = document.getElementById(`st-time-${i}`);
+            if (timeInput) timeInput.value = st.time || "";
+
+            const passCheck = document.getElementById(`st-pass-${i}`);
+            if (passCheck) passCheck.checked = st.isPass || false;
+
+            const shapeSelect = document.getElementById(`st-lower-shape-${i}`);
+            if (shapeSelect) shapeSelect.value = st.lowerShape || "square";
+
+            const colorInput = document.getElementById(`st-lower-color-${i}`);
+            if (colorInput) colorInput.value = st.lowerColor || "#666666";
+        }
+    }
+
+    // ▼ マスターデータから8駅を切り出して、既存の stationData を上書きする関数
+    function updateActiveStations() {
+        stationData = masterStationData.slice(currentDisplayStartIndex, currentDisplayStartIndex + 8);
+        
+        // 足りない場合は空データで埋める
+        while(stationData.length < 8) {
+            stationData.push({ nameJa: "", nameEn: "", id: "", time: "", isPass: true, lowerShape: "square", lowerColor: "transparent" });
+        }
+        
+        const labelSelect = document.getElementById('select-next-label');
+        const modeText = (labelSelect && labelSelect.value === 'next') ? '次は' : 'ただいま';
+        const stName = stationData[0].nameJa;
+        
+        const displaySpan = document.getElementById('current-state-display');
+        if (displaySpan) displaySpan.textContent = `${modeText} ${stName}`;
+        
+        syncControlPanel();
+        
+        renderRouteMap();
+    }
+
+    // ▼ 「次へ」ボタンの処理
+    document.getElementById('btn-next-state')?.addEventListener('click', () => {
+        const labelSelect = document.getElementById('select-next-label');
+        
+        if (labelSelect.value === 'now') {
+            // 「ただいま」状態なら「次は」状態に変更（駅はスライドしない）
+            labelSelect.value = 'next';
+        } else {
+            // 「次は」状態なら「ただいま」状態に戻し、駅を1つ進める（スライドする）
+            labelSelect.value = 'now';
+            // 残りの駅数が8駅以上ある場合のみインデックスを進める
+            if (currentDisplayStartIndex + 8 < masterStationData.length) {
+                currentDisplayStartIndex++;
+            }
+        }
+        updateActiveStations();
+    });
+
+    // ▼ 「前へ」ボタンの処理
+    document.getElementById('btn-prev-state')?.addEventListener('click', () => {
+        const labelSelect = document.getElementById('select-next-label');
+        
+        if (labelSelect.value === 'next') {
+            // 「次は」状態なら「ただいま」状態に戻す（駅はスライドしない）
+            labelSelect.value = 'now';
+        } else {
+            // 「ただいま」状態なら「次は」状態に変更し、駅を1つ戻す（スライドする）
+            if (currentDisplayStartIndex > 0) {
+                currentDisplayStartIndex--;
+                labelSelect.value = 'next';
+            }
+        }
+        updateActiveStations();
+    });
+
+    // ▼ JSONファイルの読み込み処理
+    document.getElementById('preset-loader')?.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const preset = JSON.parse(e.target.result);
+                
+                // 1. マスターデータの上書き
+                if (preset.stations && preset.stations.length > 0) {
+                    masterStationData = preset.stations;
+                    currentDisplayStartIndex = 0; // 読み込み時は最初に戻す
+                    document.getElementById('select-next-label').value = 'now';
+                }
+
+                // 2. 設定の反映 (チェックボックスやカラーピッカーをJSONに合わせて更新)
+                if (preset.routeSettings) {
+                    const color1 = document.getElementById('chevron-color-1');
+                    const color2 = document.getElementById('chevron-color-2');
+                    if (color1) color1.value = preset.routeSettings.chevronColor1 || "#e60012";
+                    if (color2) color2.value = preset.routeSettings.chevronColor2 || "#0066cc";
+                    updateChevronColors(); // CSS変数に反映する既存の関数を呼ぶ
+
+                    const toggleNum = document.getElementById('toggle-lower-numbering');
+                    if (toggleNum) toggleNum.checked = preset.routeSettings.showLowerNumbering !== false;
+
+                    const toggleShape = document.getElementById('toggle-lower-shape');
+                    if (toggleShape) toggleShape.checked = preset.routeSettings.showLowerShape !== false;
+                }
+                
+                // 3. コントロールパネルの入力欄（HTML）も必要に応じて再生成する処理をここに書く
+                // ... (既存の input 欄の値を masterStationData[0~7] で上書きするなど)
+
+                // 4. 画面更新
+                updateActiveStations();
+                
+            } catch (error) {
+                alert("プリセットの読み込みに失敗しました。JSONの形式を確認してください。");
+                console.error(error);
+            }
+        };
+        reader.readAsText(file);
     });
 });
