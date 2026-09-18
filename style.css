@@ -273,7 +273,7 @@ body {
 }
 .station-name .inner { display: inline-block; white-space: nowrap; transform-origin: left center; }
 .station-name.kanji .inner, .station-name.kana .inner { font-size: 80px; letter-spacing: 8px; }
-.station-name.en .inner { font-size: 55px; letter-spacing: 4px; }
+.station-name.en .inner { font-size: 60px; letter-spacing: 2px; }
 .station-name.active { opacity: 1; transform: translateY(0) scaleY(1); }
 .station-name.exit-down { animation: animExitDown 0.7s ease-in forwards; }
 .station-name.enter-down { animation: animEnterDown 0.7s ease-out forwards; }
@@ -348,7 +348,7 @@ body {
     text-orientation: upright; 
     font-size: 26px; 
     font-weight: bold; 
-    letter-spacing: 1px; 
+    letter-spacing: 0px; 
     color: #000;
     white-space: nowrap;
     transform-origin: center bottom;
