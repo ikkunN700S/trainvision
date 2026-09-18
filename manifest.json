@@ -1,0 +1,21 @@
+{
+  "name": "Train Vision Simulator",
+  "short_name": "TrainVision",
+  "description": "鉄道の車内案内表示器（トレインビジョン）シミュレーター",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "./img/favicon/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./img/favicon/android-chrome-256x256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }
+  ]
+}
