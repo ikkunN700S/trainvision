@@ -48,7 +48,7 @@
     },
     {
       "presetName": "東京メトロ千代田線",
-      "trainType": { "nameJa": "各駅停車", "nameEn": "Local", "bgColor": "#00a752", "textColor": "#ffffff" },
+      "trainType": { "nameJa": "", "nameEn": "", "bgColor": "#00a752", "textColor": "#ffffff" },
       "destination": {
         "nameJa": "代々木上原 行",
         "nameKana": "よよぎうえはら ゆき",
@@ -74,26 +74,26 @@
       },
       "footerNote": "のりかえ、待ち合わせ時間は含まれません。\n電車により多少時間は異なります。",
       "stations": [
-        { "nameJa": "北綾瀬", "nameKana": "きたあやせ", "nameEn": "Kita-ayase", "id": "C-20", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
-        { "nameJa": "綾瀬", "nameKana": "あやせ", "nameEn": "Ayase", "id": "C-19", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
-        { "nameJa": "北千住", "nameKana": "きたせんじゅ", "nameEn": "Kita-senju", "id": "C-18", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
-        { "nameJa": "町屋", "nameKana": "まちや", "nameEn": "Machiya", "id": "C-17", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
-        { "nameJa": "西日暮里", "nameKana": "にしにっぽり", "nameEn": "Nishi-nippori", "id": "C-16", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
-        { "nameJa": "千駄木", "nameKana": "せんだぎ", "nameEn": "Sendagi", "id": "C-15", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
-        { "nameJa": "根津", "nameKana": "ねづ", "nameEn": "Nezu", "id": "C-14", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
-        { "nameJa": "湯島", "nameKana": "ゆしま", "nameEn": "Yushima", "id": "C-13", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
-        { "nameJa": "新御茶ノ水", "nameKana": "しんおちゃのみず", "nameEn": "Shin-ochanomizu", "id": "C-12", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
-        { "nameJa": "大手町", "nameKana": "おおてまち", "nameEn": "Otemachi", "id": "C-11", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
-        { "nameJa": "二重橋前（丸の内）", "nameKana": "にじゅうばしまえ（まるのうち）", "nameEn": "Nijubashimae (Marunouchi)", "id": "C-10", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
-        { "nameJa": "日比谷", "nameKana": "ひびや", "nameEn": "Hibiya", "id": "C-09", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
-        { "nameJa": "霞ケ関", "nameKana": "かすみがせき", "nameEn": "Kasumigaseki", "id": "C-08", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
-        { "nameJa": "国会議事堂前", "nameKana": "こっかいぎじどうまえ", "nameEn": "Kokkai-gijidomae", "id": "C-07", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
-        { "nameJa": "赤坂", "nameKana": "あかさか", "nameEn": "Akasaka", "id": "C-06", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
-        { "nameJa": "乃木坂", "nameKana": "のぎざか", "nameEn": "Nogizaka", "id": "C-05", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
-        { "nameJa": "表参道", "nameKana": "おもてさんどう", "nameEn": "Omote-sando", "id": "C-04", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
-        { "nameJa": "明治神宮前（原宿）", "nameKana": "めいじじんぐうまえ（はらじゅく）", "nameEn": "Meiji-jingumae (Harajuku)", "id": "C-03", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
+        { "nameJa": "代々木上原", "nameKana": "よよぎうえはら", "nameEn": "Yoyogi-uehara", "id": "C-01", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
         { "nameJa": "代々木公園", "nameKana": "よよぎこうえん", "nameEn": "Yoyogi-koen", "id": "C-02", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
-        { "nameJa": "代々木上原", "nameKana": "よよぎうえはら", "nameEn": "Yoyogi-uehara", "id": "C-01", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"}
+        { "nameJa": "明治神宮前（原宿）", "nameKana": "めいじじんぐうまえ（はらじゅく）", "nameEn": "Meiji-jingumae (Harajuku)", "id": "C-03", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
+        { "nameJa": "表参道", "nameKana": "おもてさんどう", "nameEn": "Omote-sando", "id": "C-04", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
+        { "nameJa": "乃木坂", "nameKana": "のぎざか", "nameEn": "Nogizaka", "id": "C-05", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
+        { "nameJa": "赤坂", "nameKana": "あかさか", "nameEn": "Akasaka", "id": "C-06", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
+        { "nameJa": "国会議事堂前", "nameKana": "こっかいぎじどうまえ", "nameEn": "Kokkai-gijidomae", "id": "C-07", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
+        { "nameJa": "霞ケ関", "nameKana": "かすみがせき", "nameEn": "Kasumigaseki", "id": "C-08", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
+        { "nameJa": "日比谷", "nameKana": "ひびや", "nameEn": "Hibiya", "id": "C-09", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
+        { "nameJa": "二重橋前（丸の内）", "nameKana": "にじゅうばしまえ（まるのうち）", "nameEn": "Nijubashimae (Marunouchi)", "id": "C-10", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
+        { "nameJa": "大手町", "nameKana": "おおてまち", "nameEn": "Otemachi", "id": "C-11", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
+        { "nameJa": "新御茶ノ水", "nameKana": "しんおちゃのみず", "nameEn": "Shin-ochanomizu", "id": "C-12", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
+        { "nameJa": "湯島", "nameKana": "ゆしま", "nameEn": "Yushima", "id": "C-13", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
+        { "nameJa": "根津", "nameKana": "ねづ", "nameEn": "Nezu", "id": "C-14", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
+        { "nameJa": "千駄木", "nameKana": "せんだぎ", "nameEn": "Sendagi", "id": "C-15", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
+        { "nameJa": "西日暮里", "nameKana": "にしにっぽり", "nameEn": "Nishi-nippori", "id": "C-16", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
+        { "nameJa": "町屋", "nameKana": "まちや", "nameEn": "Machiya", "id": "C-17", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
+        { "nameJa": "北千住", "nameKana": "きたせんじゅ", "nameEn": "Kita-senju", "id": "C-18", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
+        { "nameJa": "綾瀬", "nameKana": "あやせ", "nameEn": "Ayase", "id": "C-19", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
+        { "nameJa": "北綾瀬", "nameKana": "きたあやせ", "nameEn": "Kita-ayase", "id": "C-20", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"}
       ]
     },
     {
@@ -149,7 +149,7 @@
     },
     {
       "presetName": "名古屋市営地下鉄東山線",
-      "trainType": { "nameJa": "普通", "nameEn": "Local", "bgColor": "#969696", "textColor": "#ffffff" },
+      "trainType": { "nameJa": "", "nameEn": "", "bgColor": "#969696", "textColor": "#ffffff" },
       "destination": {
         "nameJa": "東山線　藤が丘 ゆき",
         "nameKana": "ひがしやません　ふじがおか ゆき",
@@ -201,7 +201,7 @@
     },
     {
       "presetName": "名古屋市営地下鉄桜通線",
-      "trainType": { "nameJa": "普通", "nameEn": "Local", "bgColor": "#969696", "textColor": "#ffffff" },
+      "trainType": { "nameJa": "", "nameEn": "", "bgColor": "#969696", "textColor": "#ffffff" },
       "destination": {
         "nameJa": "桜通線　徳重 ゆき",
         "nameKana": "さくらどおりせん　とくしげ ゆき",
@@ -252,7 +252,7 @@
     },
     {
       "presetName": "名古屋市営地下鉄鶴舞線",
-      "trainType": { "nameJa": "普通", "nameEn": "Local", "bgColor": "#969696", "textColor": "#ffffff" },
+      "trainType": { "nameJa": "", "nameEn": "", "bgColor": "#969696", "textColor": "#ffffff" },
       "destination": {
         "nameJa": "鶴舞線　赤池 ゆき",
         "nameKana": "つるまいせん　あかいけ ゆき",

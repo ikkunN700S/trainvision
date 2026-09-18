@@ -572,6 +572,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (tKana) tKana.textContent = kana;
         if (tEn) tEn.textContent = en;
         
+        // 空欄になっている場合非表示にする
+        const typeWrapper = document.querySelector('.train-type-wrapper');
+        if (typeWrapper) {
+            if (!kanji.trim() && !en.trim()) {
+                typeWrapper.style.visibility = 'hidden';
+            } else {
+                typeWrapper.style.visibility = 'visible';
+            }
+        }
+
         document.documentElement.style.setProperty('--type-bg', bg);
         document.documentElement.style.setProperty('--type-text', text);
         
