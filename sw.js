@@ -1,5 +1,5 @@
 // キャッシュのバージョン（ファイルを更新したらここを v2, v3... と書き換えることでキャッシュが更新されます）
-const CACHE_NAME = 'trainvision-cache-v3';
+const CACHE_NAME = 'trainvision-cache-v4';
 
 // キャッシュ対象のファイルリスト（プロジェクト内の必要なファイルをすべて記述）
 const urlsToCache = [

@@ -138,6 +138,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const chevronColor = document.getElementById('select-chevron-color')?.value || 'red';
     const isNextMode = (labelMode === 'next'); 
 
+    // コンテナを左右反転
+    const isMirror = document.getElementById('toggle-mirror-layout')?.checked;
+    if (isMirror) {
+        grid.style.transform = 'scaleX(-1)';
+    } else {
+        grid.style.transform = 'none';
+    }
+
     if (showLowerNum) {
         grid.classList.remove('hide-numbering');
     } else {
@@ -211,12 +219,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // `isRouteEn` が未定義の場合は日本語をデフォルトにする安全対策
     const enMode = typeof isRouteEn !== 'undefined' ? isRouteEn : false;
     const timeLabel = document.getElementById('route-time-label');
-    if (timeLabel) timeLabel.textContent = enMode ? 'min' : '分';
+    
+    if (timeLabel) {
+        timeLabel.innerHTML = `<div style="display:inline-block; ${isMirror ? 'transform: scaleX(-1);' : ''}">${enMode ? 'min' : '分'}</div>`;
+    }
 
     for (let i = 7; i >= 0; i--) {
         const st = stationData[i];
         
-        // ▼ 修正点：現在矢印がある位置（currentArrowIndex）より前の駅はグレーアウトさせる
+        // 現在矢印がある位置（currentArrowIndex）より前の駅はグレーアウトさせる
         const isPassedStation = (i < currentArrowIndex) || (i === currentArrowIndex && isNextMode);
         const isGrey = st.isPass || isPassedStation;
 
@@ -239,6 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     let r = '8px';
                     if (st.lowerShape === 'square') r = '0px';
                     if (st.lowerShape === 'circle') r = '50%';
+
                     idItem.innerHTML = `
                         <div class="lower-number-box" style="border-color: ${st.lowerColor}; border-radius: ${r};">
                             <div class="lower-line-code"><span class="inner">${match[1]}</span></div>
@@ -376,41 +388,86 @@ document.addEventListener('DOMContentLoaded', () => {
             { nodes: document.querySelectorAll('.time-box .inner'), margin: 4 }
         ];
 
+        // 反転フラグ取得
+        const isMirror = document.getElementById('toggle-mirror-layout')?.checked;
+
         horizontalFits.forEach(fit => {
             fit.nodes.forEach(inner => {
                 const parent = inner.parentElement;
                 if (!parent) return;
-                inner.style.transform = 'scaleX(1)';
+
+                // 路線図内のテキストについて鏡文字を相殺
+                const inGrid = inner.closest('#route-map-grid') !== null;
+                const mScale = (inGrid && isMirror) ? -1 : 1;
+
+                inner.style.transform = `scaleX(${mScale})`;
                 const parentWidth = parent.clientWidth;
                 const allowedWidth = parentWidth - fit.margin;
                 const innerWidth = inner.scrollWidth;
                 
                 if (innerWidth > allowedWidth && allowedWidth > 0) {
-                    inner.style.transform = `scaleX(${allowedWidth / innerWidth})`;
+                    inner.style.transform = `scaleX(${allowedWidth / innerWidth * mScale})`;
                 }
             });
         });
 
         const vertInners = document.querySelectorAll('.st-name-inner');
         vertInners.forEach(inner => {
+            // 縦書き・斜めが気の鏡文字を相殺
+            const inGrid = inner.closest('#route-map-grid') !== null;
+            const mScale = (inGrid && isMirror) ? -1 : 1;
+
             if (inner.classList.contains('en-st-name')) {
-                inner.style.transform = 'rotate(-55deg) scale(1)'; 
+                inner.style.transform = `scaleX(${mScale}) rotate(-55deg) scale(1)`; 
                 const maxWidth = 110; 
                 const currentWidth = inner.scrollWidth;
                 if (currentWidth > maxWidth) {
                     const ratio = maxWidth / currentWidth;
-                    inner.style.transform = `rotate(-55deg) scale(${ratio})`;
+                    inner.style.transform = `scaleX(${mScale}) rotate(-55deg) scale(${ratio})`;
                 }
             } else {
-                inner.style.transform = 'scaleY(1)';
+                inner.style.transform = `scaleX(${mScale}) scaleY(1)`;
                 const maxHeight = 100;
                 const currentHeight = inner.scrollHeight;
                 if (currentHeight > maxHeight) {
-                    inner.style.transform = `scaleY(${maxHeight / currentHeight})`;
+                    inner.style.transform = `scaleX(${mScale}) scaleY(${maxHeight / currentHeight})`;
                 }
             }
         });
     }
+
+    // ▼ 逆順チェックボックスが押されたら、現在編集中のデータをその場で逆順にする
+    document.getElementById('toggle-reverse-data')?.addEventListener('change', () => {
+        if (!masterStationData || masterStationData.length === 0) return;
+        
+        // 現在のデータをコピーして逆順にする
+        const rev = [...masterStationData].reverse();
+        
+        // 駅間の所要時間を正しく引き継ぐ
+        for (let i = 0; i < rev.length; i++) {
+            if (i === 0) {
+                rev[i].time = ""; // 出発駅は時間なし
+            } else {
+                rev[i].time = masterStationData[masterStationData.length - i].time;
+            }
+        }
+        
+        // データを上書き
+        masterStationData = rev;
+        
+        // 進行状況を先頭（0）にリセットし「ただいま」に戻す
+        currentGlobalIndex = 0;
+        const labelSelect = document.getElementById('select-next-label');
+        if (labelSelect) labelSelect.value = 'now';
+        
+        // 画面を更新
+        updateActiveStations();
+    });
+
+    // 左右反転チェックボックスが押されたら、画面を再描画する
+    document.getElementById('toggle-mirror-layout')?.addEventListener('change', () => {
+        renderRouteMap();
+    });
 
     // === カラー・チェックボックス同期イベント ===
     document.getElementById('input-company-color')?.addEventListener('input', (e) => {
@@ -488,8 +545,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.documentElement.style.setProperty('--timebox-height', '32px');
                 document.documentElement.style.setProperty('--timebox-radius', '6px');
             } else if (shape === 'circle') {
-                document.documentElement.style.setProperty('--timebox-width', '40px');
-                document.documentElement.style.setProperty('--timebox-height', '40px');
+                document.documentElement.style.setProperty('--timebox-width', '35px');
+                document.documentElement.style.setProperty('--timebox-height', '35px');
                 document.documentElement.style.setProperty('--timebox-radius', '50%');
             }
         });
@@ -1094,12 +1151,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ▼ 指定したインデックスの路線を画面にロードする関数
+    // データを逆順にする関数
+    function getProcessedStationData(preset) {
+        if (!preset || !preset.stations) return [];
+        const isReverseData = document.getElementById('toggle-reverse-data')?.checked;
+        
+        let stations = JSON.parse(JSON.stringify(preset.stations));
+        
+        if (isReverseData) {
+            const rev = [...stations].reverse();
+            for (let i = 0; i < rev.length; i++) {
+                if (i === 0) {
+                    rev[i].time = ""; // 出発駅は所要時間なし
+                } else {
+                    // 元の順方向での、駅間の所要時間を引き継ぐ
+                    rev[i].time = stations[stations.length - i].time;
+                }
+            }
+            stations = rev;
+        }
+        return stations;
+    }
+
+    // 指定した路線を画面にロードする関数
     function loadPresetRoute(index) {
         const preset = presetDataList[index];
         if (!preset) return;
 
-        masterStationData = preset.stations || [];
+        masterStationData = getProcessedStationData(preset);
         currentGlobalIndex = 0; // ★ リセット
         currentDisplayStartIndex = 0;
         currentArrowIndex = 0;
