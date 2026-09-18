@@ -1151,3 +1151,17 @@ document.addEventListener('DOMContentLoaded', () => {
         updateBigHeaderDisplay(labelSelect && labelSelect.value === 'next');
     });
 });
+
+// Service Worker の登録処理
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        // 現在のディレクトリをスコープに指定して登録
+        navigator.serviceWorker.register('./sw.js', { scope: './' })
+            .then((registration) => {
+                console.log('ServiceWorker 登録成功 / スコープ:', registration.scope);
+            })
+            .catch((error) => {
+                console.error('ServiceWorker 登録失敗:', error);
+            });
+    });
+}
