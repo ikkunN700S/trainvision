@@ -2,7 +2,7 @@
   "presets": [
     {
       "presetName": "東京メトロ千代田線",
-      "trainType": { "nameJa": "各駅停車", "nameEn": "Local", "bgColor": "#0000ff", "textColor": "#ffffff" },
+      "trainType": { "nameJa": "各駅停車", "nameEn": "Local", "bgColor": "#00a752", "textColor": "#ffffff" },
       "destination": {
         "nameJa": "代々木上原 行",
         "nameKana": "よよぎうえはら ゆき",
@@ -18,7 +18,7 @@
         "separator": "#00a752",
         "line": "#00a752"
       },
-      "routeSettings": { "chevronColor1": "#e60012", "chevronColor2": "#0066cc", "showLowerNumbering": true, "showLowerShape": true },
+      "routeSettings": { "chevronColor1": "#e60012", "chevronColor2": "#0066cc", "showLowerNumbering": true, "showLowerShape": false },
       "footerNote": "のりかえ、待ち合わせ時間は含まれません。\n電車により多少時間は異なります。",
       "stations": [
         { "nameJa": "北綾瀬", "nameKana": "きたあやせ", "nameEn": "Kita-ayase", "id": "C-20", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
@@ -180,6 +180,93 @@
         { "nameJa": "上社", "nameKana": "かみやしろ", "nameEn": "Kamiyashiro", "id": "H-20", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#ffae00"},
         { "nameJa": "本郷", "nameKana": "ほんごう", "nameEn": "Hongo", "id": "H-21", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#ffae00"},
         { "nameJa": "藤が丘", "nameKana": "ふじがおか", "nameEn": "Fujigaoka", "id": "H-22", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#ffae00"}
+      ]
+    },
+    {
+      "presetName": "名古屋市営地下鉄桜通線",
+      "trainType": { "nameJa": "普通", "nameEn": "Local", "bgColor": "#969696", "textColor": "#ffffff" },
+      "destination": {
+        "nameJa": "桜通線　徳重 ゆき",
+        "nameKana": "さくらどおりせん　とくしげ ゆき",
+        "nameEn": "Sakura-dori Line bound for Tokushige"
+      },
+      "carSettings": {
+        "carNum": "1",
+        "style": "style-number-only",
+        "bgColor": "#383838"
+      },
+      "uiColors": {
+        "company": "#f00000",
+        "separator": "#928e81",
+        "line": "#f00000"
+      },
+      "routeSettings": { "chevronColor1": "#0066cc", "chevronColor2": "#969696", "showLowerNumbering": true, "showLowerShape": true },
+      "footerNote": "運転状況により、多少時間は異なります。",
+      "stations": [
+        { "nameJa": "太閤通", "nameKana": "たいこうどおり", "nameEn": "Taiko-dori", "id": "S-01", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#f00000"},
+        { "nameJa": "名古屋", "nameKana": "なごや", "nameEn": "Nagoya", "id": "S-02", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#f00000"},
+        { "nameJa": "国際センター", "nameKana": "こくさいせんたー", "nameEn": "Kokusai Center (International Center)", "id": "S-03", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#f00000"},
+        { "nameJa": "丸の内", "nameKana": "まるのうち", "nameEn": "Marunouchi", "id": "S-04", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#f00000"},
+        { "nameJa": "久屋大通", "nameKana": "ひさやおおどおり", "nameEn": "Hisaya-odori", "id": "S-05", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#f00000"},
+        { "nameJa": "高岳", "nameKana": "たかおか", "nameEn": "Takaoka", "id": "S-06", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#f00000"},
+        { "nameJa": "車道", "nameKana": "くるまみち", "nameEn": "Kurumamichi", "id": "S-07", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#f00000"},
+        { "nameJa": "今池", "nameKana": "いまいけ", "nameEn": "Imaike", "id": "S-08", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "f00000"},
+        { "nameJa": "吹上", "nameKana": "ふきあげ", "nameEn": "Fukiage", "id": "S-09", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#f00000"},
+        { "nameJa": "御器所", "nameKana": "ごきそ", "nameEn": "Gokiso", "id": "S-10", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "f00000"},
+        { "nameJa": "桜山", "nameKana": "さくらやま", "nameEn": "Sakurayama", "id": "S-11", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#f00000"},
+        { "nameJa": "瑞穂区役所", "nameKana": "みずほくやくしょ", "nameEn": "Mizuho Kuyakusho", "id": "S-12", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#f00000"},
+        { "nameJa": "瑞穂運動場西", "nameKana": "みずほうんどうじょうにし", "nameEn": "Mizuho Undojo Nishi", "id": "S-13", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#f00000"},
+        { "nameJa": "新瑞橋", "nameKana": "あらたまばし", "nameEn": "Aratamabashi", "id": "S-14", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#f00000"},
+        { "nameJa": "桜本町", "nameKana": "さくらほんまち", "nameEn": "Sakura-hommachi", "id": "S-15", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "f00000"},
+        { "nameJa": "鶴里", "nameKana": "つるさと", "nameEn": "Tsurusato", "id": "S-16", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#f00000"},
+        { "nameJa": "野並", "nameKana": "のなみ", "nameEn": "Nonami", "id": "S-17", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#f00000"},
+        { "nameJa": "鳴子北", "nameKana": "なるこきた", "nameEn": "Naruko Kita", "id": "S-18", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#f00000"},
+        { "nameJa": "相生山", "nameKana": "あいおいやま", "nameEn": "Aioiyama", "id": "S-19", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#f00000"},
+        { "nameJa": "神沢", "nameKana": "かみさわ", "nameEn": "Kamisawa", "id": "S-20", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#f00000"},
+        { "nameJa": "徳重", "nameKana": "とくしげ", "nameEn": "Tokushige", "id": "S-21", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#f00000"}
+      ]
+    },
+    {
+      "presetName": "名古屋市営地下鉄鶴舞線",
+      "trainType": { "nameJa": "普通", "nameEn": "Local", "bgColor": "#969696", "textColor": "#ffffff" },
+      "destination": {
+        "nameJa": "鶴舞線　赤池 ゆき",
+        "nameKana": "つるまいせん　あかいけ ゆき",
+        "nameEn": "Tsurumai Line bound for Akaike"
+      },
+      "carSettings": {
+        "carNum": "1",
+        "style": "style-number-only",
+        "bgColor": "#383838"
+      },
+      "uiColors": {
+        "company": "#00c4f0",
+        "separator": "#928e81",
+        "line": "#00c4f0"
+      },
+      "routeSettings": { "chevronColor1": "#e60012", "chevronColor2": "#969696", "showLowerNumbering": true, "showLowerShape": true },
+      "footerNote": "運転状況により、多少時間は異なります。",
+      "stations": [
+        { "nameJa": "上小田井", "nameKana": "かみおたい", "nameEn": "Kamiotai", "id": "T-01", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00c4f0"},
+        { "nameJa": "庄内緑地公園", "nameKana": "しょうないりょくちこうえん", "nameEn": "Shonai Ryokuchi Koen", "id": "T-02", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00c4f0"},
+        { "nameJa": "庄内通", "nameKana": "しょうないどおり", "nameEn": "Shonai-dori", "id": "T-03", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00c4f0"},
+        { "nameJa": "浄心", "nameKana": "じょうしん", "nameEn": "Joshin", "id": "T-04", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00c4f0"},
+        { "nameJa": "浅間町", "nameKana": "せんげんちょう", "nameEn": "Sengen-cho", "id": "T-05", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00c4f0"},
+        { "nameJa": "丸の内", "nameKana": "まるのうち", "nameEn": "Marunouchi", "id": "T-06", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00c4f0"},
+        { "nameJa": "伏見", "nameKana": "ふしみ", "nameEn": "Fushimi", "id": "T-07", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00c4f0"},
+        { "nameJa": "大須観音", "nameKana": "おおすかんのん", "nameEn": "Osu Kannon", "id": "T-08", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00c4f0"},
+        { "nameJa": "上前津", "nameKana": "かみまえづ", "nameEn": "Kamimaezu", "id": "T-09", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00c4f0"},
+        { "nameJa": "鶴舞", "nameKana": "つるまい", "nameEn": "Tsurumai", "id": "T-10", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "00c4f0"},
+        { "nameJa": "荒畑", "nameKana": "あらはた", "nameEn": "Arahata", "id": "T-11", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00c4f0"},
+        { "nameJa": "御器所", "nameKana": "ごきそ", "nameEn": "Gokiso", "id": "T-12", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00c4f0"},
+        { "nameJa": "川名", "nameKana": "かわな", "nameEn": "Kawana", "id": "T-13", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00c4f0"},
+        { "nameJa": "いりなか", "nameKana": "いりなか", "nameEn": "Irinaka", "id": "T-14", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00c4f0"},
+        { "nameJa": "八事", "nameKana": "やごと", "nameEn": "Yagoto", "id": "T-15", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00c4f0"},
+        { "nameJa": "塩釜口", "nameKana": "しおがまぐち", "nameEn": "Shiogamaguchi", "id": "T-16", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00c4f0"},
+        { "nameJa": "植田", "nameKana": "うえだ", "nameEn": "Ueda", "id": "T-17", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00c4f0"},
+        { "nameJa": "原", "nameKana": "はら", "nameEn": "Hara", "id": "T-18", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00c4f0"},
+        { "nameJa": "平針", "nameKana": "ひらばり", "nameEn": "Hirabari", "id": "T-19", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00c4f0"},
+        { "nameJa": "赤池", "nameKana": "あかいけ", "nameEn": "Akaike", "id": "T-20", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00c4f0"}
       ]
     },
     {
