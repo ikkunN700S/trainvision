@@ -18,7 +18,14 @@
         "separator": "#c76000",
         "line": "#c76000"
       },
-      "routeSettings": { "chevronColor1": "#e60012", "chevronColor2": "#0066cc", "showLowerNumbering": true, "showLowerShape": false },
+      "routeSettings": {
+        "chevronColor1": "#e60012",
+        "chevronColor2": "#0066cc",
+        "showLowerNumbering": true,
+        "showLowerShape": false,
+        "numberingShape": "circle",
+        "timeboxShape": "square"
+      },
       "footerNote": "のりかえ、待ち合わせ時間は含まれません。\n電車により多少時間は異なります。",
       "stations": [
             { "nameJa": "和光市", "nameKana": "わこうし", "nameEn": "Wakoshi", "id": "F-01", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#cc0000"},
@@ -57,7 +64,14 @@
         "separator": "#00a752",
         "line": "#00a752"
       },
-      "routeSettings": { "chevronColor1": "#e60012", "chevronColor2": "#0066cc", "showLowerNumbering": true, "showLowerShape": false },
+      "routeSettings": { 
+        "chevronColor1": "#e60012", 
+        "chevronColor2": "#0066cc", 
+        "showLowerNumbering": true, 
+        "showLowerShape": false,
+        "numberingShape": "circle",
+        "timeboxShape": "square"
+      },
       "footerNote": "のりかえ、待ち合わせ時間は含まれません。\n電車により多少時間は異なります。",
       "stations": [
         { "nameJa": "北綾瀬", "nameKana": "きたあやせ", "nameEn": "Kita-ayase", "id": "C-20", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00a752"},
@@ -100,7 +114,14 @@
         "separator": "#da0442",
         "line": "#da0442"
       },
-      "routeSettings": { "chevronColor1": "#e60012", "chevronColor2": "#0066cc", "showLowerNumbering": true, "showLowerShape": true },
+      "routeSettings": { 
+        "chevronColor1": "#e60012",
+        "chevronColor2": "#0066cc", 
+        "showLowerNumbering": true, 
+        "showLowerShape": true,
+        "numberingShape": "rounded",
+        "timeboxShape": "square"
+      },
       "footerNote": "",
       "stations": [
         { "nameJa": "渋谷", "nameKana": "しぶや", "nameEn": "Shibuya", "id": "TY-01", "time": "",  "isPass": false, "lowerShape": "rounded", "lowerColor": "#da0442"},
@@ -144,7 +165,14 @@
         "separator": "#928e81",
         "line": "#ffae00"
       },
-      "routeSettings": { "chevronColor1": "#e60012", "chevronColor2": "#969696", "showLowerNumbering": true, "showLowerShape": true },
+      "routeSettings": {
+        "chevronColor1": "#e60012", 
+        "chevronColor2": "#969696", 
+        "showLowerNumbering": true, 
+        "showLowerShape": true,
+        "numberingShape": "circle",
+        "timeboxShape": "circle"
+      },
       "footerNote": "運転状況により、多少時間は異なります。",
       "stations": [
         { "nameJa": "高畑", "nameKana": "たかばた", "nameEn": "Takabata", "id": "H-01", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#ffae00"},
@@ -189,7 +217,14 @@
         "separator": "#928e81",
         "line": "#f00000"
       },
-      "routeSettings": { "chevronColor1": "#0066cc", "chevronColor2": "#969696", "showLowerNumbering": true, "showLowerShape": true },
+      "routeSettings": {
+        "chevronColor1": "#e60012", 
+        "chevronColor2": "#969696", 
+        "showLowerNumbering": true, 
+        "showLowerShape": true,
+        "numberingShape": "circle",
+        "timeboxShape": "circle"
+      },
       "footerNote": "運転状況により、多少時間は異なります。",
       "stations": [
         { "nameJa": "太閤通", "nameKana": "たいこうどおり", "nameEn": "Taiko-dori", "id": "S-01", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#f00000"},
@@ -233,7 +268,14 @@
         "separator": "#928e81",
         "line": "#00c4f0"
       },
-      "routeSettings": { "chevronColor1": "#e60012", "chevronColor2": "#969696", "showLowerNumbering": true, "showLowerShape": true },
+      "routeSettings": {
+        "chevronColor1": "#e60012", 
+        "chevronColor2": "#969696", 
+        "showLowerNumbering": true, 
+        "showLowerShape": true,
+        "numberingShape": "circle",
+        "timeboxShape": "circle"
+      },
       "footerNote": "運転状況により、多少時間は異なります。",
       "stations": [
         { "nameJa": "上小田井", "nameKana": "かみおたい", "nameEn": "Kamiotai", "id": "T-01", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00c4f0"},
@@ -276,7 +318,14 @@
         "separator": "#cc0000",
         "line": "#cc0000"
       },
-      "routeSettings": { "chevronColor1": "#e60012", "chevronColor2": "#0066cc", "showLowerNumbering": true, "showLowerShape": false },
+      "routeSettings": { 
+        "chevronColor1": "#e60012", 
+        "chevronColor2": "#0066cc", 
+        "showLowerNumbering": true, 
+        "showLowerShape": false,
+        "numberingShape": "circle",
+        "timeboxShape": "square"
+       },
       "footerNote": "のりかえ、待ち合わせ時間は含まれません。\n電車により多少時間は異なります。",
       "stations": [
         { "nameJa": "渋谷", "nameKana": "しぶや", "nameEn": "Shibuya", "id": "TY-01", "time": "", "isPass": false, "lowerShape": "square", "lowerColor": "#cc0000" },
