@@ -1,5 +1,5 @@
 // キャッシュのバージョン（ファイルを更新したらここを v2, v3... と書き換えることでキャッシュが更新されます）
-const CACHE_NAME = 'trainvision-cache-v2';
+const CACHE_NAME = 'trainvision-cache-v3';
 
 // キャッシュ対象のファイルリスト（プロジェクト内の必要なファイルをすべて記述）
 const urlsToCache = [
@@ -16,6 +16,8 @@ const urlsToCache = [
 
 // インストール時にファイルをキャッシュする
 self.addEventListener('install', (event) => {
+    self.skipWaiting();
+    
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {

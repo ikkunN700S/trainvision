@@ -868,9 +868,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 labelSelect.value = 'next';
             }
         } else {
-            // 次の駅の「ただいま」へ進む
-            labelSelect.value = 'now';
-            currentGlobalIndex++;
+            // 矢印を次の駅へ進める
+            if (currentGlobalIndex < masterStationData.length - 1) {
+                currentGlobalIndex++;
+                
+                // 進んだ先の駅が「通過駅」なら「次は」のままにする
+                if (masterStationData[currentGlobalIndex].isPass) {
+                    labelSelect.value = 'next';
+                } else {
+                    labelSelect.value = 'now';
+                }
+            }
         }
         updateActiveStations();
     });
@@ -878,8 +886,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // ▼ 「前へ」ボタンの処理
     document.getElementById('btn-prev-state')?.addEventListener('click', () => {
         const labelSelect = document.getElementById('select-next-label');
+        
         if (labelSelect.value === 'next') {
-            labelSelect.value = 'now';
+            // 通過の場合は次はを維持
+            if (masterStationData[currentGlobalIndex].isPass) {
+                currentGlobalIndex--;
+                labelSelect.value = 'next'; // 戻った先でも「次は」を維持して判定させる
+            } else {
+                labelSelect.value = 'now';
+            }
         } else {
             if (currentGlobalIndex > 0) {
                 currentGlobalIndex--;
@@ -905,14 +920,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const isNext = (labelSelect && labelSelect.value === 'next');
         
         // 次へ向かっているなら次の駅、ただいまなら今の駅を取得
-        const targetGlobalIndex = isNext ? Math.min(currentGlobalIndex + 1, masterStationData.length - 1) : currentGlobalIndex;
+        let targetGlobalIndex = currentGlobalIndex;
+        if (isNext) {
+            targetGlobalIndex = Math.min(currentGlobalIndex + 1, masterStationData.length - 1);
+            while (targetGlobalIndex < masterStationData.length - 1 && masterStationData[targetGlobalIndex].isPass) {
+                targetGlobalIndex++;
+            }
+        }
+
         const targetStation = masterStationData[targetGlobalIndex] || {};
         
         const modeText = isNext ? '次は' : 'ただいま';
         const displaySpan = document.getElementById('current-state-display');
         if (displaySpan) displaySpan.textContent = `${modeText} ${targetStation.nameJa || ""}`;
         
-        // ▼ ここで上部パネルの入力欄を同期し、大画面ヘッダーも更新させる
+        // 上部パネルの入力欄を同期し、大画面ヘッダー更新
         syncTopHeaderPanel(targetStation, isNext);
         
         if (typeof renderControlTable === 'function') {
@@ -922,7 +944,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderRouteMap();
     }
 
-    // ▼ 対象駅のデータを、上部コントロールパネル（入力欄）に流し込む関数
+    // 対象駅のデータを、上部コントロールパネル（入力欄）に流し込む関数
     function syncTopHeaderPanel(station, isNext) {
         // 1. コントロール部の入力欄の値を変更（イベントは強制発火しません）
         const kanjiInput = document.getElementById('input-st-kanji');
@@ -943,7 +965,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateBigHeaderDisplay(isNext);
     }
 
-    // ▼ 上部コントロールパネルの入力値をもとに、大画面ヘッダーを描画する関数
+    // 上部コントロールパネルの入力値をもとに、大画面ヘッダーを描画する関数
     function updateBigHeaderDisplay(isNext) {
         // 1. コントロール部から最新の値を取得
         const kanji = document.getElementById('input-st-kanji')?.value || '';
@@ -1178,3 +1200,30 @@ if ('serviceWorker' in navigator) {
             });
     });
 }
+
+// キャッシュ強制リセット処理
+    document.getElementById('btn-clear-cache')?.addEventListener('click', () => {
+        if (!confirm('保存されているキャッシュをすべて削除し、最新の状態でリロードしますか？')) return;
+        
+        // Service Workerの登録解除
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    registration.unregister();
+                }
+            });
+        }
+        // キャッシュストレージの全削除
+        if ('caches' in window) {
+            caches.keys().then(function(keyList) {
+                return Promise.all(keyList.map(function(key) {
+                    return caches.delete(key);
+                }));
+            }).then(function() {
+                // 強制リロード（キャッシュを無視）
+                window.location.reload(true);
+            });
+        } else {
+            window.location.reload(true);
+        }
+    });
