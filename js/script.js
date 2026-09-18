@@ -436,10 +436,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 逆順チェックボックスが押されたら、現在のプリセットをロードし直す
+    // ▼ 逆順チェックボックスが押されたら、現在編集中のデータをその場で逆順にする
     document.getElementById('toggle-reverse-data')?.addEventListener('change', () => {
-        const selector = document.getElementById('preset-route-selector');
-        if (selector) loadPresetRoute(parseInt(selector.value, 10));
+        if (!masterStationData || masterStationData.length === 0) return;
+        
+        // 現在のデータをコピーして逆順にする
+        const rev = [...masterStationData].reverse();
+        
+        // 駅間の所要時間を正しく引き継ぐ
+        for (let i = 0; i < rev.length; i++) {
+            if (i === 0) {
+                rev[i].time = ""; // 出発駅は時間なし
+            } else {
+                rev[i].time = masterStationData[masterStationData.length - i].time;
+            }
+        }
+        
+        // データを上書き
+        masterStationData = rev;
+        
+        // 進行状況を先頭（0）にリセットし「ただいま」に戻す
+        currentGlobalIndex = 0;
+        const labelSelect = document.getElementById('select-next-label');
+        if (labelSelect) labelSelect.value = 'now';
+        
+        // 画面を更新
+        updateActiveStations();
     });
 
     // 左右反転チェックボックスが押されたら、画面を再描画する
@@ -523,8 +545,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.documentElement.style.setProperty('--timebox-height', '32px');
                 document.documentElement.style.setProperty('--timebox-radius', '6px');
             } else if (shape === 'circle') {
-                document.documentElement.style.setProperty('--timebox-width', '40px');
-                document.documentElement.style.setProperty('--timebox-height', '40px');
+                document.documentElement.style.setProperty('--timebox-width', '35px');
+                document.documentElement.style.setProperty('--timebox-height', '35px');
                 document.documentElement.style.setProperty('--timebox-radius', '50%');
             }
         });
