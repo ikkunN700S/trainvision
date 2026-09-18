@@ -251,10 +251,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (st.lowerShape === 'square') r = '0px';
                     if (st.lowerShape === 'circle') r = '50%';
 
-                    const reverseFlex = isMirror ? 'flex-direction: row-reverse;' : '';
-
                     idItem.innerHTML = `
-                        <div class="lower-number-box" style="border-color: ${st.lowerColor}; border-radius: ${r}; ${reverseFlex}">
+                        <div class="lower-number-box" style="border-color: ${st.lowerColor}; border-radius: ${r};">
                             <div class="lower-line-code"><span class="inner">${match[1]}</span></div>
                             <div class="lower-st-num"><span class="inner">${match[2]}</span></div>
                         </div>
