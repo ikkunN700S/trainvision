@@ -322,6 +322,86 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 0);
     }
 
+    // 路線図のカラーラインを各駅のナンバリングカラーに合わせて分割グラデーション化
+    const timeBarBg = grid.querySelector('.time-bar-bg');
+    const timeBarFill = grid.querySelector('.time-bar-fill');
+    
+    if (timeBarBg || timeBarFill) {
+        const defaultColor = document.getElementById('input-line-color')?.value || '#cc0000';
+        
+        // 逆順モードかどうかの判定フラグ
+        const isReverseData = document.getElementById('toggle-reverse-data')?.checked;
+        
+        const getColor = (idx) => {
+            if (idx < 0 || idx > 7) return defaultColor;
+            const c = stationData[idx]?.lowerColor;
+            return (c && c !== 'transparent') ? c : defaultColor;
+        };
+
+        // 背景バー自体の左端のズレ（余白分）を取得
+        const bgOffset = timeBarBg ? timeBarBg.offsetLeft : 0;
+
+        // 各駅のボックスの中心（絶対ピクセル座標）を取得
+        let centers = [];
+        for (let i = 0; i < 8; i++) {
+            const box = document.getElementById(`route-time-box-${i}`);
+            centers[i] = box ? (box.offsetLeft + (box.offsetWidth / 2) - bgOffset) : 0;
+        }
+
+        // 画面の左から右へ並び替え
+        let visualPoints = [];
+        for(let i = 0; i < 8; i++) {
+            visualPoints.push({ idx: i, x: centers[i] });
+        }
+        visualPoints.sort((a, b) => a.x - b.x);
+
+        let stops = [];
+        // 左端(0px) 〜 最初の駅の中心
+        stops.push(`${getColor(visualPoints[0].idx)} 0px`);
+        stops.push(`${getColor(visualPoints[0].idx)} ${visualPoints[0].x}px`);
+
+        // 駅の中心 〜 次の駅の中心
+        for (let v = 0; v < 7; v++) {
+            const pt1 = visualPoints[v];
+            const pt2 = visualPoints[v+1];
+            
+            // 順方向なら「進行先」、逆順なら「進行元」のカラーを採用
+            const targetIdx = isReverseData 
+                ? Math.min(pt1.idx, pt2.idx) 
+                : Math.max(pt1.idx, pt2.idx);
+                
+            const segColor = getColor(targetIdx);
+            
+            stops.push(`${segColor} ${pt1.x}px`);
+            stops.push(`${segColor} ${pt2.x}px`);
+        }
+
+        // 最後の駅の中心 〜 右端（余裕を持って大きく設定）
+        stops.push(`${getColor(visualPoints[7].idx)} ${visualPoints[7].x}px`);
+        stops.push(`${getColor(visualPoints[7].idx)} 3000px`);
+
+        // 失われていた上下の立体感（光沢と影）をグラデーションで復元
+        const shadeGradient = 'linear-gradient(to bottom, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 30%, rgba(0,0,0,0) 70%, rgba(0,0,0,0.5) 100%)';
+        const colorGradient = `linear-gradient(to right, ${stops.join(', ')})`;
+        
+        // 2つのグラデーションを重ねて適用
+        const combinedBackground = `${shadeGradient}, ${colorGradient}`;
+
+        if (timeBarBg) {
+            timeBarBg.style.backgroundImage = '';
+            timeBarBg.style.backgroundColor = '';
+        }
+        
+        if (timeBarFill) {
+            timeBarFill.style.backgroundImage = combinedBackground;
+            timeBarFill.style.backgroundColor = 'transparent';
+            
+            const gridWidth = grid.clientWidth || 1000;
+            timeBarFill.style.backgroundSize = `${gridWidth}px 100%`;
+            timeBarFill.style.backgroundRepeat = 'no-repeat';
+        }
+    }
+
     if (typeof adjustAllFittedTexts === 'function') {
         adjustAllFittedTexts();
     }
@@ -1030,6 +1110,28 @@ document.addEventListener('DOMContentLoaded', () => {
         const en = document.getElementById('input-st-en')?.value || '';
         const idVal = document.getElementById('input-top-st-id')?.value || '';
 
+        // ターゲット駅を取得し、形・色を取得
+        let actualTargetIndex = currentGlobalIndex;
+        if (isNext) {
+            actualTargetIndex = Math.min(currentGlobalIndex + 1, masterStationData.length - 1);
+            while (actualTargetIndex < masterStationData.length - 1 && masterStationData[actualTargetIndex].isPass) {
+                actualTargetIndex++;
+            }
+        }
+        const targetStation = masterStationData[actualTargetIndex] || {};
+        
+        // 色と形を取得（データがなければ丸と路線カラーをデフォルトにする）
+        const shape = targetStation.lowerShape || 'circle';
+        let color = targetStation.lowerColor;
+        // 未設定時は全体の路線カラーを拾う
+        if (!color || color === 'transparent') {
+            color = document.getElementById('input-line-color')?.value || '#cc0000';
+        }
+
+        let r = '8px';
+        if (shape === 'square') r = '0px';
+        if (shape === 'circle') r = '50%';
+
         // 2. 次駅案内テキストの更新（.inner を狙い撃ちしてアニメーション構造を維持）
         const nextKanji = document.querySelector('#next-kanji .inner');
         if (nextKanji) nextKanji.textContent = isNext ? '次は' : 'ただいま';
@@ -1057,6 +1159,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (topNumberBox) {
             if (showNum && idVal) {
                 topNumberBox.style.display = 'flex'; // コンテナを表示
+
+                topNumberBox.style.borderColor = color;
+                topNumberBox.style.borderRadius = r;
+                
                 // "F-09" などの形式から、記号部分と数字部分を分割
                 const match = idVal.match(/^([A-Za-z]+)[-]([0-9A-Za-z]+)$/);
                 const lineCode = document.querySelector('#st-line-code .inner');
