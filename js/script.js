@@ -384,13 +384,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const combinedBackground = `${shadeGradient}, ${colorGradient}`;
 
         if (timeBarBg) {
-            timeBarBg.style.backgroundImage = combinedBackground;
-            timeBarBg.style.backgroundColor = 'transparent';
+            // timeBarBg は通過済みのグレー部分
+            timeBarBg.style.backgroundImage = '';
+            timeBarBg.style.backgroundColor = '';
         }
         
         if (timeBarFill) {
             timeBarFill.style.backgroundImage = combinedBackground;
             timeBarFill.style.backgroundColor = 'transparent';
+            
+            const gridWidth = grid.clientWidth || 1000;
+            timeBarFill.style.backgroundSize = `${gridWidth}px 100%`;
+            timeBarFill.style.backgroundRepeat = 'no-repeat';
         }
     }
 
