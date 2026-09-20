@@ -329,6 +329,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (timeBarBg || timeBarFill) {
         const defaultColor = document.getElementById('input-line-color')?.value || '#cc0000';
         
+        // 逆順モードかどうかの判定フラグ
+        const isReverseData = document.getElementById('toggle-reverse-data')?.checked;
+        
         const getColor = (idx) => {
             if (idx < 0 || idx > 7) return defaultColor;
             const c = stationData[idx]?.lowerColor;
@@ -342,7 +345,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let centers = [];
         for (let i = 0; i < 8; i++) {
             const box = document.getElementById(`route-time-box-${i}`);
-            // 余白(bgOffset)を引くことで、グラデーション内部での正確な相対ピクセルを算出
             centers[i] = box ? (box.offsetLeft + (box.offsetWidth / 2) - bgOffset) : 0;
         }
 
@@ -363,11 +365,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const pt1 = visualPoints[v];
             const pt2 = visualPoints[v+1];
             
-            // 進行方向（インデックスが大きい方＝到達先の駅）のカラーを採用
-            const destIdx = Math.max(pt1.idx, pt2.idx);
-            const segColor = getColor(destIdx);
+            // 順方向なら「進行先」、逆順なら「進行元」のカラーを採用
+            const targetIdx = isReverseData 
+                ? Math.min(pt1.idx, pt2.idx) 
+                : Math.max(pt1.idx, pt2.idx);
+                
+            const segColor = getColor(targetIdx);
             
-            // ％ではなく絶対ピクセル（px）で色を固定。これで矢印が動いてもブレません
             stops.push(`${segColor} ${pt1.x}px`);
             stops.push(`${segColor} ${pt2.x}px`);
         }
@@ -384,7 +388,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const combinedBackground = `${shadeGradient}, ${colorGradient}`;
 
         if (timeBarBg) {
-            // timeBarBg は通過済みのグレー部分
             timeBarBg.style.backgroundImage = '';
             timeBarBg.style.backgroundColor = '';
         }
