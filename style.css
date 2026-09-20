@@ -242,7 +242,6 @@ body {
     align-items: center;
     background-color: #ffffff;
     flex-shrink: 0;
-    transition: border-radius 0.3s, border-color 0.3s;
 }
 .station-number-box .line-code { font-size: 16px; font-weight: bold; line-height: 1.1; color: #000; }
 .station-number-box .st-num { font-size: 32px; font-weight: bold; line-height: 1; color: #000; }
@@ -384,7 +383,6 @@ body {
     justify-content: center;
     align-items: center;
     background-color: #ffffff;
-    transition: border-radius 0.3s, border-color 0.3s;
 }
 .lower-number-box .lower-line-code { font-size: 10px; font-weight: bold; line-height: 1; color: #000; }
 .lower-number-box .lower-st-num { font-size: 16px; font-weight: bold; line-height: 1; color: #000; }
@@ -460,7 +458,6 @@ body {
     font-weight: bold;
     border-radius: var(--timebox-radius);
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    transition: width 0.3s, height 0.3s, border-radius 0.3s;
 }
 
 .white-chevron {

@@ -1030,6 +1030,28 @@ document.addEventListener('DOMContentLoaded', () => {
         const en = document.getElementById('input-st-en')?.value || '';
         const idVal = document.getElementById('input-top-st-id')?.value || '';
 
+        // ターゲット駅を取得し、形・色を取得
+        let actualTargetIndex = currentGlobalIndex;
+        if (isNext) {
+            actualTargetIndex = Math.min(currentGlobalIndex + 1, masterStationData.length - 1);
+            while (actualTargetIndex < masterStationData.length - 1 && masterStationData[actualTargetIndex].isPass) {
+                actualTargetIndex++;
+            }
+        }
+        const targetStation = masterStationData[actualTargetIndex] || {};
+        
+        // 色と形を取得（データがなければ丸と路線カラーをデフォルトにする）
+        const shape = targetStation.lowerShape || 'circle';
+        let color = targetStation.lowerColor;
+        // 未設定時は全体の路線カラーを拾う
+        if (!color || color === 'transparent') {
+            color = document.getElementById('input-line-color')?.value || '#cc0000';
+        }
+
+        let r = '8px';
+        if (shape === 'square') r = '0px';
+        if (shape === 'circle') r = '50%';
+
         // 2. 次駅案内テキストの更新（.inner を狙い撃ちしてアニメーション構造を維持）
         const nextKanji = document.querySelector('#next-kanji .inner');
         if (nextKanji) nextKanji.textContent = isNext ? '次は' : 'ただいま';
@@ -1057,6 +1079,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (topNumberBox) {
             if (showNum && idVal) {
                 topNumberBox.style.display = 'flex'; // コンテナを表示
+
+                topNumberBox.style.borderColor = color;
+                topNumberBox.style.borderRadius = r;
+                
                 // "F-09" などの形式から、記号部分と数字部分を分割
                 const match = idVal.match(/^([A-Za-z]+)[-]([0-9A-Za-z]+)$/);
                 const lineCode = document.querySelector('#st-line-code .inner');
