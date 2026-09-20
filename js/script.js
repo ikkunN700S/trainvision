@@ -322,6 +322,78 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 0);
     }
 
+    // 路線図のカラーラインを各駅のナンバリングカラーに合わせて分割グラデーション化
+    const timeBarBg = grid.querySelector('.time-bar-bg');
+    const timeBarFill = grid.querySelector('.time-bar-fill');
+    
+    if (timeBarBg || timeBarFill) {
+        const defaultColor = document.getElementById('input-line-color')?.value || '#cc0000';
+        
+        const getColor = (idx) => {
+            if (idx < 0 || idx > 7) return defaultColor;
+            const c = stationData[idx]?.lowerColor;
+            return (c && c !== 'transparent') ? c : defaultColor;
+        };
+
+        // 背景バー自体の左端のズレ（余白分）を取得
+        const bgOffset = timeBarBg ? timeBarBg.offsetLeft : 0;
+
+        // 各駅のボックスの中心（絶対ピクセル座標）を取得
+        let centers = [];
+        for (let i = 0; i < 8; i++) {
+            const box = document.getElementById(`route-time-box-${i}`);
+            // 余白(bgOffset)を引くことで、グラデーション内部での正確な相対ピクセルを算出
+            centers[i] = box ? (box.offsetLeft + (box.offsetWidth / 2) - bgOffset) : 0;
+        }
+
+        // 画面の左から右へ並び替え
+        let visualPoints = [];
+        for(let i = 0; i < 8; i++) {
+            visualPoints.push({ idx: i, x: centers[i] });
+        }
+        visualPoints.sort((a, b) => a.x - b.x);
+
+        let stops = [];
+        // 左端(0px) 〜 最初の駅の中心
+        stops.push(`${getColor(visualPoints[0].idx)} 0px`);
+        stops.push(`${getColor(visualPoints[0].idx)} ${visualPoints[0].x}px`);
+
+        // 駅の中心 〜 次の駅の中心
+        for (let v = 0; v < 7; v++) {
+            const pt1 = visualPoints[v];
+            const pt2 = visualPoints[v+1];
+            
+            // 進行方向（インデックスが大きい方＝到達先の駅）のカラーを採用
+            const destIdx = Math.max(pt1.idx, pt2.idx);
+            const segColor = getColor(destIdx);
+            
+            // ％ではなく絶対ピクセル（px）で色を固定。これで矢印が動いてもブレません
+            stops.push(`${segColor} ${pt1.x}px`);
+            stops.push(`${segColor} ${pt2.x}px`);
+        }
+
+        // 最後の駅の中心 〜 右端（余裕を持って大きく設定）
+        stops.push(`${getColor(visualPoints[7].idx)} ${visualPoints[7].x}px`);
+        stops.push(`${getColor(visualPoints[7].idx)} 3000px`);
+
+        // 失われていた上下の立体感（光沢と影）をグラデーションで復元
+        const shadeGradient = 'linear-gradient(to bottom, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 30%, rgba(0,0,0,0) 70%, rgba(0,0,0,0.5) 100%)';
+        const colorGradient = `linear-gradient(to right, ${stops.join(', ')})`;
+        
+        // 2つのグラデーションを重ねて適用
+        const combinedBackground = `${shadeGradient}, ${colorGradient}`;
+
+        if (timeBarBg) {
+            timeBarBg.style.backgroundImage = combinedBackground;
+            timeBarBg.style.backgroundColor = 'transparent';
+        }
+        
+        if (timeBarFill) {
+            timeBarFill.style.backgroundImage = combinedBackground;
+            timeBarFill.style.backgroundColor = 'transparent';
+        }
+    }
+
     if (typeof adjustAllFittedTexts === 'function') {
         adjustAllFittedTexts();
     }
