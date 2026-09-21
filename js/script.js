@@ -247,30 +247,33 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 const match = (st.id || "").match(/^([A-Za-z]+)[-]([0-9A-Za-z]+)$/);
                 if (match && showLowerShape) {
+                    const activeColor = isGrey ? '#999999' : (st.lowerColor || 'transparent');
+
                     let r = '8px';
                     let boxBg = 'transparent';
                     let topColor = '';
                     let bottomBg = 'transparent';
                     let bottomColor = '';
+                    let flexCol = '';
 
                     if (st.lowerShape === 'square') r = '0px';
                     if (st.lowerShape === 'circle') r = '50%';
                     if (st.lowerShape === 'jrc') {
-                        r = '6px'; // 画像に合わせて少し角丸に変更
+                        r = '6px';
+                        flexCol = 'display: flex; flex-direction: column;';
+                        // グラデーションをやめ、全体の背景を白にして隙間を根絶する
+                        boxBg = '#ffffff'; 
                             
-                        // 割合を 34% : 66% (約1:2) に変更
-                        boxBg = `linear-gradient(to bottom, ${st.lowerColor} 0%, ${st.lowerColor} 34%, #ffffff 34%, #ffffff 100%)`;
-                        
-                        // 上1/3のスタイル（高さを指定し、文字を中央に）
-                        topColor = 'color: #ffffff; height: 34%; display: flex; align-items: center; justify-content: center; font-size: 0.75em;';
+                        // 上の箱自体の背景を塗る（グレー判定対応）
+                        topColor = `background-color: ${activeColor}; color: #ffffff; height: 34%; width: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.75em;`;
                             
-                        // 下2/3のスタイル
-                        bottomBg = 'background-color: transparent; height: 66%; display: flex; align-items: center; justify-content: center;'; 
+                        // 下の箱
+                        bottomBg = 'background-color: transparent; height: 66%; width: 100%; display: flex; align-items: center; justify-content: center;'; 
                         bottomColor = 'color: #000000; font-size: 1.1em; font-weight: bold;';
                     }
                         
                     idItem.innerHTML = `
-                        <div class="lower-number-box" style="border-color: ${st.lowerColor}; border-radius: ${r}; background: ${boxBg}; overflow: hidden; padding: 0;">
+                        <div class="lower-number-box" style="border-color: ${activeColor}; border-radius: ${r}; background: ${boxBg}; overflow: hidden; padding: 0; ${flexCol}">
                             <div class="lower-line-code" style="${topColor}"><span class="inner">${match[1]}</span></div>
                             <div class="lower-st-num" style="${bottomBg} ${bottomColor}"><span class="inner">${match[2]}</span></div>
                         </div>
@@ -616,19 +619,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('toggle-lower-shape')?.addEventListener('change', () => {
         renderRouteMap();
     });
-
-    // === 図形形状の変更 ===
-    const selectShape = document.getElementById('select-shape');
-    if (selectShape) {
-        selectShape.addEventListener('change', (e) => {
-            const shape = e.target.value;
-            let radius = '8px';
-            if (shape === 'square') radius = '0px';
-            if (shape === 'circle') radius = '50%';
-            document.documentElement.style.setProperty('--numbering-radius', radius);
-        });
-        selectShape.dispatchEvent(new Event('change'));
-    }
 
     const selectTimeboxShape = document.getElementById('select-timebox-shape');
     if (selectTimeboxShape) {
@@ -1185,14 +1175,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 topNumberBox.style.borderColor = color;
                 topNumberBox.style.borderRadius = r;
                 topNumberBox.style.overflow = 'hidden'; 
-                
-                // padding を0にして隙間を消す
                 topNumberBox.style.padding = isJrc ? '0' : '';
+                topNumberBox.style.flexDirection = isJrc ? 'column' : ''; // 縦並びを強制
                 
-                // グラデーションを上34%にする
-                topNumberBox.style.background = isJrc 
-                    ? `linear-gradient(to bottom, ${color} 0%, ${color} 34%, #ffffff 34%, #ffffff 100%)` 
-                    : 'transparent';
+                // グラデーションをやめ、下地を白にする
+                topNumberBox.style.background = isJrc ? '#ffffff' : 'transparent';
                 
                 const match = idVal.match(/^([A-Za-z]+)[-]([0-9A-Za-z]+)$/);
                 const lineCodeContainer = document.getElementById('st-line-code');
@@ -1200,8 +1187,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (lineCodeContainer) {
                     lineCodeContainer.style.color = isJrc ? '#ffffff' : '';
-                    lineCodeContainer.style.backgroundColor = 'transparent';
+                    // 上の箱自体の背景を路線カラーで塗りつぶす
+                    lineCodeContainer.style.backgroundColor = isJrc ? color : 'transparent';
                     lineCodeContainer.style.height = isJrc ? '34%' : '';
+                    lineCodeContainer.style.width = isJrc ? '100%' : '';
                     lineCodeContainer.style.display = isJrc ? 'flex' : '';
                     lineCodeContainer.style.alignItems = isJrc ? 'center' : '';
                     lineCodeContainer.style.justifyContent = isJrc ? 'center' : '';
@@ -1212,6 +1201,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     stNumValContainer.style.color = isJrc ? '#000000' : '';
                     stNumValContainer.style.backgroundColor = 'transparent';
                     stNumValContainer.style.height = isJrc ? '66%' : '';
+                    stNumValContainer.style.width = isJrc ? '100%' : '';
                     stNumValContainer.style.display = isJrc ? 'flex' : '';
                     stNumValContainer.style.alignItems = isJrc ? 'center' : '';
                     stNumValContainer.style.justifyContent = isJrc ? 'center' : '';
@@ -1304,7 +1294,6 @@ document.addEventListener('DOMContentLoaded', () => {
             setAndTrigger('toggle-lower-numbering', preset.routeSettings.showLowerNumbering !== false, true);
             setAndTrigger('toggle-lower-shape', preset.routeSettings.showLowerShape !== false, true);
 
-            setAndTrigger('select-shape', preset.routeSettings.numberingShape || "circle");
             setAndTrigger('select-timebox-shape', preset.routeSettings.timeboxShape || "square");
         }
     }
