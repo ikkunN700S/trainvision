@@ -298,14 +298,14 @@
         { "nameJa": "原", "nameKana": "はら", "nameEn": "Hara", "id": "T-18", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00c4f0"},
         { "nameJa": "平針", "nameKana": "ひらばり", "nameEn": "Hirabari", "id": "T-19", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00c4f0"},
         { "nameJa": "赤池", "nameKana": "あかいけ", "nameEn": "Akaike", "id": "T-20", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#00c4f0"},
-        { "nameJa": "日進", "nameKana": "にっしん", "nameEn": "Nisshin", "id": "TT-06", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#8cbc52"},
-        { "nameJa": "米野木", "nameKana": "こめのき", "nameEn": "Komenoki", "id": "TT-05", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#8cbc52"},
-        { "nameJa": "黒笹", "nameKana": "くろざさ", "nameEn": "Kurozasa", "id": "TT-04", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#8cbc52"},
-        { "nameJa": "三好ケ丘", "nameKana": "みよしがおか", "nameEn": "Miyoshigaoka", "id": "TT-03", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#8cbc52"},
-        { "nameJa": "浄水", "nameKana": "じょうすい", "nameEn": "Josui", "id": "TT-02", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#8cbc52"},
-        { "nameJa": "上豊田", "nameKana": "かみとよた", "nameEn": "Kamitoyota", "id": "TT-01", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#8cbc52"},
-        { "nameJa": "梅坪", "nameKana": "うめつぼ", "nameEn": "Umetsubo", "id": "MY-08", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#8cbc52"},
-        { "nameJa": "豊田市", "nameKana": "とよたし", "nameEn": "Toyotashi", "id": "MY-07", "time": "",  "isPass": false, "lowerShape": "circle", "lowerColor": "#8cbc52"}
+        { "nameJa": "日進", "nameKana": "にっしん", "nameEn": "Nisshin", "id": "TT-06", "time": "",  "isPass": false, "lowerShape": "jrc", "lowerColor": "#8cbc52"},
+        { "nameJa": "米野木", "nameKana": "こめのき", "nameEn": "Komenoki", "id": "TT-05", "time": "",  "isPass": false, "lowerShape": "jrc", "lowerColor": "#8cbc52"},
+        { "nameJa": "黒笹", "nameKana": "くろざさ", "nameEn": "Kurozasa", "id": "TT-04", "time": "",  "isPass": false, "lowerShape": "jrc", "lowerColor": "#8cbc52"},
+        { "nameJa": "三好ケ丘", "nameKana": "みよしがおか", "nameEn": "Miyoshigaoka", "id": "TT-03", "time": "",  "isPass": false, "lowerShape": "jrc", "lowerColor": "#8cbc52"},
+        { "nameJa": "浄水", "nameKana": "じょうすい", "nameEn": "Josui", "id": "TT-02", "time": "",  "isPass": false, "lowerShape": "jrc", "lowerColor": "#8cbc52"},
+        { "nameJa": "上豊田", "nameKana": "かみとよた", "nameEn": "Kamitoyota", "id": "TT-01", "time": "",  "isPass": false, "lowerShape": "jrc", "lowerColor": "#8cbc52"},
+        { "nameJa": "梅坪", "nameKana": "うめつぼ", "nameEn": "Umetsubo", "id": "MY-08", "time": "",  "isPass": false, "lowerShape": "jrc", "lowerColor": "#8cbc52"},
+        { "nameJa": "豊田市", "nameKana": "とよたし", "nameEn": "Toyotashi", "id": "MY-07", "time": "",  "isPass": false, "lowerShape": "jrc", "lowerColor": "#8cbc52"}
       ]
     },
     {

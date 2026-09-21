@@ -256,21 +256,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (st.lowerShape === 'square') r = '0px';
                     if (st.lowerShape === 'circle') r = '50%';
                     if (st.lowerShape === 'jrc') {
-                        // JR東海スタイルの場合の設定
-                        r = '0px';
-                        boxBg = st.lowerColor; // 全体の背景色を路線カラーで塗りつぶす
-                        topColor = 'color: #ffffff;'; // 上の記号は白文字
-                        bottomBg = 'background-color: #ffffff;'; // 下の数字は白背景
-                        bottomColor = 'color: #000000;'; // 下の数字は黒文字
+                        r = '6px'; // 画像に合わせて少し角丸に変更
+                            
+                        // 割合を 34% : 66% (約1:2) に変更
+                        boxBg = `linear-gradient(to bottom, ${st.lowerColor} 0%, ${st.lowerColor} 34%, #ffffff 34%, #ffffff 100%)`;
+                        
+                        // 上1/3のスタイル（高さを指定し、文字を中央に）
+                        topColor = 'color: #ffffff; height: 34%; display: flex; align-items: center; justify-content: center; font-size: 0.75em;';
+                            
+                        // 下2/3のスタイル
+                        bottomBg = 'background-color: transparent; height: 66%; display: flex; align-items: center; justify-content: center;'; 
+                        bottomColor = 'color: #000000; font-size: 1.1em; font-weight: bold;';
                     }
                         
-                    // はみ出しを防ぐため overflow: hidden; を追加
                     idItem.innerHTML = `
-                        <div class="lower-number-box" style="border-color: ${st.lowerColor}; border-radius: ${r}; background-color: ${boxBg}; overflow: hidden;">
+                        <div class="lower-number-box" style="border-color: ${st.lowerColor}; border-radius: ${r}; background: ${boxBg}; overflow: hidden; padding: 0;">
                             <div class="lower-line-code" style="${topColor}"><span class="inner">${match[1]}</span></div>
                             <div class="lower-st-num" style="${bottomBg} ${bottomColor}"><span class="inner">${match[2]}</span></div>
                         </div>
-                        `;
+                    `;
                 } else {
                     idItem.innerHTML = `<span class="inner">${st.id || ""}</span>`;
                 }
@@ -1177,29 +1181,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // JR東海かどうかの判定フラグ
                 const isJrc = (shape === 'jrc');
-
+                
                 topNumberBox.style.borderColor = color;
                 topNumberBox.style.borderRadius = r;
-                topNumberBox.style.overflow = 'hidden'; // 白背景のはみ出し防止
+                topNumberBox.style.overflow = 'hidden'; 
                 
-                // 全体の背景色（JR東海の場合は路線カラー、それ以外は透明）
-                topNumberBox.style.backgroundColor = isJrc ? color : 'transparent';
-
-                // "F-09" などの形式から、記号部分と数字部分を分割
+                // padding を0にして隙間を消す
+                topNumberBox.style.padding = isJrc ? '0' : '';
+                
+                // グラデーションを上34%にする
+                topNumberBox.style.background = isJrc 
+                    ? `linear-gradient(to bottom, ${color} 0%, ${color} 34%, #ffffff 34%, #ffffff 100%)` 
+                    : 'transparent';
+                
                 const match = idVal.match(/^([A-Za-z]+)[-]([0-9A-Za-z]+)$/);
                 const lineCodeContainer = document.getElementById('st-line-code');
                 const stNumValContainer = document.getElementById('st-num-val');
-
-                // 記号部分（上半分）のスタイル適用
+                
                 if (lineCodeContainer) {
                     lineCodeContainer.style.color = isJrc ? '#ffffff' : '';
                     lineCodeContainer.style.backgroundColor = 'transparent';
+                    lineCodeContainer.style.height = isJrc ? '34%' : '';
+                    lineCodeContainer.style.display = isJrc ? 'flex' : '';
+                    lineCodeContainer.style.alignItems = isJrc ? 'center' : '';
+                    lineCodeContainer.style.justifyContent = isJrc ? 'center' : '';
+                    lineCodeContainer.style.fontSize = isJrc ? '0.75em' : '';
                 }
                 
-                // 数字部分（下半分）のスタイル適用
                 if (stNumValContainer) {
                     stNumValContainer.style.color = isJrc ? '#000000' : '';
-                    stNumValContainer.style.backgroundColor = isJrc ? '#ffffff' : 'transparent';
+                    stNumValContainer.style.backgroundColor = 'transparent';
+                    stNumValContainer.style.height = isJrc ? '66%' : '';
+                    stNumValContainer.style.display = isJrc ? 'flex' : '';
+                    stNumValContainer.style.alignItems = isJrc ? 'center' : '';
+                    stNumValContainer.style.justifyContent = isJrc ? 'center' : '';
                 }
 
                 const lineCode = document.querySelector('#st-line-code .inner');
