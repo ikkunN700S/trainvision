@@ -248,15 +248,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 const match = (st.id || "").match(/^([A-Za-z]+)[-]([0-9A-Za-z]+)$/);
                 if (match && showLowerShape) {
                     let r = '8px';
+                    let boxBg = 'transparent';
+                    let topColor = '';
+                    let bottomBg = 'transparent';
+                    let bottomColor = '';
+
                     if (st.lowerShape === 'square') r = '0px';
                     if (st.lowerShape === 'circle') r = '50%';
-
+                    if (st.lowerShape === 'jrc') {
+                        // JR東海スタイルの場合の設定
+                        r = '0px';
+                        boxBg = st.lowerColor; // 全体の背景色を路線カラーで塗りつぶす
+                        topColor = 'color: #ffffff;'; // 上の記号は白文字
+                        bottomBg = 'background-color: #ffffff;'; // 下の数字は白背景
+                        bottomColor = 'color: #000000;'; // 下の数字は黒文字
+                    }
+                        
+                    // はみ出しを防ぐため overflow: hidden; を追加
                     idItem.innerHTML = `
-                        <div class="lower-number-box" style="border-color: ${st.lowerColor}; border-radius: ${r};">
-                            <div class="lower-line-code"><span class="inner">${match[1]}</span></div>
-                            <div class="lower-st-num"><span class="inner">${match[2]}</span></div>
+                        <div class="lower-number-box" style="border-color: ${st.lowerColor}; border-radius: ${r}; background-color: ${boxBg}; overflow: hidden;">
+                            <div class="lower-line-code" style="${topColor}"><span class="inner">${match[1]}</span></div>
+                            <div class="lower-st-num" style="${bottomBg} ${bottomColor}"><span class="inner">${match[2]}</span></div>
                         </div>
-                    `;
+                        `;
                 } else {
                     idItem.innerHTML = `<span class="inner">${st.id || ""}</span>`;
                 }
@@ -858,6 +872,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <option value="square" ${st.lowerShape === 'square' ? 'selected' : ''}>四角</option>
                         <option value="rounded" ${st.lowerShape === 'rounded' ? 'selected' : ''}>角丸</option>
                         <option value="circle" ${st.lowerShape === 'circle' ? 'selected' : ''}>丸</option>
+                        <option value="jrc" ${st.lowerShape === 'jrc' ? 'selected' : ''}>東海</option>
                     </select>
                 </td>
                 <td><input type="color" value="${st.lowerColor}" data-idx="${idx}" data-field="lowerColor" style="width:30px; height:24px; padding:0;"></td>
@@ -1160,11 +1175,33 @@ document.addEventListener('DOMContentLoaded', () => {
             if (showNum && idVal) {
                 topNumberBox.style.display = 'flex'; // コンテナを表示
 
+                // JR東海かどうかの判定フラグ
+                const isJrc = (shape === 'jrc');
+
                 topNumberBox.style.borderColor = color;
                 topNumberBox.style.borderRadius = r;
+                topNumberBox.style.overflow = 'hidden'; // 白背景のはみ出し防止
                 
+                // 全体の背景色（JR東海の場合は路線カラー、それ以外は透明）
+                topNumberBox.style.backgroundColor = isJrc ? color : 'transparent';
+
                 // "F-09" などの形式から、記号部分と数字部分を分割
                 const match = idVal.match(/^([A-Za-z]+)[-]([0-9A-Za-z]+)$/);
+                const lineCodeContainer = document.getElementById('st-line-code');
+                const stNumValContainer = document.getElementById('st-num-val');
+
+                // 記号部分（上半分）のスタイル適用
+                if (lineCodeContainer) {
+                    lineCodeContainer.style.color = isJrc ? '#ffffff' : '';
+                    lineCodeContainer.style.backgroundColor = 'transparent';
+                }
+                
+                // 数字部分（下半分）のスタイル適用
+                if (stNumValContainer) {
+                    stNumValContainer.style.color = isJrc ? '#000000' : '';
+                    stNumValContainer.style.backgroundColor = isJrc ? '#ffffff' : 'transparent';
+                }
+
                 const lineCode = document.querySelector('#st-line-code .inner');
                 const stNumVal = document.querySelector('#st-num-val .inner');
                 
