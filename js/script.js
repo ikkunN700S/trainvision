@@ -261,14 +261,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (st.lowerShape === 'jrc') {
                         r = '6px';
                         flexCol = 'display: flex; flex-direction: column;';
-                        // グラデーションをやめ、全体の背景を白にして隙間を根絶する
-                        boxBg = '#ffffff'; 
                             
-                        // 上の箱自体の背景を塗る（グレー判定対応）
-                        topColor = `background-color: ${activeColor}; color: #ffffff; height: 34%; width: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.75em;`;
+                        // 背景全体を「グレー」または「路線カラー」で完全に塗りつぶす
+                        boxBg = activeColor; 
                             
-                        // 下の箱
-                        bottomBg = 'background-color: transparent; height: 66%; width: 100%; display: flex; align-items: center; justify-content: center;'; 
+                        // 上半分は「透明」にして、親の路線カラーをそのまま透かして見せる
+                        topColor = `background-color: transparent; color: #ffffff; height: 34%; width: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.75em;`;
+                            
+                        // 下半分だけを「白」で塗りつぶす
+                        bottomBg = 'background-color: #ffffff; height: 66%; width: 100%; display: flex; align-items: center; justify-content: center;'; 
                         bottomColor = 'color: #000000; font-size: 1.1em; font-weight: bold;';
                     }
                         
@@ -1176,10 +1177,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 topNumberBox.style.borderRadius = r;
                 topNumberBox.style.overflow = 'hidden'; 
                 topNumberBox.style.padding = isJrc ? '0' : '';
-                topNumberBox.style.flexDirection = isJrc ? 'column' : ''; // 縦並びを強制
+                topNumberBox.style.flexDirection = isJrc ? 'column' : '';
                 
-                // グラデーションをやめ、下地を白にする
-                topNumberBox.style.background = isJrc ? '#ffffff' : 'transparent';
+                // 親コンテナの背景全体を路線カラーにする
+                topNumberBox.style.background = isJrc ? color : 'transparent';
                 
                 const match = idVal.match(/^([A-Za-z]+)[-]([0-9A-Za-z]+)$/);
                 const lineCodeContainer = document.getElementById('st-line-code');
@@ -1187,19 +1188,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (lineCodeContainer) {
                     lineCodeContainer.style.color = isJrc ? '#ffffff' : '';
-                    // 上の箱自体の背景を路線カラーで塗りつぶす
-                    lineCodeContainer.style.backgroundColor = isJrc ? color : 'transparent';
+                    // 上半分は透明にする
+                    lineCodeContainer.style.backgroundColor = 'transparent';
                     lineCodeContainer.style.height = isJrc ? '34%' : '';
                     lineCodeContainer.style.width = isJrc ? '100%' : '';
                     lineCodeContainer.style.display = isJrc ? 'flex' : '';
                     lineCodeContainer.style.alignItems = isJrc ? 'center' : '';
                     lineCodeContainer.style.justifyContent = isJrc ? 'center' : '';
-                    lineCodeContainer.style.fontSize = isJrc ? '0.75em' : '';
+                    lineCodeContainer.style.fontSize = isJrc ? '1em' : '';
                 }
                 
                 if (stNumValContainer) {
                     stNumValContainer.style.color = isJrc ? '#000000' : '';
-                    stNumValContainer.style.backgroundColor = 'transparent';
+                    // 下半分を白にする
+                    stNumValContainer.style.backgroundColor = isJrc ? '#ffffff' : 'transparent';
                     stNumValContainer.style.height = isJrc ? '66%' : '';
                     stNumValContainer.style.width = isJrc ? '100%' : '';
                     stNumValContainer.style.display = isJrc ? 'flex' : '';
