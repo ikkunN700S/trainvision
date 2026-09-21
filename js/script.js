@@ -247,16 +247,39 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 const match = (st.id || "").match(/^([A-Za-z]+)[-]([0-9A-Za-z]+)$/);
                 if (match && showLowerShape) {
+                    const activeColor = isGrey ? '#999999' : (st.lowerColor || 'transparent');
+
                     let r = '8px';
+                    let boxBg = 'transparent';
+                    let topColor = '';
+                    let bottomBg = 'transparent';
+                    let bottomColor = '';
+                    let flexCol = '';
+
                     if (st.lowerShape === 'square') r = '0px';
                     if (st.lowerShape === 'circle') r = '50%';
-
+                    if (st.lowerShape === 'jrc') {
+                        r = '6px';
+                        flexCol = 'display: flex; flex-direction: column;';
+                            
+                        boxBg = activeColor; 
+                            
+                        // 通過時は薄いグレーにし、!importantでCSSに勝たせる
+                        const jrcTopText = isGrey ? '#c0c0c0' : '#ffffff';
+                        topColor = `background-color: transparent; color: ${jrcTopText} !important; height: 34%; width: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.75em;`;
+                        
+                        bottomBg = 'background-color: #ffffff; height: 66%; width: 100%; display: flex; align-items: center; justify-content: center;'; 
+                        bottomColor = 'color: #000000; font-size: 1.1em; font-weight: bold;';
+                    }
+                        
+                    // 子要素の span にも color: inherit !important; を付けて文字色消失を防ぐ
                     idItem.innerHTML = `
-                        <div class="lower-number-box" style="border-color: ${st.lowerColor}; border-radius: ${r};">
-                            <div class="lower-line-code"><span class="inner">${match[1]}</span></div>
-                            <div class="lower-st-num"><span class="inner">${match[2]}</span></div>
+                        <div class="lower-number-box" style="border-color: ${activeColor}; border-radius: ${r}; background: ${boxBg}; overflow: hidden; padding: 0; ${flexCol}">
+                            <div class="lower-line-code" style="${topColor}"><span class="inner" style="color: inherit !important;">${match[1]}</span></div>
+                            <div class="lower-st-num" style="${bottomBg} ${bottomColor}"><span class="inner" style="color: inherit !important;">${match[2]}</span></div>
                         </div>
                     `;
+
                 } else {
                     idItem.innerHTML = `<span class="inner">${st.id || ""}</span>`;
                 }
@@ -599,19 +622,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderRouteMap();
     });
 
-    // === 図形形状の変更 ===
-    const selectShape = document.getElementById('select-shape');
-    if (selectShape) {
-        selectShape.addEventListener('change', (e) => {
-            const shape = e.target.value;
-            let radius = '8px';
-            if (shape === 'square') radius = '0px';
-            if (shape === 'circle') radius = '50%';
-            document.documentElement.style.setProperty('--numbering-radius', radius);
-        });
-        selectShape.dispatchEvent(new Event('change'));
-    }
-
     const selectTimeboxShape = document.getElementById('select-timebox-shape');
     if (selectTimeboxShape) {
         selectTimeboxShape.addEventListener('change', (e) => {
@@ -858,6 +868,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <option value="square" ${st.lowerShape === 'square' ? 'selected' : ''}>四角</option>
                         <option value="rounded" ${st.lowerShape === 'rounded' ? 'selected' : ''}>角丸</option>
                         <option value="circle" ${st.lowerShape === 'circle' ? 'selected' : ''}>丸</option>
+                        <option value="jrc" ${st.lowerShape === 'jrc' ? 'selected' : ''}>東海</option>
                     </select>
                 </td>
                 <td><input type="color" value="${st.lowerColor}" data-idx="${idx}" data-field="lowerColor" style="width:30px; height:24px; padding:0;"></td>
@@ -914,6 +925,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // 画像ダウンロード機能
     document.getElementById('btn-download')?.addEventListener('click', () => {
         const monitor = document.getElementById('lcd-monitor');
+        const grid = document.getElementById('route-map-grid');
+        const isMirror = document.getElementById('toggle-mirror-layout')?.checked;
 
         const animSelectors = '.train-type, .destination, .car-number, .next-label, .station-name';
         const originalAnimElements = monitor.querySelectorAll(animSelectors);
@@ -922,7 +935,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return {
                 opacity: style.opacity,
                 transform: style.transform,
-                // アニメーション途中の変形基準点も取得する
                 transformOrigin: style.transformOrigin 
             };
         });
@@ -934,6 +946,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const clonedMonitor = clonedDoc.getElementById('lcd-monitor');
                 if (clonedMonitor) clonedMonitor.style.transform = 'none';
 
+                const clonedGrid = clonedDoc.getElementById('route-map-grid');
+                if (isMirror && clonedGrid) {
+                    clonedGrid.style.transform = 'none';
+                }
+
                 const clonedAnimElements = clonedMonitor.querySelectorAll(animSelectors);
                 clonedAnimElements.forEach((el, index) => {
                     if (currentStyles[index]) {
@@ -941,7 +958,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         el.style.transition = 'none';
                         el.style.opacity = currentStyles[index].opacity;
                         el.style.transform = currentStyles[index].transform;
-                        // 基準点を裏画面にも適用する
                         el.style.transformOrigin = currentStyles[index].transformOrigin; 
                     }
                 });
@@ -958,40 +974,83 @@ document.addEventListener('DOMContentLoaded', () => {
                     const match = transformStr.match(/scaleY\(([0-9.]+)\)/);
                     if (match) scaleY = parseFloat(match[1]);
 
-                    // 裏画面だけ絶対配置でセルの中央に強制固定する
                     el.style.writingMode = 'horizontal-tb';
                     el.style.position = 'absolute';
                     el.style.bottom = '2px';
-                    el.style.left = '50%';
-                    el.style.transform = 'translateX(-50%)'; 
-                    el.style.textAlign = 'center';
+                    el.style.left = '0';
+                    el.style.right = '0';
+                    el.style.display = 'flex';
+                    el.style.flexDirection = 'column';
+                    el.style.alignItems = 'center';
+                    el.style.transform = 'none'; 
                     el.style.lineHeight = '1';
 
-                    // 縮小率をフォントサイズと文字間隔に掛け算する
                     const newFontSize = 26 * scaleY;
                     const newSpacing = 4 * scaleY;
 
-                    // 文字を1文字ずつのブロック(div)にして縦に積む
                     const text = origEl.textContent;
                     el.innerHTML = '';
                     for (const char of text) {
-                        const span = clonedDoc.createElement('div');
+                        const span = clonedDoc.createElement('span');
                         span.textContent = char;
                         span.style.fontSize = `${newFontSize}px`;
                         span.style.marginBottom = `${newSpacing}px`;
+                        span.style.display = 'block'; 
                         
-                        // 長音符（ー）だけは縦向きに回転させる
-                        if (char === 'ー') {
-                            span.style.transform = 'rotate(90deg)';
+                        let charTransform = '';
+                        if (isMirror) charTransform += 'scaleX(-1) ';
+                        if (char === 'ー') charTransform += 'rotate(90deg)';
+                        
+                        if (charTransform) {
+                            span.style.transform = charTransform.trim();
                         }
+                        
                         el.appendChild(span);
                     }
                 });
             }
         }).then(canvas => {
+            let finalCanvas = canvas;
+
+            if (isMirror && grid) {
+                finalCanvas = document.createElement('canvas');
+                finalCanvas.width = canvas.width;
+                finalCanvas.height = canvas.height;
+                const ctx = finalCanvas.getContext('2d');
+
+                // 1. まず非反転状態の全体を描画
+                ctx.drawImage(canvas, 0, 0);
+
+                const monitorRect = monitor.getBoundingClientRect();
+                const gridRect = grid.getBoundingClientRect();
+                
+                // ▼ 修正: 飛び出している駅名の検索範囲を「路線図(grid)の中だけ」に限定する
+                let flipTop = gridRect.top;
+                const stNames = grid.querySelectorAll('.st-name-inner, .en-st-name');
+                stNames.forEach(el => {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.top < flipTop && rect.height > 0) flipTop = rect.top;
+                });
+
+                const scale = 2;
+                const yOffset = (flipTop - monitorRect.top) * scale;
+                // ▼ 修正: フッターを含めず、路線図の最下部(gridRect.bottom)までを反転の境界にする
+                const flipBottom = (gridRect.bottom - monitorRect.top) * scale;
+                const flipHeight = flipBottom - yOffset; 
+
+                // 2. 指定エリア（路線図のみ）を反転して再描画
+                ctx.clearRect(0, yOffset, finalCanvas.width, flipHeight);
+                ctx.save();
+                ctx.translate(finalCanvas.width, 0);
+                ctx.scale(-1, 1);
+                ctx.drawImage(canvas, 0, yOffset, finalCanvas.width, flipHeight, 
+                                      0, yOffset, finalCanvas.width, flipHeight);
+                ctx.restore();
+            }
+
             const link = document.createElement('a');
             link.download = 'train-vision.png';
-            link.href = canvas.toDataURL('image/png');
+            link.href = finalCanvas.toDataURL('image/png');
             link.click();
         });
     });
@@ -1160,11 +1219,45 @@ document.addEventListener('DOMContentLoaded', () => {
             if (showNum && idVal) {
                 topNumberBox.style.display = 'flex'; // コンテナを表示
 
+                // JR東海かどうかの判定フラグ
+                const isJrc = (shape === 'jrc');
+                
                 topNumberBox.style.borderColor = color;
                 topNumberBox.style.borderRadius = r;
+                topNumberBox.style.overflow = 'hidden'; 
+                topNumberBox.style.padding = isJrc ? '0' : '';
+                topNumberBox.style.flexDirection = isJrc ? 'column' : '';
                 
-                // "F-09" などの形式から、記号部分と数字部分を分割
+                // 親コンテナの背景全体を路線カラーにする
+                topNumberBox.style.background = isJrc ? color : 'transparent';
+                
                 const match = idVal.match(/^([A-Za-z]+)[-]([0-9A-Za-z]+)$/);
+                const lineCodeContainer = document.getElementById('st-line-code');
+                const stNumValContainer = document.getElementById('st-num-val');
+                
+                if (lineCodeContainer) {
+                    lineCodeContainer.style.color = isJrc ? '#ffffff' : '';
+                    // 上半分は透明にする
+                    lineCodeContainer.style.backgroundColor = 'transparent';
+                    lineCodeContainer.style.height = isJrc ? '34%' : '';
+                    lineCodeContainer.style.width = isJrc ? '100%' : '';
+                    lineCodeContainer.style.display = isJrc ? 'flex' : '';
+                    lineCodeContainer.style.alignItems = isJrc ? 'center' : '';
+                    lineCodeContainer.style.justifyContent = isJrc ? 'center' : '';
+                    lineCodeContainer.style.fontSize = isJrc ? '1em' : '';
+                }
+                
+                if (stNumValContainer) {
+                    stNumValContainer.style.color = isJrc ? '#000000' : '';
+                    // 下半分を白にする
+                    stNumValContainer.style.backgroundColor = isJrc ? '#ffffff' : 'transparent';
+                    stNumValContainer.style.height = isJrc ? '66%' : '';
+                    stNumValContainer.style.width = isJrc ? '100%' : '';
+                    stNumValContainer.style.display = isJrc ? 'flex' : '';
+                    stNumValContainer.style.alignItems = isJrc ? 'center' : '';
+                    stNumValContainer.style.justifyContent = isJrc ? 'center' : '';
+                }
+
                 const lineCode = document.querySelector('#st-line-code .inner');
                 const stNumVal = document.querySelector('#st-num-val .inner');
                 
@@ -1252,7 +1345,6 @@ document.addEventListener('DOMContentLoaded', () => {
             setAndTrigger('toggle-lower-numbering', preset.routeSettings.showLowerNumbering !== false, true);
             setAndTrigger('toggle-lower-shape', preset.routeSettings.showLowerShape !== false, true);
 
-            setAndTrigger('select-shape', preset.routeSettings.numberingShape || "circle");
             setAndTrigger('select-timebox-shape', preset.routeSettings.timeboxShape || "square");
         }
     }

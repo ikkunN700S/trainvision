@@ -16,6 +16,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
+    <h1>Train Vision Simulator</h1>
     <div id="app-wrapper">
         <div id="lcd-monitor">
             <!-- 会社カラーライン -->
@@ -112,7 +113,7 @@
             <div class="panel-section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                     <h3>カラー設定・同期設定</h3>
-                    <button type="button" id="btn-download" style="background-color:#0078d7;">画像としてダウンロード</button>
+                    <button type="button" id="btn-download" style="background-color:#0078d7;">画像としてダウンロード(左右反転未対応)</button>
                 </div>
                 
                 <div class="panel-row" style="margin-bottom: 8px;">
@@ -206,13 +207,6 @@
                 </div>
                 
                 <div class="panel-row" style="margin-top:10px;">
-                    <label>駅ナンバリング図形: 
-                        <select id="select-shape">
-                            <option value="square">正方形</option>
-                            <option value="rounded">角丸正方形</option>
-                            <option value="circle" selected>丸</option>
-                        </select>
-                    </label>
                     <label style="margin-left:20px;">所要時間ボックス図形: 
                         <select id="select-timebox-shape">
                             <option value="square" selected>四角</option>
