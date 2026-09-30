@@ -1433,6 +1433,25 @@ document.addEventListener('DOMContentLoaded', () => {
             showRouteMap();
         }
     }, 100);
+
+    // === 緊急停車ボタンの処理 ===
+    let emergencyTimer = null;
+    
+    document.getElementById('btn-emergency')?.addEventListener('click', () => {
+        const emLayer = document.getElementById('emergency-layer');
+        if (!emLayer) return;
+        
+        // 警告画面をパッと表示
+        emLayer.style.visibility = 'visible';
+        
+        // すでにタイマーが動いていたらリセット（連打対策）
+        if (emergencyTimer) clearTimeout(emergencyTimer);
+        
+        // 12秒(12000ミリ秒)後に自動で非表示にする
+        emergencyTimer = setTimeout(() => {
+            emLayer.style.visibility = 'hidden';
+        }, 12000);
+    });
 });
 
 // Service Worker の登録処理

@@ -91,6 +91,21 @@
                     <div id="ad-page-indicator"></div>
                 </div>
             </main>
+
+            <div id="emergency-layer" style="visibility: hidden;">
+                <div class="em-bg-icon">
+                    <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                        <polygon points="60,18 105,98 15,98" fill="none" stroke="#ffffff" stroke-width="6" stroke-linejoin="round"/>
+                        <path d="M 55,38 a 5,5 0 0 1 10,0 l -2,30 a 3,3 0 0 1 -6,0 z" fill="#ffffff"/>
+                        <circle cx="60" cy="84" r="5" fill="#ffffff"/>
+                    </svg>
+                </div>
+                <div class="em-text-box">
+                    <div class="em-red">急停車します!</div>
+                    <div class="em-black">ご注意ください。</div>
+                    <div class="em-red-en">Emergency stop warning</div>
+                </div>
+            </div>
         </div>
 
         <!-- ▼ 進行管理ボタン ▼ -->
@@ -100,6 +115,11 @@
             <br>
             <span id="current-state-display" style="font-weight: bold;"></span>
         </div>
+
+        <button id="btn-emergency" style="background-color: #cc0000; color: #ffffff; font-size: 16px; font-weight: bold; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+            🚨 緊急停車
+        </button>
+
         <!-- 設定コントロールパネル -->
         <div id="control-panel">
             <h2>トレインビジョン 設定パネル</h2>    
@@ -300,7 +320,7 @@
                         ---
                     <div class="ad-title">ニュース / News</div>
                     <div class="ad-content">
-                        Minakami RECORDS新曲情報<br>
+                        【Minakami RECORDS新曲情報】<br>
                         水上イリス / ICCHAMA「お金、返してよ」<br>
                         各種音楽サービスにて配信中。
                     </div>
