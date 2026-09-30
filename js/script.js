@@ -1329,6 +1329,110 @@ document.addEventListener('DOMContentLoaded', () => {
         const labelSelect = document.getElementById('select-next-label');
         updateBigHeaderDisplay(labelSelect && labelSelect.value === 'next');
     });
+
+    // === ニュース・運行情報の表示切り替え処理 ===
+    let adNewsTimer = null;
+    let currentAdPageIndex = -1; // -1: 路線図, 0以上: ニュースページ
+    let adNewsPages = [];
+
+    function updateAdPages() {
+        const rawText = document.getElementById('input-ad-news-text')?.value || '';
+        // "---" で分割し、前後の空白を削除して空のページを除外
+        adNewsPages = rawText.split('---').map(p => p.trim()).filter(p => p.length > 0);
+        
+        // プレビュー用に現在表示中のページがあれば即座に反映
+        if (currentAdPageIndex >= 0 && currentAdPageIndex < adNewsPages.length) {
+            renderAdPage(currentAdPageIndex);
+        }
+    }
+
+    function startAdNewsCycle() {
+        // 既存のタイマーをリセット
+        if (adNewsTimer) clearTimeout(adNewsTimer);
+        currentAdPageIndex = -1; // サイクルは必ず路線図からスタート
+
+        const isEnabled = document.getElementById('toggle-ad-news')?.checked;
+        if (!isEnabled || adNewsPages.length === 0) {
+            showRouteMap();
+            return;
+        }
+
+        // 路線図を表示する
+        showRouteMap();
+        
+        // 路線図の待機時間（ミリ秒）を取得してタイマーをセット
+        const waitTime = parseInt(document.getElementById('select-ad-interval')?.value || '12000', 10);
+        adNewsTimer = setTimeout(cycleDisplay, waitTime);
+    }
+
+    function cycleDisplay() {
+        currentAdPageIndex++;
+        
+        // 最後のニュースページを表示し終わったら、次は路線図(-1)に戻る
+        if (currentAdPageIndex >= adNewsPages.length) {
+            currentAdPageIndex = -1;
+        }
+
+        let waitTime = 0;
+
+        if (currentAdPageIndex === -1) {
+            // ▼ 路線図の表示処理
+            showRouteMap();
+            waitTime = parseInt(document.getElementById('select-ad-interval')?.value || '12000', 10);
+        } else {
+            // ▼ ニュースの表示処理
+            renderAdPage(currentAdPageIndex);
+            const pageSec = parseFloat(document.getElementById('input-page-interval')?.value || '6');
+            waitTime = pageSec * 1000;
+        }
+
+        // 計算した待機時間で、次の切り替えを予約する
+        adNewsTimer = setTimeout(cycleDisplay, waitTime);
+    }
+
+    function showRouteMap() {
+        const adLayer = document.getElementById('ad-news-layer');
+        if (adLayer) adLayer.style.visibility = 'hidden';
+        
+        const routeMap = document.getElementById('route-map-grid');
+        if (routeMap) routeMap.style.visibility = 'visible';
+    }
+
+    function renderAdPage(index) {
+        const adLayer = document.getElementById('ad-news-layer');
+        const container = document.getElementById('ad-news-container');
+        const routeMap = document.getElementById('route-map-grid');
+        const pageIndicator = document.getElementById('ad-page-indicator');
+        
+        if (adLayer && container && routeMap) {
+            container.innerHTML = adNewsPages[index];
+            
+            if (pageIndicator) {
+                pageIndicator.textContent = `${index + 1} / ${adNewsPages.length}`;
+            }
+            
+            routeMap.style.visibility = 'hidden';
+            adLayer.style.visibility = 'visible';
+        }
+    }
+
+    // --- イベントリスナーの登録と初期化処理 ---
+    document.getElementById('toggle-ad-news')?.addEventListener('change', startAdNewsCycle);
+    document.getElementById('select-ad-interval')?.addEventListener('change', startAdNewsCycle);
+    
+    // ニュース秒数が変更された時もサイクルを再スタート
+    document.getElementById('input-page-interval')?.addEventListener('change', startAdNewsCycle);
+    
+    document.getElementById('input-ad-news-text')?.addEventListener('input', updateAdPages);
+
+    setTimeout(() => {
+        updateAdPages();
+        if (document.getElementById('toggle-ad-news')?.checked) {
+            startAdNewsCycle();
+        } else {
+            showRouteMap();
+        }
+    }, 100);
 });
 
 // Service Worker の登録処理

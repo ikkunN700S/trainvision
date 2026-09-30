@@ -41,7 +41,8 @@ body {
 }
 
 .en, .en-st-name, .time-label, .time-box, .st-id, .line-code, .st-num, .car-en-text, .car-number .number, .lower-number-box {
-    font-family: sans-serif, 'Nimbus Sans', 'Meiryo';
+    font-family: 'Nimbus Sans', sans-serif, 'Meiryo';
+    font-weight: bold;
 }
 
 #lcd-monitor {
@@ -272,7 +273,7 @@ body {
 }
 .station-name .inner { display: inline-block; white-space: nowrap; transform-origin: left center; }
 .station-name.kanji .inner, .station-name.kana .inner { font-size: 80px; letter-spacing: 8px; }
-.station-name.en .inner { font-size: 60px; letter-spacing: 2px; }
+.station-name.en .inner { font-size: 65px; letter-spacing: 2px; }
 .station-name.active { opacity: 1; transform: translateY(0) scaleY(1); }
 .station-name.exit-down { animation: animExitDown 0.7s ease-in forwards; }
 .station-name.enter-down { animation: animEnterDown 0.7s ease-out forwards; }
@@ -356,7 +357,7 @@ body {
 
 .st-name-inner.en-st-name {
     writing-mode: horizontal-tb; 
-    font-size: 16px; 
+    font-size: 20px; 
     font-weight: bold; 
     color: #000;
     white-space: nowrap;
@@ -522,6 +523,58 @@ body {
     transition: opacity 0.5s;
 }
 .footer-note.fade-out { opacity: 0; }
+
+/* ▼ ニュース・運行情報レイヤーのスタイル */
+#ad-news-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; 
+    background-color: #ffffff;
+    box-sizing: border-box;
+    padding: 0; 
+    z-index: 20; 
+}
+
+#ad-news-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;  
+}
+
+/* 右下のページ数表示スタイル */
+#ad-page-indicator {
+    position: absolute;
+    bottom: 15px;
+    right: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #555555;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.ad-title {
+    background-color: #ececec;
+    color: #000;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 2px solid #a3a3a3;
+    padding: 5px;
+}
+
+.ad-content {
+    padding: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #111111;
+    line-height: 1.4;
+    flex-grow: 1;
+}
 
 /* === 設定パネルUI === */
 #control-panel { width: 1040px; background-color: #2b2b2b; border: 1px solid #444; border-radius: 8px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
