@@ -922,139 +922,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderRouteMap();     // モニターの表示を更新
     });
 
-    // 画像ダウンロード機能
-    document.getElementById('btn-download')?.addEventListener('click', () => {
-        const monitor = document.getElementById('lcd-monitor');
-        const grid = document.getElementById('route-map-grid');
-        const isMirror = document.getElementById('toggle-mirror-layout')?.checked;
-
-        const animSelectors = '.train-type, .destination, .car-number, .next-label, .station-name';
-        const originalAnimElements = monitor.querySelectorAll(animSelectors);
-        const currentStyles = Array.from(originalAnimElements).map(el => {
-            const style = window.getComputedStyle(el);
-            return {
-                opacity: style.opacity,
-                transform: style.transform,
-                transformOrigin: style.transformOrigin 
-            };
-        });
-
-        html2canvas(monitor, { 
-            scale: 2, 
-            backgroundColor: '#ffffff',
-            onclone: (clonedDoc) => {
-                const clonedMonitor = clonedDoc.getElementById('lcd-monitor');
-                if (clonedMonitor) clonedMonitor.style.transform = 'none';
-
-                const clonedGrid = clonedDoc.getElementById('route-map-grid');
-                if (isMirror && clonedGrid) {
-                    clonedGrid.style.transform = 'none';
-                }
-
-                const clonedAnimElements = clonedMonitor.querySelectorAll(animSelectors);
-                clonedAnimElements.forEach((el, index) => {
-                    if (currentStyles[index]) {
-                        el.style.animation = 'none';
-                        el.style.transition = 'none';
-                        el.style.opacity = currentStyles[index].opacity;
-                        el.style.transform = currentStyles[index].transform;
-                        el.style.transformOrigin = currentStyles[index].transformOrigin; 
-                    }
-                });
-
-                // 縦書きズレ＆はみ出し対策：
-                const originalJaNames = monitor.querySelectorAll('.st-name-inner.ja-st-name');
-                const clonedJaNames = clonedDoc.querySelectorAll('.st-name-inner.ja-st-name');
-
-                clonedJaNames.forEach((el, index) => {
-                    const origEl = originalJaNames[index];
-                    
-                    const transformStr = origEl.style.transform || '';
-                    let scaleY = 1;
-                    const match = transformStr.match(/scaleY\(([0-9.]+)\)/);
-                    if (match) scaleY = parseFloat(match[1]);
-
-                    el.style.writingMode = 'horizontal-tb';
-                    el.style.position = 'absolute';
-                    el.style.bottom = '2px';
-                    el.style.left = '0';
-                    el.style.right = '0';
-                    el.style.display = 'flex';
-                    el.style.flexDirection = 'column';
-                    el.style.alignItems = 'center';
-                    el.style.transform = 'none'; 
-                    el.style.lineHeight = '1';
-
-                    const newFontSize = 26 * scaleY;
-                    const newSpacing = 4 * scaleY;
-
-                    const text = origEl.textContent;
-                    el.innerHTML = '';
-                    for (const char of text) {
-                        const span = clonedDoc.createElement('span');
-                        span.textContent = char;
-                        span.style.fontSize = `${newFontSize}px`;
-                        span.style.marginBottom = `${newSpacing}px`;
-                        span.style.display = 'block'; 
-                        
-                        let charTransform = '';
-                        if (isMirror) charTransform += 'scaleX(-1) ';
-                        if (char === 'ー') charTransform += 'rotate(90deg)';
-                        
-                        if (charTransform) {
-                            span.style.transform = charTransform.trim();
-                        }
-                        
-                        el.appendChild(span);
-                    }
-                });
-            }
-        }).then(canvas => {
-            let finalCanvas = canvas;
-
-            if (isMirror && grid) {
-                finalCanvas = document.createElement('canvas');
-                finalCanvas.width = canvas.width;
-                finalCanvas.height = canvas.height;
-                const ctx = finalCanvas.getContext('2d');
-
-                // 1. まず非反転状態の全体を描画
-                ctx.drawImage(canvas, 0, 0);
-
-                const monitorRect = monitor.getBoundingClientRect();
-                const gridRect = grid.getBoundingClientRect();
-                
-                // ▼ 修正: 飛び出している駅名の検索範囲を「路線図(grid)の中だけ」に限定する
-                let flipTop = gridRect.top;
-                const stNames = grid.querySelectorAll('.st-name-inner, .en-st-name');
-                stNames.forEach(el => {
-                    const rect = el.getBoundingClientRect();
-                    if (rect.top < flipTop && rect.height > 0) flipTop = rect.top;
-                });
-
-                const scale = 2;
-                const yOffset = (flipTop - monitorRect.top) * scale;
-                // ▼ 修正: フッターを含めず、路線図の最下部(gridRect.bottom)までを反転の境界にする
-                const flipBottom = (gridRect.bottom - monitorRect.top) * scale;
-                const flipHeight = flipBottom - yOffset; 
-
-                // 2. 指定エリア（路線図のみ）を反転して再描画
-                ctx.clearRect(0, yOffset, finalCanvas.width, flipHeight);
-                ctx.save();
-                ctx.translate(finalCanvas.width, 0);
-                ctx.scale(-1, 1);
-                ctx.drawImage(canvas, 0, yOffset, finalCanvas.width, flipHeight, 
-                                      0, yOffset, finalCanvas.width, flipHeight);
-                ctx.restore();
-            }
-
-            const link = document.createElement('a');
-            link.download = 'train-vision.png';
-            link.href = finalCanvas.toDataURL('image/png');
-            link.click();
-        });
-    });
-
     // ▼ 「次へ」ボタンの処理
     document.getElementById('btn-next-state')?.addEventListener('click', () => {
         const labelSelect = document.getElementById('select-next-label');
@@ -1462,6 +1329,110 @@ document.addEventListener('DOMContentLoaded', () => {
         const labelSelect = document.getElementById('select-next-label');
         updateBigHeaderDisplay(labelSelect && labelSelect.value === 'next');
     });
+
+    // === ニュース・運行情報の表示切り替え処理 ===
+    let adNewsTimer = null;
+    let currentAdPageIndex = -1; // -1: 路線図, 0以上: ニュースページ
+    let adNewsPages = [];
+
+    function updateAdPages() {
+        const rawText = document.getElementById('input-ad-news-text')?.value || '';
+        // "---" で分割し、前後の空白を削除して空のページを除外
+        adNewsPages = rawText.split('---').map(p => p.trim()).filter(p => p.length > 0);
+        
+        // プレビュー用に現在表示中のページがあれば即座に反映
+        if (currentAdPageIndex >= 0 && currentAdPageIndex < adNewsPages.length) {
+            renderAdPage(currentAdPageIndex);
+        }
+    }
+
+    function startAdNewsCycle() {
+        // 既存のタイマーをリセット
+        if (adNewsTimer) clearTimeout(adNewsTimer);
+        currentAdPageIndex = -1; // サイクルは必ず路線図からスタート
+
+        const isEnabled = document.getElementById('toggle-ad-news')?.checked;
+        if (!isEnabled || adNewsPages.length === 0) {
+            showRouteMap();
+            return;
+        }
+
+        // 路線図を表示する
+        showRouteMap();
+        
+        // 路線図の待機時間（ミリ秒）を取得してタイマーをセット
+        const waitTime = parseInt(document.getElementById('select-ad-interval')?.value || '12000', 10);
+        adNewsTimer = setTimeout(cycleDisplay, waitTime);
+    }
+
+    function cycleDisplay() {
+        currentAdPageIndex++;
+        
+        // 最後のニュースページを表示し終わったら、次は路線図(-1)に戻る
+        if (currentAdPageIndex >= adNewsPages.length) {
+            currentAdPageIndex = -1;
+        }
+
+        let waitTime = 0;
+
+        if (currentAdPageIndex === -1) {
+            // ▼ 路線図の表示処理
+            showRouteMap();
+            waitTime = parseInt(document.getElementById('select-ad-interval')?.value || '12000', 10);
+        } else {
+            // ▼ ニュースの表示処理
+            renderAdPage(currentAdPageIndex);
+            const pageSec = parseFloat(document.getElementById('input-page-interval')?.value || '6');
+            waitTime = pageSec * 1000;
+        }
+
+        // 計算した待機時間で、次の切り替えを予約する
+        adNewsTimer = setTimeout(cycleDisplay, waitTime);
+    }
+
+    function showRouteMap() {
+        const adLayer = document.getElementById('ad-news-layer');
+        if (adLayer) adLayer.style.visibility = 'hidden';
+        
+        const routeMap = document.getElementById('route-map-grid');
+        if (routeMap) routeMap.style.visibility = 'visible';
+    }
+
+    function renderAdPage(index) {
+        const adLayer = document.getElementById('ad-news-layer');
+        const container = document.getElementById('ad-news-container');
+        const routeMap = document.getElementById('route-map-grid');
+        const pageIndicator = document.getElementById('ad-page-indicator');
+        
+        if (adLayer && container && routeMap) {
+            container.innerHTML = adNewsPages[index];
+            
+            if (pageIndicator) {
+                pageIndicator.textContent = `${index + 1} / ${adNewsPages.length}`;
+            }
+            
+            routeMap.style.visibility = 'hidden';
+            adLayer.style.visibility = 'visible';
+        }
+    }
+
+    // --- イベントリスナーの登録と初期化処理 ---
+    document.getElementById('toggle-ad-news')?.addEventListener('change', startAdNewsCycle);
+    document.getElementById('select-ad-interval')?.addEventListener('change', startAdNewsCycle);
+    
+    // ニュース秒数が変更された時もサイクルを再スタート
+    document.getElementById('input-page-interval')?.addEventListener('change', startAdNewsCycle);
+    
+    document.getElementById('input-ad-news-text')?.addEventListener('input', updateAdPages);
+
+    setTimeout(() => {
+        updateAdPages();
+        if (document.getElementById('toggle-ad-news')?.checked) {
+            startAdNewsCycle();
+        } else {
+            showRouteMap();
+        }
+    }, 100);
 });
 
 // Service Worker の登録処理
