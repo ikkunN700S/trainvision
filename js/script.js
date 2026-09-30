@@ -1452,6 +1452,44 @@ document.addEventListener('DOMContentLoaded', () => {
             emLayer.style.visibility = 'hidden';
         }, 12000);
     });
+
+    // === 上部ナンバリングの左右位置切り替え ===
+    const selectTopNumPos = document.getElementById('select-top-num-pos');
+    if (selectTopNumPos) {
+        selectTopNumPos.addEventListener('change', (e) => {
+            const topNumberBox = document.getElementById('st-number-box');
+            if (!topNumberBox) return;
+
+            const pos = e.target.value;
+            const parent = topNumberBox.parentElement;
+            
+            // 親要素が確実にFlexboxで横並びになるように保証する
+            if (parent) {
+                parent.style.display = 'flex';
+                parent.style.alignItems = 'center';
+            }
+
+            if (pos === 'right') {
+                // 駅名より右側に移動（orderの数値を大きくすると後ろに回る）
+                topNumberBox.style.order = '5';
+                topNumberBox.style.marginLeft = '10px'; // 駅名との隙間
+                topNumberBox.style.marginRight = '50px';
+            } else {
+                // デフォルトの左側に配置
+                topNumberBox.style.order = '0'; 
+                topNumberBox.style.marginLeft = '0';
+                topNumberBox.style.marginRight = '10px'; // 駅名との隙間
+            }
+            
+            // レイアウト変更後に文字サイズ調整を再計算
+            if (typeof adjustAllFittedTexts === 'function') {
+                adjustAllFittedTexts();
+            }
+        });
+        
+        // ページ読み込み時にも適用させる
+        selectTopNumPos.dispatchEvent(new Event('change'));
+    }
 });
 
 // Service Worker の登録処理

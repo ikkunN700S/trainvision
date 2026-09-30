@@ -221,6 +221,13 @@
 
                         <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #555;">
                         <label><input type="checkbox" id="toggle-top-numbering" checked> 上部: 駅ナンバリングを表示</label>
+                        <label style="margin-left: 15px;">
+                            位置: 
+                            <select id="select-top-num-pos">
+                                <option value="left" selected>左</option>
+                                <option value="right">右</option>
+                            </select>
+                        </label>
                         <div style="display:flex; gap:10px; margin-top: 4px; margin-bottom: 4px;">
                             <label>駅ナンバリング: <input type="text" id="input-top-st-id" value="F-09" style="width:80px;"></label>
                         </div>
@@ -303,9 +310,9 @@
                 </label>
                 <label>路線図表示時間: </label>
                 <select id="select-ad-interval">
-                    <option value="12000" selected>12秒ごと</option>
-                    <option value="24000">24秒ごと</option>
-                    <option value="30000">30秒ごと</option>
+                    <option value="12000">12秒ごと</option>
+                    <option value="24000" selected>24秒ごと</option>
+                    <option value="36000">36秒ごと</option>
                 </select>
                 <label>ニュース1ページの表示時間: </label>
                 <input type="number" id="input-page-interval" value="6" min="1" style="width: 50px;"> 秒

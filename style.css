@@ -209,7 +209,7 @@ body {
     position: relative;
     width: 90px;
     height: 35px;
-    margin-right: 20px;
+    margin-right: 10px;
     align-self: flex-end;
     margin-bottom: 25px;
     overflow: hidden;
@@ -596,7 +596,7 @@ body {
     position: absolute;
     width: 350px;
     height: 350px;
-    opacity: 0.5; 
+    opacity: 0.6; 
     z-index: 101;
     pointer-events: none;
 }
