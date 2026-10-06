@@ -315,22 +315,40 @@
                     <option value="36000">36秒ごと</option>
                 </select>
                 <label>ニュース1ページの表示時間: </label>
-                <input type="number" id="input-page-interval" value="6" min="1" style="width: 50px;"> 秒
+                <input type="number" id="input-page-interval" value="8" min="1" style="width: 50px;"> 秒
 
                 <label>表示テキスト (「---」で区切ると複数ページになります)</label><br>
                 <textarea id="input-ad-news-text" rows="8" style="width: 100%; background: #333; color: #fff; border: 1px solid #555; padding: 6px; font-size: 12px; resize: vertical;">
-                    <div class="ad-title">運行情報 / Train Information</div>
-                    <div class="ad-content">
-                        【中央線 遅延】<br>
-                        中央線は雨規制の影響により、遅延しています。
-                    </div>
-                        ---
-                    <div class="ad-title">ニュース / News</div>
-                    <div class="ad-content">
-                        【Minakami RECORDS新曲情報】<br>
-                        水上イリス / ICCHAMA「お金、返してよ」<br>
-                        各種音楽サービスにて配信中。
-                    </div>
+<div class="ad-title">運行情報 / Train Information</div>
+<div class="ad-content">
+    【卒業研究 遅延】<br>
+    卒業研究は想定外の事態により、遅延しています。
+</div>
+---
+<div class="ad-title">ニュース / News</div>
+<div class="ad-content">
+    【Minakami RECORDS新曲情報】<br>
+    水上イリス / ICCHAMA「お金、返してよ」<br>
+    各種音楽サービスにて配信中。<br>
+    詳細は
+    <div style="display: inline-block; border: 2px solid #000; border-radius: 20px; padding: 2px 20px; font-size: 20px; background: #fff;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" style="vertical-align: -0.125em; margin-right: 8px;">
+            <g fill="none" stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="10.5" cy="10.5" r="7.5" />
+                <line x1="21" y1="21" x2="15.8" y2="15.8" />
+            </g>
+        </svg>
+        水上イリス / Minakami RECORDS
+    </div>
+    で検索。
+</div>
+---
+<div class="ad-title">役立ち情報 / Useful Information</div>
+<div class="ad-content">
+    【ここにタイトル】<br>
+    文面を入力することができます。<br>
+    編集はコントロール部から。
+</div>
                 </textarea>
             </div>
             <div style="text-align: right;">

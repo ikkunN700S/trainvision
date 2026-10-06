@@ -148,6 +148,46 @@
       ]
     },
     {
+      "presetName": "JR東海道線 (浜松-豊橋)",
+      "trainType": { "nameJa": "普通", "nameEn": "Local", "bgColor": "#969696", "textColor": "#ffffff" },
+      "destination": {
+        "nameJa": "豊橋 ゆき",
+        "nameKana": "とよはし ゆき",
+        "nameEn": "bound for Hamamatsu"
+      },
+      "carSettings": {
+        "carNum": "1",
+        "style": "style-number-only",
+        "bgColor": "#383838"
+      },
+      "uiColors": {
+        "company": "#ed6d00",
+        "separator": "#ed6d00",
+        "line": "#ed6d00"
+      },
+      "routeSettings": {
+        "chevronColor1": "#e60012", 
+        "chevronColor2": "#0066cc", 
+        "showLowerNumbering": true, 
+        "showLowerShape": true,
+        "numberingShape": "jrc_2",
+        "topNumPos": "right",
+        "timeboxShape": "square"
+      },
+      "footerNote": "",
+      "stations": [
+        { "nameJa": "浜松", "nameKana": "はままつ", "nameEn": "Hamamatsu", "id": "JA-34", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
+        { "nameJa": "高塚", "nameKana": "たかつか", "nameEn": "Takatsuka", "id": "JA-35", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
+        { "nameJa": "舞阪", "nameKana": "まいさか", "nameEn": "Maisaka", "id": "JA-36", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
+        { "nameJa": "弁天島", "nameKana": "べんてんじま", "nameEn": "Bentenjima", "id": "JA-37", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
+        { "nameJa": "新居町", "nameKana": "あらいまち", "nameEn": "Araimachi", "id": "JA-38", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
+        { "nameJa": "鷲津", "nameKana": "わしづ", "nameEn": "Washizu", "id": "JA-39", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
+        { "nameJa": "新所原", "nameKana": "しんじょはら", "nameEn": "Shinjohara", "id": "JA-40", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
+        { "nameJa": "二川", "nameKana": "ふたがわ", "nameEn": "Futagawa", "id": "JA-41", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
+        { "nameJa": "豊橋", "nameKana": "とよはし", "nameEn": "Toyohashi", "id": "JA-42", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"}
+      ]
+    },
+    {
       "presetName": "名古屋市営地下鉄東山線",
       "trainType": { "nameJa": "", "nameEn": "", "bgColor": "#969696", "textColor": "#ffffff" },
       "destination": {
