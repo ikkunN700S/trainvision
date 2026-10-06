@@ -258,8 +258,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     if (st.lowerShape === 'square') r = '0px';
                     if (st.lowerShape === 'circle') r = '50%';
-                    if (st.lowerShape === 'jrc') {
-                        r = '6px';
+                    if (st.lowerShape === 'jrc' || st.lowerShape === 'jrc_2') {
+                        r = (st.lowerShape === 'jrc_2') ? '0px' : '6px';
+
                         flexCol = 'display: flex; flex-direction: column;';
                             
                         boxBg = activeColor; 
@@ -868,7 +869,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <option value="square" ${st.lowerShape === 'square' ? 'selected' : ''}>四角</option>
                         <option value="rounded" ${st.lowerShape === 'rounded' ? 'selected' : ''}>角丸</option>
                         <option value="circle" ${st.lowerShape === 'circle' ? 'selected' : ''}>丸</option>
-                        <option value="jrc" ${st.lowerShape === 'jrc' ? 'selected' : ''}>東海</option>
+                        <option value="jrc" ${st.lowerShape === 'jrc' ? 'selected' : ''}>名鉄風</option>
+                        <option value="jrc_2" ${st.lowerShape === 'jrc_2' ? 'selected' : ''}>JR東海風</option>
                     </select>
                 </td>
                 <td><input type="color" value="${st.lowerColor}" data-idx="${idx}" data-field="lowerColor" style="width:30px; height:24px; padding:0;"></td>
@@ -1057,6 +1059,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let r = '8px';
         if (shape === 'square') r = '0px';
         if (shape === 'circle') r = '50%';
+        if (shape === 'jrc') r = '6px';
+        if (shape === 'jrc_2') r = '0px';
 
         // 2. 次駅案内テキストの更新（.inner を狙い撃ちしてアニメーション構造を維持）
         const nextKanji = document.querySelector('#next-kanji .inner');
@@ -1069,14 +1073,37 @@ document.addEventListener('DOMContentLoaded', () => {
         if (nextEn) nextEn.textContent = isNext ? 'Next' : 'This is';
 
         // 3. 駅名の更新
+        const applySpacing = (element, text, isEn) => {
+            if (!element) return;
+            element.textContent = text;
+            
+            // 日本語（漢字・ひらがな）の場合のみ字間を調整
+            if (!isEn) {
+                if (text.length === 2) {
+                    element.style.letterSpacing = '1em';
+                    element.style.paddingLeft = '1em'; // 最後の余白のズレを相殺して中央に保つ
+                } else if (text.length === 3) {
+                    element.style.letterSpacing = '0.3em';
+                    element.style.paddingLeft = '0.3em';
+                } else {
+                    element.style.letterSpacing = '0';
+                    element.style.paddingLeft = '0';
+                }
+            } else {
+                // 英語は通常の字間
+                element.style.letterSpacing = '0';
+                element.style.paddingLeft = '0';
+            }
+        };
+
         const stKanji = document.querySelector('#st-kanji .inner');
-        if (stKanji) stKanji.textContent = kanji;
+        applySpacing(stKanji, kanji, false);
 
         const stKana = document.querySelector('#st-kana .inner');
-        if (stKana) stKana.textContent = kana;
+        applySpacing(stKana, kana, false);
 
         const stEn = document.querySelector('#st-en .inner');
-        if (stEn) stEn.textContent = en;
+        applySpacing(stEn, en, true);
 
         // 4. ナンバリングの更新
         const topNumberBox = document.getElementById('st-number-box');
@@ -1085,9 +1112,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (topNumberBox) {
             if (showNum && idVal) {
                 topNumberBox.style.display = 'flex'; // コンテナを表示
+                topNumberBox.style.visibility = 'visible';
 
-                // JR東海かどうかの判定フラグ
-                const isJrc = (shape === 'jrc');
+                // JR東海風かどうかの判定フラグ
+                const isJrc = (shape === 'jrc' || shape === 'jrc_2');
                 
                 topNumberBox.style.borderColor = color;
                 topNumberBox.style.borderRadius = r;
@@ -1136,13 +1164,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (stNumVal) stNumVal.textContent = idVal;
                 }
             } else {
-                topNumberBox.style.display = 'none'; // コンテナを非表示
+                topNumberBox.style.display = 'flex'; // コンテナを非表示
+                topNumberBox.style.visibility = 'hidden';
             }
         }
 
         // 5. テキストを流し込んだ後、文字幅の自動縮小関数を呼ぶ
         if (typeof adjustAllFittedTexts === 'function') {
-            adjustAllFittedTexts();
+            setTimeout(() => {
+                adjustAllFittedTexts();
+            }, 10);
         }
     }
 
@@ -1213,6 +1244,8 @@ document.addEventListener('DOMContentLoaded', () => {
             setAndTrigger('toggle-lower-shape', preset.routeSettings.showLowerShape !== false, true);
 
             setAndTrigger('select-timebox-shape', preset.routeSettings.timeboxShape || "square");
+
+            setAndTrigger('select-top-num-pos', preset.routeSettings.topNumPos || "left");
         }
     }
 
@@ -1328,6 +1361,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('toggle-top-numbering')?.addEventListener('change', () => {
         const labelSelect = document.getElementById('select-next-label');
         updateBigHeaderDisplay(labelSelect && labelSelect.value === 'next');
+
+        document.getElementById('select-top-num-pos')?.dispatchEvent(new Event('change'));
     });
 
     // === ニュース・運行情報の表示切り替え処理 ===
@@ -1462,11 +1497,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const pos = e.target.value;
             const parent = topNumberBox.parentElement;
+
+            let dummySpacer = document.getElementById('num-dummy-spacer');
+            if (!dummySpacer) {
+                dummySpacer = document.createElement('div');
+                dummySpacer.id = 'num-dummy-spacer';
+                dummySpacer.style.flexShrink = '0';      // 縮まないようにする
+                dummySpacer.style.visibility = 'hidden'; // 見えないようにする
+                parent.appendChild(dummySpacer);
+            }
             
             // 親要素が確実にFlexboxで横並びになるように保証する
             if (parent) {
                 parent.style.display = 'flex';
                 parent.style.alignItems = 'center';
+                parent.style.width = '100%';
             }
 
             if (pos === 'right') {
@@ -1474,11 +1519,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 topNumberBox.style.order = '5';
                 topNumberBox.style.marginLeft = '10px'; // 駅名との隙間
                 topNumberBox.style.marginRight = '50px';
+                dummySpacer.style.display = 'none';
             } else {
                 // デフォルトの左側に配置
                 topNumberBox.style.order = '0'; 
                 topNumberBox.style.marginLeft = '0';
                 topNumberBox.style.marginRight = '10px'; // 駅名との隙間
+
+                // ▼ 左にある時は、右側に「ナンバリングと同じ幅」の透明な箱を置いてバランスをとる
+                if (topNumberBox.style.display !== 'none') {
+                    dummySpacer.style.display = 'block';
+                    dummySpacer.style.order = '10'; // 一番右端へ配置
+                    
+                    // ナンバリング本体の幅 ＋ marginRightの幅をダミーに設定
+                    // display:noneから復帰した直後は幅が取れないことがあるためsetTimeoutで取得
+                    setTimeout(() => {
+                        const boxWidth = topNumberBox.offsetWidth;
+                        dummySpacer.style.width = (boxWidth > 0 ? boxWidth + 10 : 110) + 'px';
+                    }, 0);
+                } else {
+                    dummySpacer.style.display = 'none';
+                }
             }
             
             // レイアウト変更後に文字サイズ調整を再計算
