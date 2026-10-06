@@ -148,7 +148,7 @@
       ]
     },
     {
-      "presetName": "JR東海道線 (JR東海)",
+      "presetName": "JR東海道線 (浜松-豊橋)",
       "trainType": { "nameJa": "普通", "nameEn": "Local", "bgColor": "#969696", "textColor": "#ffffff" },
       "destination": {
         "nameJa": "豊橋 ゆき",
