@@ -255,11 +255,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     let bottomBg = 'transparent';
                     let bottomColor = '';
                     let flexCol = '';
+                    let bWidth = '';
 
                     if (st.lowerShape === 'square') r = '0px';
                     if (st.lowerShape === 'circle') r = '50%';
                     if (st.lowerShape === 'jrc' || st.lowerShape === 'jrc_2') {
                         r = (st.lowerShape === 'jrc_2') ? '0px' : '6px';
+
+                        if (st.lowerShape === 'jrc_2') {
+                            bWidth = '2px';
+                        }
 
                         flexCol = 'display: flex; flex-direction: column;';
                             
@@ -275,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         
                     // 子要素の span にも color: inherit !important; を付けて文字色消失を防ぐ
                     idItem.innerHTML = `
-                        <div class="lower-number-box" style="border-color: ${activeColor}; border-radius: ${r}; background: ${boxBg}; overflow: hidden; padding: 0; ${flexCol}">
+                        <div class="lower-number-box" style="border-width: ${bWidth}; border-color: ${activeColor}; border-radius: ${r}; background: ${boxBg}; overflow: hidden; padding: 0; ${flexCol}">
                             <div class="lower-line-code" style="${topColor}"><span class="inner" style="color: inherit !important;">${match[1]}</span></div>
                             <div class="lower-st-num" style="${bottomBg} ${bottomColor}"><span class="inner" style="color: inherit !important;">${match[2]}</span></div>
                         </div>
@@ -1123,6 +1128,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 topNumberBox.style.padding = isJrc ? '0' : '';
                 topNumberBox.style.flexDirection = isJrc ? 'column' : '';
                 
+                if (shape === 'jrc_2') {
+                    topNumberBox.style.borderWidth = '2px';
+                } else {
+                    topNumberBox.style.borderWidth = ''; // 空にしてCSSの元の太さ(4pxなど)に戻す
+                }
+
                 // 親コンテナの背景全体を路線カラーにする
                 topNumberBox.style.background = isJrc ? color : 'transparent';
                 

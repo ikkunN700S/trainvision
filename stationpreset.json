@@ -153,7 +153,7 @@
       "destination": {
         "nameJa": "豊橋 ゆき",
         "nameKana": "とよはし ゆき",
-        "nameEn": "bound for Hamamatsu"
+        "nameEn": "Bound for Hamamatsu"
       },
       "carSettings": {
         "carNum": "1",
@@ -176,15 +176,66 @@
       },
       "footerNote": "",
       "stations": [
-        { "nameJa": "浜松", "nameKana": "はままつ", "nameEn": "Hamamatsu", "id": "JA-34", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
-        { "nameJa": "高塚", "nameKana": "たかつか", "nameEn": "Takatsuka", "id": "JA-35", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
-        { "nameJa": "舞阪", "nameKana": "まいさか", "nameEn": "Maisaka", "id": "JA-36", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
-        { "nameJa": "弁天島", "nameKana": "べんてんじま", "nameEn": "Bentenjima", "id": "JA-37", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
-        { "nameJa": "新居町", "nameKana": "あらいまち", "nameEn": "Araimachi", "id": "JA-38", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
-        { "nameJa": "鷲津", "nameKana": "わしづ", "nameEn": "Washizu", "id": "JA-39", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
-        { "nameJa": "新所原", "nameKana": "しんじょはら", "nameEn": "Shinjohara", "id": "JA-40", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
-        { "nameJa": "二川", "nameKana": "ふたがわ", "nameEn": "Futagawa", "id": "JA-41", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
-        { "nameJa": "豊橋", "nameKana": "とよはし", "nameEn": "Toyohashi", "id": "JA-42", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"}
+        { "nameJa": "浜松", "nameKana": "はままつ", "nameEn": "Hamamatsu", "id": "CA-34", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
+        { "nameJa": "高塚", "nameKana": "たかつか", "nameEn": "Takatsuka", "id": "CA-35", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
+        { "nameJa": "舞阪", "nameKana": "まいさか", "nameEn": "Maisaka", "id": "CA-36", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
+        { "nameJa": "弁天島", "nameKana": "べんてんじま", "nameEn": "Bentenjima", "id": "CA-37", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
+        { "nameJa": "新居町", "nameKana": "あらいまち", "nameEn": "Araimachi", "id": "CA-38", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
+        { "nameJa": "鷲津", "nameKana": "わしづ", "nameEn": "Washizu", "id": "CA-39", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
+        { "nameJa": "新所原", "nameKana": "しんじょはら", "nameEn": "Shinjohara", "id": "CA-40", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
+        { "nameJa": "二川", "nameKana": "ふたがわ", "nameEn": "Futagawa", "id": "CA-41", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"},
+        { "nameJa": "豊橋", "nameKana": "とよはし", "nameEn": "Toyohashi", "id": "CA-42", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#ed6d00"}
+      ]
+    },
+    {
+      "presetName": "JR中央線 (名古屋口) 快速",
+      "trainType": { "nameJa": "快速", "nameEn": "Rapid", "bgColor": "#1f78ff", "textColor": "#ffffff" },
+      "destination": {
+        "nameJa": "中津川 ゆき",
+        "nameKana": "なかつがわ ゆき",
+        "nameEn": "Bound for Nakatsugawa"
+      },
+      "carSettings": {
+        "carNum": "1",
+        "style": "style-number-only",
+        "bgColor": "#383838"
+      },
+      "uiColors": {
+        "company": "#ed6d00",
+        "separator": "#0f4a85",
+        "line": "#0f4a85"
+      },
+      "routeSettings": {
+        "chevronColor1": "#e60012", 
+        "chevronColor2": "#0066cc", 
+        "showLowerNumbering": true, 
+        "showLowerShape": true,
+        "numberingShape": "jrc_2",
+        "topNumPos": "right",
+        "timeboxShape": "square"
+      },
+      "footerNote": "",
+      "stations": [
+        { "nameJa": "名古屋", "nameKana": "なごや", "nameEn": "Nagoya", "id": "CF-00", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#0f4a85"},
+        { "nameJa": "金山", "nameKana": "かなやま", "nameEn": "Kanayama", "id": "CF-01", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#0f4a85"},
+        { "nameJa": "鶴舞", "nameKana": "つるまい", "nameEn": "Tsurumai", "id": "CF-02", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#0f4a85"},
+        { "nameJa": "千種", "nameKana": "ちくさ", "nameEn": "Chikusa", "id": "CF-03", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#0f4a85"},
+        { "nameJa": "大曽根", "nameKana": "おおぞね", "nameEn": "Ozone", "id": "CF-04", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#0f4a85"},
+        { "nameJa": "新守山", "nameKana": "しんもりやま", "nameEn": "Shin-Moriyama", "id": "CF-05", "time": "",  "isPass": true, "lowerShape": "jrc_2", "lowerColor": "#0f4a85"},
+        { "nameJa": "勝川", "nameKana": "かちがわ", "nameEn": "Kaichigawa", "id": "CF-06", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#0f4a85"},
+        { "nameJa": "春日井", "nameKana": "かすがい", "nameEn": "Kasugai", "id": "CF-07", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#0f4a85"},
+        { "nameJa": "神領", "nameKana": "じんりょう", "nameEn": "Jinryo", "id": "CF-08", "time": "",  "isPass": true, "lowerShape": "jrc_2", "lowerColor": "#0f4a85"},
+        { "nameJa": "高蔵寺", "nameKana": "こうぞうじ", "nameEn": "Kozoji", "id": "CF-09", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#0f4a85"},
+        { "nameJa": "定光寺", "nameKana": "じょうこうじ", "nameEn": "Jokoji", "id": "CF-10", "time": "",  "isPass": true, "lowerShape": "jrc_2", "lowerColor": "#0f4a85"},
+        { "nameJa": "古虎渓", "nameKana": "ここけい", "nameEn": "Kokokei", "id": "CF-11", "time": "",  "isPass": true, "lowerShape": "jrc_2", "lowerColor": "#0f4a85"},
+        { "nameJa": "多治見", "nameKana": "たじみ", "nameEn": "Tajimi", "id": "CF-12", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#0f4a85"},
+        { "nameJa": "土岐市", "nameKana": "ときし", "nameEn": "Tokishi", "id": "CF-13", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#0f4a85"},
+        { "nameJa": "瑞浪", "nameKana": "みずなみ", "nameEn": "Mizunami", "id": "CF-14", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#0f4a85"},
+        { "nameJa": "釜戸", "nameKana": "かまど", "nameEn": "Kamado", "id": "CF-15", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#0f4a85"},
+        { "nameJa": "武並", "nameKana": "たけなみ", "nameEn": "Takenami", "id": "CF-16", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#0f4a85"},
+        { "nameJa": "恵那", "nameKana": "えな", "nameEn": "Ena", "id": "CF-17", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#0f4a85"},
+        { "nameJa": "美乃坂本", "nameKana": "みのさかもと", "nameEn": "Mino-Sakamoto", "id": "CF-18", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#0f4a85"},
+        { "nameJa": "中津川", "nameKana": "なかつがわ", "nameEn": "Nakatsugawa", "id": "CF-19", "time": "",  "isPass": false, "lowerShape": "jrc_2", "lowerColor": "#0f4a85"}
       ]
     },
     {
