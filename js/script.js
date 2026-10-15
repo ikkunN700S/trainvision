@@ -1564,9 +1564,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Service Worker の登録処理
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        // 現在のディレクトリをスコープに指定して登録
+        navigator.serviceWorker.register('./sw.js', { scope: './' })
+            .then((registration) => {
+                console.log('ServiceWorker 登録成功 / スコープ:', registration.scope);
+            })
+            .catch((error) => {
+                console.error('ServiceWorker 登録失敗:', error);
+            });
+    });
+}
+
 // キャッシュ強制リセット処理
     document.getElementById('btn-clear-cache')?.addEventListener('click', () => {
         if (!confirm('保存されているキャッシュをすべて削除し、最新の状態でリロードしますか？')) return;
+
+        // Service Workerの登録解除
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    registration.unregister();
+                }
+            });
+        }
 
         // キャッシュストレージの全削除
         if ('caches' in window) {
