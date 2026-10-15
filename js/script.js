@@ -1408,7 +1408,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // 路線図の待機時間（ミリ秒）を取得してタイマーをセット
         const waitTime = parseInt(document.getElementById('select-ad-interval')?.value || '12000', 10);
-        adNewsTimer = setTimeout(cycleDisplay, waitTime + 1000);
+        adNewsTimer = setTimeout(cycleDisplay, waitTime - 500);
     }
 
     function cycleDisplay() {
@@ -1433,7 +1433,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // 計算した待機時間で、次の切り替えを予約する
-        adNewsTimer = setTimeout(cycleDisplay, waitTime);
+        adNewsTimer = setTimeout(cycleDisplay, waitTime + 1000);
     }
 
     function showRouteMap() {
@@ -1564,32 +1564,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Service Worker の登録処理
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        // 現在のディレクトリをスコープに指定して登録
-        navigator.serviceWorker.register('./sw.js', { scope: './' })
-            .then((registration) => {
-                console.log('ServiceWorker 登録成功 / スコープ:', registration.scope);
-            })
-            .catch((error) => {
-                console.error('ServiceWorker 登録失敗:', error);
-            });
-    });
-}
-
 // キャッシュ強制リセット処理
     document.getElementById('btn-clear-cache')?.addEventListener('click', () => {
         if (!confirm('保存されているキャッシュをすべて削除し、最新の状態でリロードしますか？')) return;
-        
-        // Service Workerの登録解除
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                for(let registration of registrations) {
-                    registration.unregister();
-                }
-            });
-        }
+
         // キャッシュストレージの全削除
         if ('caches' in window) {
             caches.keys().then(function(keyList) {
