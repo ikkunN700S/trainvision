@@ -1,60 +1,21 @@
-// キャッシュのバージョン（ファイルを更新したらここを v2, v3... と書き換えることでキャッシュが更新されます）
-const CACHE_NAME = 'trainvision-cache-v6';
+// キャッシュを一切せず、常にネットワークから最新を取得するService Worker
 
-// キャッシュ対象のファイルリスト（プロジェクト内の必要なファイルをすべて記述）
-const urlsToCache = [
-    './',
-    './index.html',
-    './style.css',
-    './js/script.js',
-    './js/version.js',
-    './js/sharelink.js',
-    './version.json',
-    './presets.json',
-    './stationpreset.json'
-];
-
-// インストール時にファイルをキャッシュする
 self.addEventListener('install', (event) => {
-    self.skipWaiting();
-    
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then((cache) => {
-                console.log('Opened cache');
-                return cache.addAll(urlsToCache);
-            })
-    );
+    // インストール後、すぐに新しいService Workerを有効化
+    self.skipWaiting(); 
 });
 
-// 新しいバージョンのSWが有効化されたとき、古いキャッシュを削除する
 self.addEventListener('activate', (event) => {
-    const cacheWhitelist = [CACHE_NAME];
+    // 古いキャッシュが残っている場合はすべて削除してリセットする
     event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((cacheName) => {
-                    if (cacheWhitelist.indexOf(cacheName) === -1) {
-                        console.log('古いキャッシュを削除:', cacheName);
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
-        })
+        caches.keys().then(keys => Promise.all(
+            keys.map(key => caches.delete(key))
+        ))
     );
+    self.clients.claim();
 });
 
-// オフライン時のリクエスト処理
+// リクエストに対して常にネットワーク通信（fetch）をそのまま返す
 self.addEventListener('fetch', (event) => {
-    event.respondWith(
-        caches.match(event.request)
-            .then((response) => {
-                // キャッシュにファイルがあればそれを返す
-                if (response) {
-                    return response;
-                }
-                // キャッシュになければネットワークから取得する
-                return fetch(event.request);
-            })
-    );
+    event.respondWith(fetch(event.request));
 });
