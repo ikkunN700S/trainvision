@@ -29,6 +29,11 @@
     padding: 0;
 }
 
+html, body {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
 body {
     background-color: #1a1a1a;
     display: flex;
@@ -532,7 +537,7 @@ body {
 .footer-note.fade-out { opacity: 0; }
 
 /* ▼ ニュース・運行情報レイヤーのスタイル */
-#ad-news-layer {
+#info-news-layer {
     position: absolute;
     top: 0;
     left: 0;
@@ -544,7 +549,7 @@ body {
     z-index: 20; 
 }
 
-#ad-news-container {
+#info-news-container {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -552,7 +557,7 @@ body {
 }
 
 /* 右下のページ数表示スタイル */
-#ad-page-indicator {
+#info-page-indicator {
     position: absolute;
     bottom: 15px;
     right: 20px;
@@ -564,7 +569,7 @@ body {
     border-radius: 4px;
 }
 
-.ad-title {
+.info-title {
     background-color: #ececec;
     color: #000;
     font-size: 24px;
@@ -574,7 +579,7 @@ body {
     padding: 5px;
 }
 
-.ad-content {
+.info-content {
     padding: 20px;
     font-size: 20px;
     font-weight: bold;

@@ -1382,7 +1382,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let adNewsPages = [];
 
     function updateAdPages() {
-        const rawText = document.getElementById('input-ad-news-text')?.value || '';
+        const rawText = document.getElementById('input-info-news-text')?.value || '';
         // "---" で分割し、前後の空白を削除して空のページを除外
         adNewsPages = rawText.split('---').map(p => p.trim()).filter(p => p.length > 0);
         
@@ -1397,7 +1397,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (adNewsTimer) clearTimeout(adNewsTimer);
         currentAdPageIndex = -1; // サイクルは必ず路線図からスタート
 
-        const isEnabled = document.getElementById('toggle-ad-news')?.checked;
+        const isEnabled = document.getElementById('toggle-info-news')?.checked;
         if (!isEnabled || adNewsPages.length === 0) {
             showRouteMap();
             return;
@@ -1407,8 +1407,8 @@ document.addEventListener('DOMContentLoaded', () => {
         showRouteMap();
         
         // 路線図の待機時間（ミリ秒）を取得してタイマーをセット
-        const waitTime = parseInt(document.getElementById('select-ad-interval')?.value || '12000', 10);
-        adNewsTimer = setTimeout(cycleDisplay, waitTime - 500);
+        const waitTime = parseInt(document.getElementById('select-info-interval')?.value || '12000', 10);
+        adNewsTimer = setTimeout(cycleDisplay, waitTime - 100);
     }
 
     function cycleDisplay() {
@@ -1424,7 +1424,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentAdPageIndex === -1) {
             // ▼ 路線図の表示処理
             showRouteMap();
-            waitTime = parseInt(document.getElementById('select-ad-interval')?.value || '12000', 10);
+            waitTime = parseInt(document.getElementById('select-info-interval')?.value || '12000', 10);
         } else {
             // ▼ ニュースの表示処理
             renderAdPage(currentAdPageIndex);
@@ -1437,7 +1437,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showRouteMap() {
-        const adLayer = document.getElementById('ad-news-layer');
+        const adLayer = document.getElementById('info-news-layer');
         if (adLayer) adLayer.style.visibility = 'hidden';
         
         const routeMap = document.getElementById('route-map-grid');
@@ -1445,10 +1445,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderAdPage(index) {
-        const adLayer = document.getElementById('ad-news-layer');
-        const container = document.getElementById('ad-news-container');
+        const adLayer = document.getElementById('info-news-layer');
+        const container = document.getElementById('info-news-container');
         const routeMap = document.getElementById('route-map-grid');
-        const pageIndicator = document.getElementById('ad-page-indicator');
+        const pageIndicator = document.getElementById('info-page-indicator');
         
         if (adLayer && container && routeMap) {
             container.innerHTML = adNewsPages[index];
@@ -1463,17 +1463,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- イベントリスナーの登録と初期化処理 ---
-    document.getElementById('toggle-ad-news')?.addEventListener('change', startAdNewsCycle);
-    document.getElementById('select-ad-interval')?.addEventListener('change', startAdNewsCycle);
+    document.getElementById('toggle-info-news')?.addEventListener('change', startAdNewsCycle);
+    document.getElementById('select-info-interval')?.addEventListener('change', startAdNewsCycle);
     
     // ニュース秒数が変更された時もサイクルを再スタート
     document.getElementById('input-page-interval')?.addEventListener('change', startAdNewsCycle);
     
-    document.getElementById('input-ad-news-text')?.addEventListener('input', updateAdPages);
+    document.getElementById('input-info-news-text')?.addEventListener('input', updateAdPages);
 
     setTimeout(() => {
         updateAdPages();
-        if (document.getElementById('toggle-ad-news')?.checked) {
+        if (document.getElementById('toggle-info-news')?.checked) {
             startAdNewsCycle();
         } else {
             showRouteMap();

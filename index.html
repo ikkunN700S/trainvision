@@ -86,9 +86,9 @@
                     <!-- 案内テキスト -->
                 </div>
 
-                <div id="ad-news-layer" style="visibility: hidden;">
-                    <div id="ad-news-container"></div>
-                    <div id="ad-page-indicator"></div>
+                <div id="info-news-layer" style="visibility: hidden;">
+                    <div id="info-news-container"></div>
+                    <div id="info-page-indicator"></div>
                 </div>
             </main>
 
@@ -305,11 +305,11 @@
                 <!-- ニュース・広告設定パネル -->
                 <h3 style="margin-top: 0;">📺 ニュース・運行情報設定 (下画面)</h3>
                 <label>
-                    <input type="checkbox" id="toggle-ad-news" checked> 
+                    <input type="checkbox" id="toggle-info-news" checked> 
                     <strong>路線図とニュースを順番に表示する</strong>
                 </label>
                 <label>路線図表示時間: </label>
-                <select id="select-ad-interval">
+                <select id="select-info-interval">
                     <option value="12000">12秒ごと</option>
                     <option value="24000" selected>24秒ごと</option>
                     <option value="36000">36秒ごと</option>
@@ -318,15 +318,15 @@
                 <input type="number" id="input-page-interval" value="8" min="1" style="width: 50px;"> 秒
 
                 <label>表示テキスト (「---」で区切ると複数ページになります)</label><br>
-                <textarea id="input-ad-news-text" rows="8" style="width: 100%; background: #333; color: #fff; border: 1px solid #555; padding: 6px; font-size: 12px; resize: vertical;">
-<div class="ad-title">運行情報 / Train Information</div>
-<div class="ad-content">
+                <textarea id="input-info-news-text" rows="8" style="width: 100%; background: #333; color: #fff; border: 1px solid #555; padding: 6px; font-size: 12px; resize: vertical;">
+<div class="info-title">運行情報 / Train Information</div>
+<div class="info-content">
     【卒業研究 遅延】<br>
     卒業研究は想定外の事態により、遅延しています。
 </div>
 ---
-<div class="ad-title">ニュース / News</div>
-<div class="ad-content">
+<div class="info-title">ニュース / News</div>
+<div class="info-content">
     【Minakami RECORDS新曲情報】<br>
     水上イリス / ICCHAMA「お金、返してよ」<br>
     各種音楽サービスにて配信中。<br>
@@ -343,8 +343,8 @@
     で検索。
 </div>
 ---
-<div class="ad-title">役立ち情報 / Useful Information</div>
-<div class="ad-content">
+<div class="info-title">役立ち情報 / Useful Information</div>
+<div class="info-content">
     【ここにタイトル】<br>
     文面を入力することができます。<br>
     編集はコントロール部から。
