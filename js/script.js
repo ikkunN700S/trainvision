@@ -1408,7 +1408,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // 路線図の待機時間（ミリ秒）を取得してタイマーをセット
         const waitTime = parseInt(document.getElementById('select-ad-interval')?.value || '12000', 10);
-        adNewsTimer = setTimeout(cycleDisplay, waitTime);
+        adNewsTimer = setTimeout(cycleDisplay, waitTime + 1000);
     }
 
     function cycleDisplay() {
